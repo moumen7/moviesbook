@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.PostActivity">
+
+    <EditText
+        android:id="@+id/edit_text_description"
+        android:layout_width="382dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="36dp"
+        android:hint="Post Description"
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toTopOf="@+id/imagepost"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/imagepost"
+        android:layout_width="299dp"
+        android:layout_height="286dp"
+        android:layout_marginBottom="180dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/uploadpic"
+        android:layout_width="116dp"
+        android:layout_height="73dp"
+        android:layout_marginEnd="148dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:onClick="uploadpic"
+        android:src="@android:drawable/ic_menu_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/uploadbutt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="28dp"
+        android:clickable="true"
+        android:onClick="post"
+        android:text="upload"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

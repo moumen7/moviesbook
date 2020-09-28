@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/lightwhite"
+    android:padding="10dp"
+    tools:context=".Activity.RegisterActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back_black_24dp"
+            android:onClick="LognIn"
+            android:clickable="true"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp">
+
+            <ImageView
+                android:layout_width="110dp"
+                android:layout_height="133dp"
+                android:src="@drawable/movie2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+        </LinearLayout>
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="47dp"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-medium"
+            android:text="Create Your Account"
+            android:textColor="@color/blackcolor"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="280dp"
+            android:layout_height="45dp"
+            android:hint=" Your Name"
+            android:layout_marginTop="35dp"
+            android:paddingLeft="15dp"
+            android:inputType="text"
+            android:textColorHint="@color/fullwhite"
+            android:textColor="@color/blackcolor"
+            android:elevation="5dp"
+            android:background="@drawable/btn"
+            />
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="280dp"
+            android:layout_height="45dp"
+            android:hint=" Email "
+            android:textColor="@color/blackcolor"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="15dp"
+            android:inputType="textEmailAddress"
+            android:textColorHint="@color/fullwhite"
+            android:elevation="5dp"
+            android:background="@drawable/btn"
+            />
+        <EditText
+            android:id="@+id/Password"
+            android:layout_width="280dp"
+            android:layout_height="45dp"
+            android:hint=" Password "
+            android:layout_marginTop="10dp"
+            android:paddingLeft="15dp"
+            android:textColor="@color/blackcolor"
+            android:inputType="textPassword"
+            android:textColorHint="@color/fullwhite"
+            android:elevation="5dp"
+            android:background="@drawable/btn"
+            />
+
+        <Button
+            android:layout_width="280dp"
+            android:layout_height="45dp"
+            android:id="@+id/joinus"
+            android:text="Join Us"
+            android:textColor="@color/whitecolor"
+            android:textAllCaps="false"
+            android:layout_marginTop="25dp"
+            android:elevation="5dp"
+            android:onClick="Sign_Up"
+            android:background="@drawable/joinbtn"/>
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="By Pressing 'Join Us' You agree\n     to our trems and conditions"
+            android:textColor="@color/fullwhite"
+            android:layout_marginTop="25dp"/>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

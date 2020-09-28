@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/lightwhite"
+    android:theme="@style/Theme.AppCompat.NoActionBar"
+    tools:context=".Activity.LoginActivity">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|start"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif-medium"
+        android:text="Hello there,\nWelcome to MoviesBook"
+        android:textColor="@color/blackcolor"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        />
+        <!--app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"-->
+
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="167dp"
+        android:layout_height="134dp"
+        android:layout_weight="2"
+        android:layout_gravity="center|center_vertical"
+        android:src="@drawable/movie2"
+        android:layout_marginTop="32dp"/>
+    <!--app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.464"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.283"-->
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="47dp"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Login here"
+        android:textColor="@color/blackcolor"
+        android:textSize="25dp"
+        android:textStyle="bold"/>
+    <!--app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="1.0"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/imageView2"
+    app:layout_constraintVertical_bias="0.0"-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_weight="1">
+
+        <EditText
+            android:id="@+id/loginemail"
+            android:layout_width="280dp"
+            android:layout_height="45dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="48dp"
+            android:background="@drawable/btn"
+            android:elevation="5dp"
+            android:hint=" Your Email"
+            android:textColorHint="@color/fullwhite"
+            android:inputType="textEmailAddress"
+            android:paddingLeft="10dp"
+            android:textColor="#332E2E"
+            />
+        <!--app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"-->
+
+        <EditText
+            android:id="@+id/loginpass"
+            android:layout_width="280dp"
+            android:layout_height="45dp"
+            android:layout_below="@+id/loginemail"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/btn"
+            android:elevation="5dp"
+            android:textColorHint="@color/fullwhite"
+            android:hint=" Your password "
+            android:inputType="textPassword"
+            android:paddingLeft="10dp"
+            android:textColor="#332E2E"
+            />
+            <!--app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.528"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"-->
+
+        <Button
+            android:id="@+id/LogInbtn"
+            android:layout_width="280dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/joinbtn"
+            android:clickable="true"
+            android:elevation="0dp"
+            android:onClick="Login"
+            android:text="Login"
+            android:textAllCaps="false"
+            android:textColor="@color/whitecolor"
+            android:layout_below="@+id/loginpass"
+            android:layout_centerInParent="true"
+            />
+            <!--app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.58"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"-->
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_below="@+id/LogInbtn"
+            android:gravity="center"
+            android:onClick="Signin"
+            android:text="\n Don`t have an account?"
+            android:textColor="@color/blackcolor"
+            android:textSize="20sp"
+            />
+            <!--app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"-->
+    </RelativeLayout>
+
+
+
+
+
+</LinearLayout>

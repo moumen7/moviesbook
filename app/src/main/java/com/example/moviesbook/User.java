@@ -1,0 +1,70 @@
+package com.example.moviesbook;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class User implements Serializable {
+    String Email;
+    String id;
+    String Username;
+    String Password;
+
+    public String getImage() {
+        return Image;
+    }
+
+    public void setImage(String image) {
+        Image = image;
+    }
+
+    String Image;
+
+    public User(String email, String id, String username, String password) {
+        this.id = id;
+        Email = email;
+        Username = username;
+        Password = password;
+
+    }
+
+
+    public User() {
+    }
+
+
+    public void setPassword(String password) {
+        Password = password;
+    }
+
+    public String getPassword() {
+        return Password;
+    }
+
+    public void setEmail(String email) {
+        Email = email;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
+
+    public void setUsername(String username) {
+        Username = username;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return Username;
+    }
+
+    public String getEmail() {
+        return Email;
+    }
+
+}
