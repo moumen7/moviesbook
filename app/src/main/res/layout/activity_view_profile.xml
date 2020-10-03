@@ -5,69 +5,70 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fillViewport="false">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/blackcolor">
+        android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="414dp"
-            android:layout_height="200dp"
+            android:layout_width="412dp"
+            android:layout_height="167dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="390dp"
-                android:layout_height="193dp">
+                android:layout_width="match_parent"
+                android:layout_height="167dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profiepic"
-                    android:layout_width="131dp"
-                    android:layout_height="142dp"
-                    android:layout_marginEnd="240dp"
+                    android:layout_width="98dp"
+                    android:layout_height="115dp"
+                    android:layout_marginEnd="288dp"
                     android:onClick="changeImage"
                     android:outlineAmbientShadowColor="#FFFFFF"
                     android:padding="7dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.313" />
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <ImageButton
                     android:id="@+id/imgbutton"
-                    android:layout_width="71dp"
-                    android:layout_height="72dp"
+                    android:layout_width="51dp"
+                    android:layout_height="61dp"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_marginEnd="88dp"
+                    android:layout_marginEnd="236dp"
                     android:onClick="follow"
                     android:src="@drawable/ic_baseline_person_add_24"
-                    app:layout_constraintBottom_toTopOf="@+id/username"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/username" />
 
                 <TextView
 
                     android:id="@+id/username"
-                    android:layout_width="207dp"
-                    android:layout_height="70dp"
-                    android:layout_marginBottom="52dp"
-                    android:textColor="@android:color/black"
-                    android:textSize="30dp"
+                    android:layout_width="258dp"
+                    android:layout_height="31dp"
+                    android:layout_marginBottom="120dp"
+                    android:textColor="?android:textColorPrimary"
+                    android:textSize="20dp"
                     android:textStyle="bold"
-                    android:gravity="center"
                     app:layout_constraintBottom_toBottomOf="parent"
+
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.912"
+                    app:layout_constraintHorizontal_bias="0.805"
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
                     android:id="@+id/followers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="?android:textColorPrimary"
                     android:layout_marginStart="112dp"
-                    android:layout_marginTop="164dp"
+                    android:layout_marginTop="120dp"
                     android:clickable="true"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -76,7 +77,8 @@
                     android:id="@+id/following"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="164dp"
+                    android:textColor="?android:textColorPrimary"
+                    android:layout_marginTop="120dp"
                     android:layout_marginEnd="104dp"
                     android:clickable="true"
                     app:layout_constraintEnd_toEndOf="parent"

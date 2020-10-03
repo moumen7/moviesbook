@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.drm.DrmManagerClient;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -92,6 +93,7 @@ public class Profile extends Fragment implements View.OnClickListener {
     private PostsAdapter postsAdapter;
     private RecyclerView recyclerViewmovies;
     private RecyclerView recyclerViewbooks;
+    DocumentSnapshot lastVisible;
     private RecyclerView recyclerViewposts;
     private StorageReference Folder;
     private ArrayList<Book> userbooks;
@@ -191,113 +193,87 @@ public class Profile extends Fragment implements View.OnClickListener {
         ViewBooks.setOnClickListener(this);
         user = view.findViewById(R.id.username);
         sp = this.getActivity().getSharedPreferences("user", MODE_PRIVATE);
-        q = db.collection("Users").document(sp.getString("ID",""))
-                .collection("BooksList");
+        q = db.collection("Books").whereArrayContains("users",sp.getString("ID",""));
 
-        q.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+        q.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Userdata.Userbooks.clear();
 
-                Userdata.Usermovies.clear();
-                int x = 0;
-                for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-                    Book ChatUser = snapshot.toObject(Book.class);
-                    Userdata.Userbooks.put(snapshot.getId(),true);
-                    userbooks.add(ChatUser);
-                    userbooks.get(x).setID(snapshot.getId());
-                    x++;
-                }
+                            int x = 0;
+                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                Book ChatUser = snapshot.toObject(Book.class);
+                                Userdata.Userbooks.put(snapshot.getId(), true);
+                                userbooks.add(ChatUser);
+                                userbooks.get(x).setID(snapshot.getId());
+                                x++;
+                            }
 
-                adapter.setList(userbooks);
-            }
-        });
+                            adapter.setList(userbooks);
+                        }
+                    }
+                });
         recyclerViewbooks.setAdapter(adapter);
         recyclerViewbooks.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
-        q = db.collection("Users").document(sp.getString("ID",""))
-                .collection("MoviesList");
+        q = db.collection("Movies").whereArrayContains("users",sp.getString("ID",""));
 
-        q.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+        q.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Userdata.Usermovies.clear();
 
-                Userdata.Usermovies.clear();
-                int x = 0;
-                for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-                    Movie ChatUser = snapshot.toObject(Movie.class);
-                    Userdata.Usermovies.put(snapshot.getId(),true);
-                    usermovies.add(ChatUser);
-                    usermovies.get(x).setID(snapshot.getId());
-                    x++;
-                }
+                            int x = 0;
+                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                Movie ChatUser = snapshot.toObject(Movie.class);
+                                Userdata.Usermovies.put(snapshot.getId(), true);
+                                usermovies.add(ChatUser);
+                                usermovies.get(x).setID(snapshot.getId());
+                                x++;
+                            }
 
-                adapter2.setList(usermovies);
-            }
-        });
+                            adapter2.setList(usermovies);
+                        }
+                    }
+                });
 
         recyclerViewmovies.setAdapter(adapter2);
         recyclerViewmovies.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
-        q = db.collection("Posts").whereEqualTo("userid",sp.getString("ID","")).
-                orderBy("Date", Query.Direction.DESCENDING);
-        DocumentReference docRef = db.collection("Users").document(sp.getString("ID",""));
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                img = documentSnapshot.toObject(Friend.class).getImage();
-                q.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        int x = 0;
-                        posts.clear();
-                        for (DocumentSnapshot snapshot : queryDocumentSnapshots)
-                        {
-                            Post ChatUser = snapshot.toObject(Post.class);
-                            posts.add(ChatUser);
-                            posts.get(x).setUserimage(img);
-                            x++;
-                        }
-                        postsAdapter.setList(posts);
-
-                    }
-
-                });
-
-            }
-        });
-
-        recyclerViewposts.setAdapter(postsAdapter);
-        recyclerViewposts.setLayoutManager(new LinearLayoutManager(getContext()) {
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        });
 
         db.collection("Users").document(sp.getString("ID",""))
-                .collection("Followers")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            followers.setText(task.getResult().size() + " Followers");
+                    public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                        if (documentSnapshot.get("numoffollowers") != null) {
+                            String x = String.valueOf((long) documentSnapshot.getData().get("numoffollowers"));
+                            followers.setText(x + " Followers");
                         } else {
                             followers.setText(0 + " Followers");
+
                         }
+
                     }
+
                 });
         db.collection("Users").document(sp.getString("ID",""))
-                .collection("Following")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            following.setText(task.getResult().size() + " Following");
+                    public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                        if (documentSnapshot.get("numoffollowing") != null) {
+                            String x = String.valueOf((long) documentSnapshot.getData().get("numoffollowing"));
+                            following.setText(x + " Following");
                         } else {
                             following.setText(0 + " Following");
+
                         }
+
                     }
-                });
+
+        });
+
         user.setText(sp.getString("username",""));
         Query query = db.collection("Users").whereEqualTo("id" , sp.getString("ID", ""));
 
@@ -325,8 +301,62 @@ public class Profile extends Fragment implements View.OnClickListener {
                 }
             }
         });
+        q = db.collection("Posts").
+                whereEqualTo("userid",sp.getString("ID","")).orderBy("Date")
+                .limit(10);
+        q.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot documentSnapshots) {
+
+                        for(QueryDocumentSnapshot qs:documentSnapshots)
+                        {
+                            Post ChatUser = qs.toObject(Post.class);
 
 
+                                posts.add(ChatUser);
+
+                        }
+                        if(documentSnapshots.size()!=0) {
+                            lastVisible = documentSnapshots.getDocuments()
+                                    .get(documentSnapshots.size() - 1);
+                        }
+                        postsAdapter.setList(posts);
+
+                    }
+                });
+        recyclerViewposts.setAdapter(postsAdapter);
+        recyclerViewposts.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager=LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
+                int totalItemCount = layoutManager.getItemCount();
+                int LastVisible = layoutManager.findLastVisibleItemPosition();
+
+                boolean endHasBeenReached = !recyclerView.canScrollVertically(1);
+                if (totalItemCount > 0 && endHasBeenReached) {
+                    q = db.collection("Posts").
+                            whereEqualTo("userid",sp.getString("ID","")).orderBy("Date")
+                            .limit(10).startAfter(lastVisible);
+                    q.get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot documentSnapshots) {
+                                    if(documentSnapshots.size()!=0) {
+                                        lastVisible = documentSnapshots.getDocuments()
+                                                .get(documentSnapshots.size() - 1);
+                                        for (QueryDocumentSnapshot qs : documentSnapshots) {
+                                            Post ChatUser = qs.toObject(Post.class);
+                                            posts.add(ChatUser);
+                                        }
+                                        postsAdapter.setList(posts);
+                                    }
+
+                                }
+                            });
+                }
+            }
+        });
         return view;
 
     }
@@ -373,7 +403,6 @@ public class Profile extends Fragment implements View.OnClickListener {
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(cr.getType(ImageData));
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

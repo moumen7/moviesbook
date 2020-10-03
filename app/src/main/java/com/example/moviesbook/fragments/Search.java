@@ -36,6 +36,7 @@ import com.example.moviesbook.R;
 import com.example.moviesbook.Userdata;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -63,17 +64,27 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     FirestoreRecyclerOptions<Friend> options;
+
     ArrayList<Friend> filteredList;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     private CollectionReference users = db.collection("Users");
     private FriendAdapter adapter;
     private RecyclerView recyclerView;
+    Query first;
+    SharedPreferences sp;
+    DocumentSnapshot lastVisible;
     private ListView mList;
+    Query query;
     private ImageButton send_msg;
+    EditText ET;
+    boolean end = false;
+    boolean f = true;
     // private List<Friend> names = new ArrayList<>();
     LayoutInflater inflater;
     ViewGroup viewGroup;
     ArrayList<Friend> userslist;
+    ArrayList<String> same;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -116,19 +127,109 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
                              Bundle savedInstanceState) {
         this.inflater = inflater;
         this.viewGroup = container;
+        adapter = new FriendAdapter(getContext(), userslist, new ClickListener() {
+            @Override
+            public void onPositionClicked(int position) {
+
+            }
+
+            @Override
+            public void onLongClicked(int position) {
+
+            }
+        });
+        same = new ArrayList<>();
         ArrayList<Userdata> followers = new ArrayList<>();
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         recyclerView = view.findViewById(R.id.recycler);
-        SharedPreferences sp = this.getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
-        recyclerView.setHasFixedSize(true);
+        sp = this.getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        Query querry = AllUsernamesQuery();
+        ET = view.findViewById(R.id.search_edit_text);
         userslist = new ArrayList<>();
-        ReadUsers();
+
+         end = false;
+        recyclerView.setAdapter(adapter);
+
+         first = db.collection("Users")
+                .orderBy("id")
+                .limit(5);
+        first.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot documentSnapshots) {
+
+                         int i=0;
+                        for (QueryDocumentSnapshot qs : documentSnapshots) {
+                            Friend ChatUser = qs.toObject(Friend.class);
+                            if(!sp.getString("ID","").equals(ChatUser.getId())) {
+                                userslist.add(ChatUser);
+                                Toast.makeText(getContext(), ChatUser.getId(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        if (documentSnapshots.size() > 0) {
+                            lastVisible = documentSnapshots.getDocuments()
+                                    .get(documentSnapshots.size() - 1);
+                            adapter.setList(userslist);
+                        }
+                    }
+                });
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager=LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
+                int totalItemCount = layoutManager.getItemCount();
+                int LastVisible = layoutManager.findLastVisibleItemPosition();
+                boolean endHasBeenReached = !recyclerView.canScrollVertically(1);
+                if (endHasBeenReached || totalItemCount == 0) {
+
+                    Query query;
+                    if (lastVisible == null) {
+                        query = users
+                                .limit(5);
+                    } else {
+                        query = users.
+                                startAfter(lastVisible)
+                                .limit(5);
+                    }
+                    query.get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                    String data = "";
+                                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                        Friend note = documentSnapshot.toObject(Friend.class);
+                                        if(!sp.getString("ID","").equals(note.getId())) {
+                                            userslist.add(note);
+                                            Toast.makeText(getContext(), sp.getString("ID", ""), Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                    if (queryDocumentSnapshots.size() > 0) {
+                                        data += "___________\n\n";
+                                        lastVisible = queryDocumentSnapshots.getDocuments()
+                                                .get(queryDocumentSnapshots.size() - 1);
+                                        adapter.setList(userslist);
+                                    }
+                                    if(ET.getText().toString()!="")
+                                    {
+                                        filter(ET.getText().toString());
+                                    }
+                                }
+                            });
+
+
+                }
+
+            }
+        });
+
+
+
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Users")
-                .document(sp.getString("ID",""))
-                .collection("Following")
+                .whereArrayContains("Followers" ,sp.getString("ID",""))
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -171,13 +272,16 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
         return view;
     }
     private void filter(String text) {
-         filteredList = new ArrayList<>();
-        for (Friend item : userslist) {
-            if (item.getUsername().toLowerCase().contains(text.toLowerCase())) {
-                filteredList.add(item);
+        if (text != "")
+        {
+            filteredList = new ArrayList<>();
+            for (Friend item : userslist) {
+                if (item.getUsername().toLowerCase().contains(text.toLowerCase())) {
+                    filteredList.add(item);
+                }
             }
+            adapter.filterList(filteredList);
         }
-        adapter.filterList(filteredList);
     }
 
     // adapter.filterList(filteredList);
@@ -205,52 +309,42 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
         });
     }*/
 
-    private Query AllUsernamesQuery(){
-        Query query = users.orderBy("username", Query.Direction.ASCENDING);
-        return query;
-    }
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-    }
+
 
 
 
     private void ReadUsers()
     {
         final FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
-        Query query = db.collection("Users");
+         query = db.collection("Users").limit(3).orderBy("username");
 
-        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-
+        query.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                if (documentSnapshots.size() != 0) {
+                    lastVisible = documentSnapshots.getDocuments()
+                            .get(documentSnapshots.size() - 1);
+                }
                 userslist.clear();
-                int x=0;
-                for(DocumentSnapshot snapshot : queryDocumentSnapshots)
-                {
-                    Friend ChatUser  = snapshot.toObject(Friend.class);
-                    if(!fUser.getUid().equals(ChatUser.getId())) {
+                int x = 0;
+                for (DocumentSnapshot snapshot : documentSnapshots) {
+                    Friend ChatUser = snapshot.toObject(Friend.class);
+                    if (!fUser.getUid().equals(ChatUser.getId())) {
                         userslist.add(ChatUser);
                     }
 
                 }
 
-                adapter = new FriendAdapter(getContext(),userslist,new ClickListener() {
-                    @Override public void onPositionClicked(int position) {
 
-                    }
+                adapter.setList(userslist);
 
-                    @Override public void onLongClicked(int position) {
 
-                    }
-                });
-                recyclerView.setAdapter(adapter);
 
             }
+
         }) ;
 
 

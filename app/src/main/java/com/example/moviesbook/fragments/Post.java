@@ -14,7 +14,7 @@ public class Post {
     String Image;
     String Date;
     String Postid;
-    int comments;
+    long comments;
     Map<String,Boolean> Likers = new HashMap<>();
 
     public ArrayList<HashMap<String, String>> getCommenters() {
@@ -26,26 +26,26 @@ public class Post {
     }
 
     ArrayList<HashMap<String,String>> Commenters = new ArrayList<>();
-    int likes;
+    long likes;
 
-    public int getLikes() {
+    public long getLikes() {
         return likes;
     }
 
-    public void setLikes(int likes) {
+    public void setLikes(long likes) {
         this.likes = likes;
     }
 
-    public int getComments() {
+    public long getComments() {
         return comments;
     }
 
-    public void setComments(int comments) {
+    public void setComments(long comments) {
         this.comments = comments;
     }
 
 
-    Post()
+    public Post()
     {
 
     }

@@ -90,76 +90,12 @@ public class Chats extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view =inflater.inflate(R.layout.fragment_chats, container, false);
-        recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view_chats);
+        View view = inflater.inflate(R.layout.fragment_chats, container, false);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_chats);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         usersList_fb = new ArrayList<>();
         fUser = FirebaseAuth.getInstance().getCurrentUser();
-
-
-
-        db.collection("Chats").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document: task.getResult()) {
-
-                        if(document.get("sender").equals(fUser.getUid())){
-                            usersList_fb.add(document.get("receiver").toString());
-                        }
-                        if(document.get("receiver").equals(fUser.getUid())){
-                            usersList_fb.add(document.get("sender").toString());
-                        }
-                    }
-                    readChats();
-                }
-            }
-        });
-
-
         return view;
-    }
-    private void readChats(){
-        mUsers_toBe_AddedTo = new ArrayList<>();
-
-        db.collection("Users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-
-                    User user = (User)document.toObject(User.class);
-                    for(String id: usersList_fb){
-                        if(user.getId().equals(id)){
-                            if(mUsers_toBe_AddedTo.size()!=0){
-                                for(User usr:new ArrayList<>(mUsers_toBe_AddedTo)){
-                                    if(!usr.getId().equals(user.getId())){
-                                        if(!mUsers_toBe_AddedTo.contains(user)) {
-                                            mUsers_toBe_AddedTo.add(user);
-                                        }
-                                    }
-                                }
-                            }else{
-                                mUsers_toBe_AddedTo.add(user);
-                            }
-                        }
-                    }
-                }
-
-                adapter = new UserAdapter(getContext(), mUsers_toBe_AddedTo, new ClickListener() {
-                    @Override
-                    public void onPositionClicked(int position) {
-
-                    }
-
-                    @Override
-                    public void onLongClicked(int position) {
-
-                    }
-                });
-                recyclerView.setAdapter(adapter);
-
-            }
-        });
     }
 }

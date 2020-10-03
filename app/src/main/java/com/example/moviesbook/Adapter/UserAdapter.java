@@ -108,23 +108,23 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 for(QueryDocumentSnapshot document : task.getResult()){
                     Chat chat = new Chat();
-                    chat.sender = document.get("sender").toString();
-                    chat.receiver = document.get("receiver").toString();
-                    chat.message = document.get("message").toString();
-                    if(fUser.getUid().equals(chat.receiver) && chat.sender.equals(userid)||
-                            fUser.getUid().equals(chat.sender)&& chat.receiver.equals(userid)){
-                        last_msg = chat.message;
+                    //chat.sender = document.get("sender").toString();
+                    //chat.receiver = document.get("receiver").toString();
+                    //chat.message = document.get("message").toString();
+                    //if(fUser.getUid().equals(chat.receiver) && chat.sender.equals(userid)||
+                    //        fUser.getUid().equals(chat.sender)&& chat.receiver.equals(userid)){
+                    //    last_msg = chat.message;
+                    //}
+                //}
+                //switch (last_msg){
+                //    case "Default":
+                //        msg.setText("No messages.");
+                //        break;
+                //    default:
+                //        msg.setText(last_msg);
+                //        break;
                     }
-                }
-                switch (last_msg){
-                    case "Default":
-                        msg.setText("No messages.");
-                        break;
-                    default:
-                        msg.setText(last_msg);
-                        break;
-                }
-                last_msg = "Default";
+                //last_msg = "Default";
             }
         });
 

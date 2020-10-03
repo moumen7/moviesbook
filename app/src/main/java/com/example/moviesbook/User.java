@@ -8,7 +8,6 @@ public class User implements Serializable {
     String Email;
     String id;
     String Username;
-    String Password;
 
     public String getImage() {
         return Image;
@@ -19,13 +18,10 @@ public class User implements Serializable {
     }
 
     String Image;
-
-    public User(String email, String id, String username, String password) {
+    public User(String email, String id, String username) {
         this.id = id;
         Email = email;
         Username = username;
-        Password = password;
-
     }
 
 
@@ -33,13 +29,7 @@ public class User implements Serializable {
     }
 
 
-    public void setPassword(String password) {
-        Password = password;
-    }
 
-    public String getPassword() {
-        return Password;
-    }
 
     public void setEmail(String email) {
         Email = email;

@@ -15,7 +15,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.squareup.picasso.Picasso;
 
 import android.view.LayoutInflater;
@@ -129,10 +131,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
             Toast.makeText(mcontext,"heree",Toast.LENGTH_LONG).show();
             if (v.getId() == add.getId())
             {
-                db.collection("Users").document(sp2.getString("ID",""))
-                        .collection("BooksList")
-                        .document(String.valueOf
-                                (BooksItems.get(getAdapterPosition()).getId()))
+                db.collection("Books").document(String.valueOf(BooksItems.get(getAdapterPosition())))
                         .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -156,10 +155,13 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
                                 write.put("Year", String.valueOf
                                         ( BooksItems.get(getAdapterPosition()).getVolumeInfo().getPublishedDate()));
 
-                                db.collection("Users").document(sp2.getString("ID",""))
-                                        .collection("BooksList").document
-                                        (String.valueOf
-                                                (BooksItems.get(getAdapterPosition()).getId())).set(write);
+                                db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
+                                        .set(write, SetOptions.merge());
+
+                                db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
+                                        .update("users", FieldValue.arrayUnion(sp2.getString("ID","")));
+                                db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
+                                        .update("favs", FieldValue.increment(1));
                             }
                             else
                             {
@@ -167,10 +169,10 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
                                         (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
                                 userdata.Userbooks.remove(String.valueOf(BooksItems.get(getAdapterPosition()).getId()));
                                 add.setText("add to favoritess");
-                                db.collection("Users").document(sp2.getString("ID",""))
-                                        .collection("MoviesList").document
-                                        (String.valueOf
-                                                (BooksItems.get(getAdapterPosition()).getId())).delete();
+                                db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
+                                        .update("users", FieldValue.arrayRemove(sp2.getString("ID","")));
+                                db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
+                                        .update("favs", FieldValue.increment(-1));
                             }
                         }
                     }

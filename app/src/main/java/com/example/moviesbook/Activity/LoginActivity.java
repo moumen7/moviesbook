@@ -90,13 +90,12 @@ public class LoginActivity extends AppCompatActivity {
 
                                                                if((User)documentSnapshot.toObject(User.class)!=null)
                                                                {
+
                                                                    Toast.makeText(LoginActivity.this, "Here", Toast.LENGTH_LONG).show();
                                                                    currentuser = (User)documentSnapshot.toObject(User.class);
                                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-
                                                                    editor.putString("username" ,currentuser.getUsername());
                                                                    editor.putString("email" ,currentuser.getEmail());
-                                                                   editor.putString("password" ,currentuser.getPassword());
                                                                    editor.putString("ID",currentuser.getId());
                                                                    editor.putBoolean("in",true);
                                                                    editor.commit();

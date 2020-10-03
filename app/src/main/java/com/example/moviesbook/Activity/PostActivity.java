@@ -170,7 +170,7 @@ public class PostActivity extends AppCompatActivity {
                                     });
 
                                     Map<String, Boolean> likers = new HashMap<>();
-                                    ArrayList<Map<String, Object>> comments = new ArrayList<>();
+                                    ArrayList<HashMap<String, String>> commenters = new ArrayList<>();
                                     post.put("username", sp.getString("username",""));
                                     post.put("userid", sp.getString("ID",""));
                                     post.put("usedid", getIntent().getStringExtra("ID"));
@@ -181,6 +181,7 @@ public class PostActivity extends AppCompatActivity {
                                     post.put("likes", 0);
                                     post.put("comments", 0);
                                     post.put("Likers", likers);
+                                    post.put("Commenters", commenters);
                                     post.put("Postid",id);
                                     byte[] array = new byte[7]; // length is bounded by 7
                                     new Random().nextBytes(array);

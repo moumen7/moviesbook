@@ -25,16 +25,19 @@ import com.example.moviesbook.Interfaces.ClickListener;
 import com.example.moviesbook.R;
 import com.example.moviesbook.Userdata;
 import com.example.moviesbook.fragments.Chats;
+import com.example.moviesbook.fragments.Post;
 import com.example.moviesbook.fragments.Search;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
 import java.net.Inet4Address;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHolder> {
@@ -42,7 +45,7 @@ public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHol
 
 
     private Context context;
-    private ArrayList<Friend> CurrentUsersFilter;
+    private List<Friend> CurrentUsersFilter;
     private final ClickListener listener;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private SharedPreferences sp;
@@ -52,10 +55,14 @@ public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHol
     {
         this.listener = listener;
         this.context = context;
-        CurrentUsersFilter = new ArrayList<>(users);
+        CurrentUsersFilter = new ArrayList<>();
         sp = context.getSharedPreferences("user", Context.MODE_PRIVATE);
-    }
 
+    }
+    public void setList(List<Friend> friends) {
+        this.CurrentUsersFilter = friends;
+        notifyDataSetChanged();
+    }
 
 
     @NonNull
@@ -80,7 +87,8 @@ public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHol
             Picasso.get().load(s2).into(friendholder.imageView);
 
         }
-        else {
+        else
+            {
             Picasso.get().load(s).into(friendholder.imageView);
         }
         if(Userdata.following.containsKey(CurrentUsersFilter.get(position).getId()))
@@ -142,60 +150,43 @@ public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHol
         public void onClick(View v) {
             if (v.getId() == imageButton.getId())
             {
-
                             if(Userdata.following.containsKey(CurrentUsersFilter.get(getAdapterPosition()).getId()))
                             {
                                 imageButton.setImageResource(R.drawable.ic_baseline_person_add_24);
                                 db.collection("Users").document(sp.getString("ID",""))
-                                        .collection("Following").document
-                                        (String.valueOf
-                                                (CurrentUsersFilter.get(getAdapterPosition()).getId())).delete();
+                                        .update("Following", FieldValue.arrayRemove(CurrentUsersFilter.get(getAdapterPosition()).getId()));
                                 db.collection("Users").document(CurrentUsersFilter.get(getAdapterPosition()).getId())
-                                        .collection("Followers").document
-                                        (sp.getString("ID","")).delete();
+                                        .update("Followers", FieldValue.arrayRemove(sp.getString("ID","")));
+                                db.collection("Users").document(sp.getString("ID",""))
+                                        .update("numoffollowing", FieldValue.increment(-1));
+                                db.collection("Users").document(CurrentUsersFilter.get(getAdapterPosition()).getId())
+                                        .update("numoffollowers", FieldValue.increment(-1));
                                 Userdata.following.remove(CurrentUsersFilter.get(getAdapterPosition()).getId());
-                                CurrentUsersFilter.remove(CurrentUsersFilter.get(getAdapterPosition()));
-                                filterList(CurrentUsersFilter);
                             }
                             else
                             {
-                                db.collection("Users").document(sp.getString("ID","")).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                        final Friend myself = documentSnapshot.toObject(Friend.class);
-                                        db.collection("Users").document(CurrentUsersFilter.get(getAdapterPosition()).getId())
-                                                .collection("Followers").document(sp.getString("ID",""))
-                                                .set(myself);
-                                    }
-                                });
-                                imageButton.setImageResource(R.drawable.ic_done_black_24dp);
 
+                                imageButton.setImageResource(R.drawable.ic_done_black_24dp);
                                 db.collection("Users").document(sp.getString("ID",""))
-                                        .collection("Following").document
-                                        (String.valueOf
-                                                (CurrentUsersFilter.get(getAdapterPosition()).getId()))
-                                        .set(CurrentUsersFilter.get(getAdapterPosition()));
+                                        .update("Following", FieldValue.arrayUnion(CurrentUsersFilter.get(getAdapterPosition()).getId()));
+                                db.collection("Users").document(CurrentUsersFilter.get(getAdapterPosition()).getId())
+                                        .update("Followers", FieldValue.arrayUnion(sp.getString("ID","")));
+                                db.collection("Users").document(sp.getString("ID",""))
+                                        .update("numoffollowing", FieldValue.increment(1));
+                                db.collection("Users").document(CurrentUsersFilter.get(getAdapterPosition()).getId())
+                                        .update("numoffollowers", FieldValue.increment(1));
 
                                 Userdata.following.put(CurrentUsersFilter.get(getAdapterPosition()).getId(),true);
                             }
                         }
             else
             {
-
                         Intent intent = new Intent(context, ViewProfile.class);
                         intent.putExtra("ID",CurrentUsersFilter.get(getAdapterPosition()).getId());
                         context.startActivity(intent);
-
-
-
-
             }
         }
-
-
-
     }
-
     public void filterList(ArrayList<Friend> filteredList) {
         CurrentUsersFilter = filteredList;
         notifyDataSetChanged();

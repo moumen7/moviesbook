@@ -22,10 +22,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -79,66 +83,82 @@ public class RegisterActivity extends AppCompatActivity {
         {
             Toast.makeText(this, "Enter Your Name", Toast.LENGTH_SHORT).show();
         }
-        else
+        else if(My_Username.length() < 4 && My_Username.length() < 20)
         {
+            Toast.makeText(this, "Username must be between 4 to 19 characters", Toast.LENGTH_SHORT).show();
+        }
+        else {
             progressDialog.setMessage("Authenticating...");
             progressDialog.show();
 
-                current_user = new User(My_email, "0",  My_Username, My_password);
+            current_user = new User(My_email, "0", My_Username);
+            firestore.collection("Usernames").document(current_user.getUsername())
+                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                     @Override
+                                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                         if (!task.getResult().exists())
+                                                         {
+                                                             Map<String, Object> input = new HashMap();
+                                                             input.put("username", current_user.getUsername());
+                                                             firestore.collection("Usernames").document(current_user.getUsername())
+                                                                     .set(input);
+                                                             auth.createUserWithEmailAndPassword(current_user.getEmail(), String.valueOf(Password.getText())).
+                                                                     addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                                         @Override
+                                                                         public void onComplete(@NonNull Task<AuthResult> task) {
+                                                                             if (task.isSuccessful()) {
+                                                                                 user = auth.getCurrentUser();
+                                                                                 current_user.setId(user.getUid());
+                                                                                 firestore.collection("Users").document(user.getUid()).set(current_user)
+                                                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                             @Override
+                                                                                             public void onSuccess(Void aVoid) {
+                                                                                                 SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                                                                 editor.putString("ID", current_user.getId());
+                                                                                                 editor.putString("username", current_user.getUsername());
+                                                                                                 editor.putString("email", current_user.getEmail());
+                                                                                                 editor.putBoolean("in", true);
+                                                                                                 editor.commit();
+                                                                                                 // Toast.makeText(SIGN_UP.this, "Save", Toast.LENGTH_SHORT).show();
+                                                                                                 progressDialog.dismiss();
+                                                                                                 Intent intent = new Intent(RegisterActivity.this, AddActivity.class);
+                                                                                                 intent.putExtra("addpic", true);
+                                                                                                 startActivity(intent);
+                                                                                                 finish();
+                                                                                             }
+                                                                                         }).addOnFailureListener(new OnFailureListener() {
+
+                                                                                     @Override
+                                                                                     public void onFailure(@NonNull Exception e) {
+                                                                                         Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                                     }
+                                                                                 });
 
 
-            auth.createUserWithEmailAndPassword(current_user.getEmail(), current_user.getPassword()).
-                    addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-
-                            if (task.isSuccessful()) {
-                                user = auth.getCurrentUser();
-                                current_user.setId(user.getUid());
-                                firestore.collection("Users").document(user.getUid()).set(current_user)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                                editor.putString("ID",current_user.getId());
-                                                editor.putString("username" ,current_user.getUsername());
-                                                editor.putString("email" ,current_user.getEmail());
-                                                editor.putString("password" ,current_user.getPassword());
-                                                editor.putBoolean("in",true);
-                                                editor.commit();
-                                                // Toast.makeText(SIGN_UP.this, "Save", Toast.LENGTH_SHORT).show();
-                                                progressDialog.dismiss();
-                                                Intent intent = new Intent(RegisterActivity.this,AddActivity.class);
-                                                intent.putExtra("addpic",true);
-                                                startActivity(intent);
-                                                finish();
-
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(RegisterActivity.this,e.getMessage() , Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                                                             }
 
 
+                                                                         }
+                                                                     }).addOnFailureListener(new OnFailureListener() {
+                                                                 @Override
+                                                                 public void onFailure(@NonNull Exception e) {
+
+                                                                     progressDialog.dismiss();
+                                                                     Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                 }
+                                                             });
+                                                         } else {
+                                                             Toast.makeText(RegisterActivity.this, "Username exists", Toast.LENGTH_SHORT).show();
+                                                             progressDialog.hide();
+                                                         }
+                                                     }
+                                                 }
+                    );
+            }
 
 
-                            }
-
-
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-
-                    progressDialog.dismiss();
-                    Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
         }
 
 
-    }
+
 }

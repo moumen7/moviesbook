@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -21,7 +22,9 @@ import com.example.moviesbook.Interfaces.ClickListener;
 import com.example.moviesbook.R;
 import com.example.moviesbook.Userdata;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -48,24 +51,21 @@ public class followersorfollowing extends AppCompatActivity {
         userslist = new ArrayList<>();
         ReadUsers();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Users")
-                .document(sp.getString("ID",""))
-                .collection("Following")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Userdata.following.put(document.getId(),true);
-                            }
-                        }
-                        else
-                        {
-
+        db.collection("Users").document(sp.getString("ID",""))
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    if(task.getResult().get("Following") != null)
+                    {
+                        for (String x : (ArrayList<String>) task.getResult().getData().get("Following")) {
+                            Userdata.following.put(x, true);
                         }
                     }
-                });
+
+                }
+            }
+        });
         final EditText searchBar = findViewById(R.id.search_f);
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -87,8 +87,10 @@ public class followersorfollowing extends AppCompatActivity {
 
             }
         });
-
+        recyclerView.setHasFixedSize(true);
     }
+
+
     private void filter(String text) {
         ArrayList<Friend> filteredList = new ArrayList<>();
         filteredList.clear();
@@ -136,19 +138,16 @@ public class followersorfollowing extends AppCompatActivity {
         Query query;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         if(getIntent().hasExtra("Following")) {
-            query = db.collection("Users").document(sp.getString("ID", "")).
-                    collection("Following");
+            query = db.collection("Users").whereArrayContains("Followers", sp.getString("ID", ""));
         }
         else
         {
-            query = db.collection("Users").document(sp.getString("ID", "")).
-                    collection("Followers");
+            query = db.collection("Users").whereArrayContains("Following", sp.getString("ID", ""));
         }
 
-        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 userslist.clear();
                 int x=0;
                 for(DocumentSnapshot snapshot : queryDocumentSnapshots)
@@ -167,11 +166,17 @@ public class followersorfollowing extends AppCompatActivity {
 
                     }
                 });
+                LinearLayoutManager layoutManager = new LinearLayoutManager(followersorfollowing.this);
                 recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setLayoutManager(new LinearLayoutManager(followersorfollowing.this));
+                adapter.setList(userslist);
 
             }
+
+
         }) ;
+
 
 
 

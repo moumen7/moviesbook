@@ -10,6 +10,17 @@ public class Userdata {
     public static Map<String,Boolean> Userbooks = new HashMap<>();
     public static Map<String,Boolean> followers = new HashMap<>();
     public static Map<String,Boolean> following = new HashMap<>();
+
+    public static ArrayList<String> getFollowing2()
+    {
+        return following2;
+    }
+
+    public static void setFollowing2(ArrayList<String> following2) {
+        Userdata.following2 = following2;
+    }
+
+    public static ArrayList<String> following2 = new ArrayList<>();
     public static String Username = new String();
     public static String Image= new String();
     public Userdata()

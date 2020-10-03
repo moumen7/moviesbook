@@ -18,10 +18,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.squareup.picasso.Picasso;
 
 import android.view.LayoutInflater;
@@ -61,8 +63,7 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
         mcontext = context;
         this.orig = orig;
         sp2 = mcontext.getSharedPreferences("user", Context.MODE_PRIVATE);
-        Query q = db.collection("Users").document(sp2.getString("ID", ""))
-                .collection("MoviesList");
+            Query q = db.collection("Movies").whereArrayContains("users",sp2.getString("ID", ""));
 
         q.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -149,15 +150,7 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
 
         @Override
         public void onClick(View v) {
-            if (orig) {
-                int position = getAdapterPosition();
-                String id = String.valueOf
-                        (MoviesItems.get(position).getID());
-                MoviesItems.clear();
-                db.collection("Users").document(sp2.getString("ID", ""))
-                        .collection("MoviesList").document
-                        (id).delete();
-            } else {
+
                 if (Userdata.Usermovies.containsKey(String.valueOf
                         (MoviesItems.get(getAdapterPosition()).getID()))) {
                     Userdata.Usermovies.remove(String.valueOf
@@ -166,10 +159,10 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
                             (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
 
                     add.setText("add to favoritess");
-                    db.collection("Users").document(sp2.getString("ID", ""))
-                            .collection("MoviesList").document
-                            (String.valueOf
-                                    (MoviesItems.get(getAdapterPosition()).getID())).delete();
+                    db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
+                            .update("users", FieldValue.arrayRemove(sp2.getString("ID","")));
+                    db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
+                            .update("favs", FieldValue.increment(-1));
 
                 } else {
                     Userdata.Usermovies.put(String.valueOf
@@ -193,16 +186,18 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
                     write.put("Year", String.valueOf
                             (MoviesItems.get(getAdapterPosition()).getYear()));
 
-                    db.collection("Users").document(sp2.getString("ID", ""))
-                            .collection("MoviesList").document
-                            (String.valueOf
-                                    (MoviesItems.get(getAdapterPosition()).getID())).set(write);
+                    db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
+                            .set(write, SetOptions.merge());
+                    db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
+                            .update("users", FieldValue.arrayUnion(sp2.getString("ID","")));
+                    db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
+                            .update("favs", FieldValue.increment(1));
                 }
                 listenerRef.get().onPositionClicked(getAdapterPosition());
 
             }
 
 
-        }
+
     }
 }

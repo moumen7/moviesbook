@@ -120,25 +120,26 @@ public class AddActivity extends AppCompatActivity implements SearchView.OnQuery
         recyclerView = findViewById(R.id.recycler);
 
         userdata.Usermovies.clear();
-        db.collection("Users")
-                .document(sp2.getString("ID",""))
-                .collection("MoviesList")
+        db.collection("Movies")
+                .whereArrayContains("users",sp2.getString("ID",""))
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
+                            for (QueryDocumentSnapshot document : task.getResult())
+                            {
                                 userdata.Usermovies.put(document.getId(),true);
                             }
-                        } else {
+                        } else
+                            {
+
                         }
                     }
                 });
         userdata.Userbooks.clear();
-        db.collection("Users")
-                .document(sp2.getString("ID",""))
-                .collection("BooksList")
+        db.collection("Books")
+                .whereArrayContains("users",sp2.getString("ID",""))
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

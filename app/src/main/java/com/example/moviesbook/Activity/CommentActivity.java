@@ -44,6 +44,8 @@ public class CommentActivity extends AppCompatActivity {
     ImageButton imgbutton;
     CommentsAdapter commentsAdapter;
     EditText et;
+    int x;
+    long newPriority;
     ArrayList<HashMap<String,String>> Commenters = new ArrayList<>();
     final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     final Date date = new Date();
@@ -96,17 +98,9 @@ public class CommentActivity extends AppCompatActivity {
         {
             if(et.getText().toString()!="")
             {
-                HashMap <String,String> comment = new HashMap<>();
-                comment.put("username",sp.getString("username",""));
-                comment.put("id",sp.getString("ID",""));
-                comment.put("content",et.getText().toString());
-                comment.put("date",formatter.format(date));
                 executeTransaction(1);
-                Commenters.add(comment);
-                db.collection("Posts").document(getIntent().getStringExtra("id"))
-                        .update("Commenters",Commenters);
-                et.setText("");
-                restartActivity(CommentActivity.this);
+
+
             }
             else
             {
@@ -117,20 +111,35 @@ public class CommentActivity extends AppCompatActivity {
     }
 
     private void executeTransaction(final int change) {
+          x = 0;
+         newPriority = 0;
         db.runTransaction(new Transaction.Function<Long>() {
             @Override
             public Long apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
-                DocumentReference exampleNoteRef = db.collection("Posts").document(getIntent().
-                        getStringExtra("id"));
-                DocumentSnapshot exampleNoteSnapshot = transaction.get(exampleNoteRef);
-                long newPriority = exampleNoteSnapshot.getLong("comments") + change;
-                transaction.update(exampleNoteRef, "comments", newPriority);
-                return newPriority;
+
+
+
+                    DocumentReference exampleNoteRef = db.collection("Posts").document(getIntent().
+                            getStringExtra("id"));
+                    DocumentSnapshot exampleNoteSnapshot = transaction.get(exampleNoteRef);
+                     newPriority = exampleNoteSnapshot.getLong("comments") + change;
+                    HashMap<String, String> comment = new HashMap<>();
+                    comment.put("username", sp.getString("username", ""));
+                    comment.put("id", sp.getString("ID", ""));
+                    comment.put("content", et.getText().toString());
+                    comment.put("date", formatter.format(date));
+                    Commenters.add(comment);
+                    transaction.update(exampleNoteRef, "Commenters", Commenters);
+                    transaction.update(exampleNoteRef, "comments", newPriority);
+                    x++;
+
+                    return newPriority;
+
             }
         }).addOnSuccessListener(new OnSuccessListener<Long>() {
             @Override
             public void onSuccess(Long result) {
-                Toast.makeText(CommentActivity.this, "New Priority: " + result, Toast.LENGTH_SHORT).show();
+                et.setText("");
             }
         });
     }

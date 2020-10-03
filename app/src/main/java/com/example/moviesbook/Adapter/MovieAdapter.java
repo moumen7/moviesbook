@@ -11,14 +11,21 @@ import com.example.moviesbook.Interfaces.ClickListener;
 import com.example.moviesbook.Prefmanager;
 import com.example.moviesbook.Userdata;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.Transaction;
 import com.squareup.picasso.Picasso;
 
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +48,7 @@ import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.provider.MediaStore.MediaColumns.DOCUMENT_ID;
+import static androidx.constraintlayout.motion.widget.MotionScene.TAG;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHolder> {
     String url = "http://image.tmdb.org/t/p/original";
@@ -75,11 +83,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
                     new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-
         if(MoviesList.get(position).getReleaseDate()!=null && MoviesList.get(position).getReleaseDate().length()>=4)
             holder.title.setText(MoviesList.get(position).getTitle() +" (" + MoviesList.get(position).getReleaseDate().substring(0,4) +")");
         else
             holder.title.setText(MoviesList.get(position).getTitle());
+
         holder.desc.setText(MoviesList.get(position).getOverview());
         String use= url + MoviesList.get(position).getPosterPath();
         Picasso.get().load(use).into(holder.image);
@@ -92,7 +100,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
                 holder.add.setBackgroundDrawable
                         (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
 
-                holder.add.setText("add to favoritess");
+                holder.add.setText("add to favorites");
             }
         }
         else {
@@ -137,8 +145,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
             if (v.getId() == add.getId())
             {
 
-                db.collection("Users").document(sp2.getString("ID",""))
-                        .collection("MoviesList")
+                db.collection("Movies")
                         .document(String.valueOf
                                 (MoviesList.get(getAdapterPosition()).getId()))
                         .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -148,7 +155,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
 
                             DocumentSnapshot document = task.getResult();
 
-                            if(!(document.exists()))
+                            if(!userdata.Usermovies.containsKey(MoviesList.get(getAdapterPosition()).getId()))
                             {
                                 add.setBackgroundDrawable
                                         (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
@@ -169,11 +176,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
                                 else
                                     write.put("Year", String.valueOf
                                             ( MoviesList.get(getAdapterPosition()).getReleaseDate()));
-
-                                db.collection("Users").document(sp2.getString("ID",""))
-                                        .collection("MoviesList").document
-                                        (String.valueOf
-                                                (MoviesList.get(getAdapterPosition()).getId())).set(write);
+                                db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
+                                        .set(write, SetOptions.merge());
+                                db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
+                                        .update("users", FieldValue.arrayUnion(sp2.getString("ID","")));
+                                db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
+                                        .update("favs", FieldValue.increment(1));
                             }
                             else
                             {
@@ -181,10 +189,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
                                         (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
                                 userdata.Usermovies.remove(String.valueOf(MoviesList.get(getAdapterPosition()).getId()));
                                 add.setText("add to favoritess");
-                                db.collection("Users").document(sp2.getString("ID",""))
-                                        .collection("MoviesList").document
-                                        (String.valueOf
-                                                (MoviesList.get(getAdapterPosition()).getId())).delete();
+                                db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
+                                .update("users", FieldValue.arrayRemove(sp2.getString("ID","")));
+                                db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
+                                        .update("favs", FieldValue.increment(-1));
                             }
                         }
                     }
@@ -209,5 +217,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
 
 
     }
+
 
 }

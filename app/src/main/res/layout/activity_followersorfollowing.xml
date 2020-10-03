@@ -19,12 +19,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
+
         android:id="@+id/followersorfollowing"
-        android:layout_width="384dp"
-        android:layout_height="658dp"
+        android:layout_width="390dp"
+        android:layout_height="538dp"
         android:layout_below="@+id/search_edit_text"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/search_f" />
 </androidx.constraintlayout.widget.ConstraintLayout>

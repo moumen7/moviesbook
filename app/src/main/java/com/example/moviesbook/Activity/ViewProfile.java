@@ -33,9 +33,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -61,6 +63,7 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
     private TextView ViewBooks;
     private FirebaseFirestore db;
     Query q;
+    private DocumentSnapshot lastVisible;
     private ImageView imageView;
     private ImageButton imageButton;
     private Mybooksadapter adapter;
@@ -125,8 +128,7 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
         user = findViewById(R.id.username);
         sp = getSharedPreferences("user", MODE_PRIVATE);
         m = new String();
-        q = db.collection("Users").document(getIntent().getStringExtra("ID"))
-                .collection("BooksList");
+        q = db.collection("Books").whereArrayContains("users",getIntent().getStringExtra("ID"));
         if(Userdata.following.containsKey(getIntent().getStringExtra("ID")))
         {
             imageButton.setImageResource(R.drawable.ic_done_black_24dp);
@@ -148,9 +150,7 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
         });
         recyclerViewbooks.setAdapter(adapter);
         recyclerViewbooks.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
-        q = db.collection("Users").document(getIntent().getStringExtra("ID"))
-                .collection("MoviesList");
-
+        q = db.collection("Movies").whereArrayContains("users",getIntent().getStringExtra("ID"));
         q.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -170,54 +170,74 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
         recyclerViewmovies.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
 
         db.collection("Users").document(getIntent().getStringExtra("ID"))
-                .collection("Followers")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            followers.setText(task.getResult().size() + " Followers");
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+
+                           if(task.getResult().get("numoffollowers") == null)
+                           {
+                               followers.setText(0 + " Followers");
+                           }
+                           else
+                           {
+                               String x = String.valueOf((long) task.getResult().getData().get("numoffollowers"));
+                               followers.setText(x + " Followers");
+                           }
                         } else {
                             followers.setText(0 + " Followers");
                         }
                     }
                 });
         db.collection("Users").document(getIntent().getStringExtra("ID"))
-                .collection("Following")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            following.setText(task.getResult().size() + " Following");
-                        } else {
-                            following.setText(0 + " Following");
-                        }
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+
+                    if(task.getResult().get("numoffollowing") == null)
+                    {
+                        following.setText(0 + " Following");
                     }
-                });
+                    else
+                    {
+                        String x = String.valueOf((long) task.getResult().getData().get("numoffollowing"));
+                        following.setText(x + " Following");
+                    }
+                } else {
+                    following.setText(0 + " Following");
+                }
+            }
+        });
         q = db.collection("Posts").whereEqualTo("userid",getIntent().getStringExtra("ID"))
-        .orderBy("Date", Query.Direction.DESCENDING);
+        .orderBy("Date", Query.Direction.DESCENDING).limit(5);
         DocumentReference docRef = db.collection("Users").document(getIntent().getStringExtra("ID"));
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 img = documentSnapshot.toObject(Friend.class).getImage();
-                q.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
 
-                        int x = 0;
-                        for (DocumentSnapshot snapshot : queryDocumentSnapshots)
-                        {
-                            Post ChatUser = snapshot.toObject(Post.class);
-                            posts.add(ChatUser);
-                            posts.get(x).setUserimage(img);
-                            x++;
-                        }
+                q.get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot documentSnapshots) {
 
-                        postsAdapter.setList(posts);
-                    }
-                });
+                                for(QueryDocumentSnapshot qs:documentSnapshots)
+                                {
+                                    Post ChatUser = qs.toObject(Post.class);
+
+
+                                    posts.add(ChatUser);
+
+                                }
+                                if(documentSnapshots.size()!=0) {
+                                    lastVisible = documentSnapshots.getDocuments()
+                                            .get(documentSnapshots.size() - 1);
+                                }
+                                postsAdapter.setList(posts);
+
+                            }
+                        });
             }
         });
 
@@ -226,6 +246,37 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
             @Override
             public boolean canScrollVertically() {
                 return false;
+            }
+        });
+        recyclerViewposts.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager=LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
+                int totalItemCount = layoutManager.getItemCount();
+                int LastVisible = layoutManager.findLastVisibleItemPosition();
+
+                boolean endHasBeenReached = !recyclerView.canScrollVertically(1);
+                if (totalItemCount > 0 && endHasBeenReached) {
+                    q = db.collection("Posts").
+                            whereEqualTo("userid",getIntent().getStringExtra("ID")).orderBy("Date", Query.Direction.DESCENDING)
+                            .limit(5).startAfter(lastVisible);
+                    q.get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot documentSnapshots) {
+                                    if(documentSnapshots.size()!=0) {
+                                        lastVisible = documentSnapshots.getDocuments()
+                                                .get(documentSnapshots.size() - 1);
+                                        for (QueryDocumentSnapshot qs : documentSnapshots) {
+                                            Post ChatUser = qs.toObject(Post.class);
+                                            posts.add(ChatUser);
+                                        }
+                                        postsAdapter.setList(posts);
+                                    }
+
+                                }
+                            });
+                }
             }
         });
         Query query = db.collection("Users").whereEqualTo("id",getIntent().getStringExtra("ID"));
@@ -262,35 +313,32 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
         {
             imageButton.setImageResource(R.drawable.ic_baseline_person_add_24);
             db.collection("Users").document(sp.getString("ID",""))
-                    .collection("Following").document
-                    (String.valueOf
-                            (getIntent().getStringExtra("ID"))).delete();
+                    .update("Following", FieldValue.arrayRemove(getIntent().getStringExtra("ID")));
             db.collection("Users").document(getIntent().getStringExtra("ID"))
-                    .collection("Followers").document
-                    (sp.getString("ID","")).delete();
+                    .update("Followers", FieldValue.arrayRemove(sp.getString("ID","")));
+            db.collection("Users").document(sp.getString("ID",""))
+                    .update("numoffollowing", FieldValue.increment(-1));
+            db.collection("Users").document(getIntent().getStringExtra("ID"))
+                    .update("numoffollowers", FieldValue.increment(-1));
             Userdata.following.remove(getIntent().getStringExtra("ID"));
         }
         else
         {
-            db.collection("Users").document(sp.getString("ID","")).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    final Friend myself = documentSnapshot.toObject(Friend.class);
-                    db.collection("Users").document(getIntent().getStringExtra("ID"))
-                            .collection("Followers").document(sp.getString("ID",""))
-                            .set(myself);
-                }
-            });
+
             imageButton.setImageResource(R.drawable.ic_done_black_24dp);
-            Friend friend = new Friend(user.getText().toString(),m, getIntent().getStringExtra("ID"));
             db.collection("Users").document(sp.getString("ID",""))
-                    .collection("Following").document
-                    (String.valueOf
-                            (getIntent().getStringExtra("ID")))
-                    .set(friend);
+                    .update("Following", FieldValue.arrayUnion(getIntent().getStringExtra("ID")));
+            db.collection("Users").document(getIntent().getStringExtra("ID"))
+                    .update("Followers", FieldValue.arrayUnion(sp.getString("ID","")));
+            db.collection("Users").document(sp.getString("ID",""))
+                    .update("numoffollowing", FieldValue.increment(1));
+            db.collection("Users").document(getIntent().getStringExtra("ID"))
+                    .update("numoffollowers", FieldValue.increment(1));
 
             Userdata.following.put(getIntent().getStringExtra("ID"),true);
         }
+
+
     }
     @Override
     public void onClick(View v) {

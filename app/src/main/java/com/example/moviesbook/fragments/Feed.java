@@ -5,14 +5,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.moviesbook.Activity.MoviesorBooks;
 import com.example.moviesbook.Adapter.PostsAdapter;
@@ -20,7 +23,12 @@ import com.example.moviesbook.Book;
 import com.example.moviesbook.Friend;
 import com.example.moviesbook.Interfaces.ClickListener;
 import com.example.moviesbook.R;
+import com.example.moviesbook.User;
 import com.example.moviesbook.Userdata;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -28,10 +36,14 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,10 +60,16 @@ public class Feed extends Fragment implements View.OnClickListener{
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    Task [] tasks;
+    Boolean end;
+    int sum = 0;
+    int last = 0;
     private RecyclerView feedrecyclerview;
     private FirebaseFirestore db;
-    private ArrayList<Post> posts;
+    private DocumentSnapshot[] lastVisible;
+    private List<Post> posts;
     private SharedPreferences sp;
+    private boolean[] enough;
     private FloatingActionButton post;
     PostsAdapter postsAdapter;
     Query q;
@@ -87,6 +105,36 @@ public class Feed extends Fragment implements View.OnClickListener{
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+    public static Task[] removeTheElement(Task[] arr,
+                                         int index)
+    {
+
+        // If the array is empty
+        // or the index is not in array range
+        // return the original array
+        if (arr == null
+                || index < 0
+                || index >= arr.length) {
+
+            return arr;
+        }
+
+        // Create another array of size one less
+        Task[] anotherArray = new Task[arr.length - 1];
+
+        // Copy the elements from starting till index
+        // from original array to the other array
+        System.arraycopy(arr, 0, anotherArray, 0, index);
+
+        // Copy the elements from index + 1 till end
+        // from original array to the other array
+        System.arraycopy(arr, index + 1,
+                anotherArray, index,
+                arr.length - index - 1);
+
+        // return the resultant array
+        return anotherArray;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,9 +144,11 @@ public class Feed extends Fragment implements View.OnClickListener{
         post = (FloatingActionButton) view.findViewById(R.id.fabpost);
         post.setOnClickListener(this);
         recyclerViewposts = view.findViewById(R.id.posts);
+        recyclerViewposts.setLayoutManager(new LinearLayoutManager(getContext()));
         db = FirebaseFirestore.getInstance();
+        end = false;
         sp = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
-        posts = new ArrayList<>();
+        posts = new ArrayList<Post>();
         postsAdapter = new PostsAdapter(getContext(), new ClickListener() {
             @Override
             public void onPositionClicked(int position) {
@@ -110,47 +160,138 @@ public class Feed extends Fragment implements View.OnClickListener{
 
             }
         });
-        q = db.collection("Users").document(sp.getString("ID","")).
-                collection("Following");
+        q = db.collection("Users").whereArrayContains("Followers",sp.getString("ID",""));
 
-        q.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-
-                Userdata.following.clear();
-                int x = 0;
-                for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-                    Friend ChatUser = snapshot.toObject(Friend.class);
-                    Userdata.following.put(snapshot.getId(), true);
-                    x++;
-                }
-                q = db.collection("Posts").orderBy("Date", Query.Direction.DESCENDING);
-
-                q.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        q.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        posts.clear();
-                        int x = 0;
-                        for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-                            Post ChatUser = snapshot.toObject(Post.class);
-                            if(Userdata.following.containsKey(ChatUser.getUserid()))
-                            {
-                                posts.add(ChatUser);
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Userdata.following2.clear();
+                            int x = 0;
+                            for (DocumentSnapshot snapshot : task.getResult()) {
+                                Friend ChatUser = snapshot.toObject(Friend.class);
+                                Userdata.following2.add(snapshot.getId());
+                                x++;
                             }
-                            x++;
+
                         }
-                        postsAdapter.setList(posts);
+                        Toast.makeText(getActivity(),String.valueOf(Userdata.following2.size()),Toast.LENGTH_LONG).show();
+                        tasks = new Task[Userdata.following2.size()];
+                        enough = new boolean[Userdata.following2.size()];
+                        lastVisible = new DocumentSnapshot[Userdata.following2.size()];
+                        recyclerViewposts.setAdapter(postsAdapter);
+                        int i=0;
+                        for(String x:Userdata.following2)
+                        {
+                            tasks[i] = db.collection("Posts").whereEqualTo("userid",x).orderBy("Date")
+                                    .limit(2)
+                                    .get();
+                            i++;
+
+                        }
+                        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(tasks);
+                        allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
+                            @Override
+                            public void onSuccess(List<QuerySnapshot> querySnapshots) {
+                                String data = "";
+                                int i=0;
+                                for (QuerySnapshot queryDocumentSnapshots : querySnapshots) {
+
+                                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                        Post ChatUser = documentSnapshot.toObject(Post.class);
+                                        posts.add(ChatUser);
+                                    }
+                                    if(queryDocumentSnapshots.size() > 0) {
+                                        lastVisible[i] = queryDocumentSnapshots.getDocuments()
+                                                .get(queryDocumentSnapshots.size() - 1);
+                                    }
+
+
+                                }
+                                postsAdapter.setList(posts);
+
+                            }
+                        });
                     }
                 });
+        recyclerViewposts.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewposts.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 
+                    LinearLayoutManager layoutManager = LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
+                    int totalItemCount = layoutManager.getItemCount();
+                    int LastVisible = layoutManager.findLastVisibleItemPosition();
+                    boolean endHasBeenReached = !recyclerView.canScrollVertically(1);
+                    if (totalItemCount > 0 && endHasBeenReached)
+                    {
+                        tasks = new Task[Userdata.following2.size()];
+                        int i=0;
+                        for(String x:Userdata.following2)
+                        {
+                            if(lastVisible[i]!=null) {
+                                tasks[i] = db.collection("Posts").whereEqualTo("userid", x).orderBy("Date")
+                                        .startAfter(lastVisible[i]).limit(2)
+                                        .get();
+                            }
+                            else
+                            {
+                                tasks = removeTheElement(tasks, i);
+                                i--;
+                            }
+                            if(tasks[i] == null)
+                            {
+                                tasks = removeTheElement(tasks, i);
+                                i--;
+                            }
+                            i++;
+                        }
+                        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(tasks);
+                        allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
+                            @Override
+                            public void onSuccess(List<QuerySnapshot> querySnapshots) {
+                                int k =0;
+                                for (QuerySnapshot queryDocumentSnapshots : querySnapshots) {
+                                    if(queryDocumentSnapshots.size() >0) {
+                                        lastVisible[k] = queryDocumentSnapshots.getDocuments()
+                                                .get(queryDocumentSnapshots.size() - 1);
+                                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+
+                                            Post ChatUser = documentSnapshot.toObject(Post.class);
+                                            posts.add(ChatUser);
+                                        }
+
+                                    }
+
+
+
+
+                                    k++;
+                                }
+                                postsAdapter.setList(posts);
+
+
+                            }
+                        });
+                        }
+
+                    }
+
+
+        });
+        Collections.sort(posts ,new Comparator<Post>(){
+
+            public int compare(Post o1, Post o2)
+            {
+                return o1.getDate().compareTo(o2.getDate());
             }
         });
-        recyclerViewposts.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
-        recyclerViewposts.setAdapter(postsAdapter);
 
         return view;
 
     }
+
     @Override
     public void onClick(View v) {
         if(v.getId() == post.getId())
@@ -159,4 +300,6 @@ public class Feed extends Fragment implements View.OnClickListener{
             startActivity(intent);
         }
     }
+
 }
+

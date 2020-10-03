@@ -1,10 +1,13 @@
 package com.example.moviesbook.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.icu.text.Transliterator;
+import android.os.Build;
 import android.os.StrictMode;
 
 import com.example.moviesbook.Activity.CommentActivity;
@@ -27,6 +30,11 @@ import com.google.firebase.firestore.Transaction;
 import com.squareup.picasso.Picasso;
 
 import android.preference.PreferenceManager;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,9 +97,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                     new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-
-       holder.username.setText(posts.get(position).getUsername());
-        holder.movieorbook.setText(posts.get(position).getUsedtitle());
+        String text = posts.get(position).getUsername();
+        String text2 = posts.get(position).getUsedtitle();
+        SpannableString SS = new SpannableString(text + " is posting about " + text2);
+        StyleSpan sp = new StyleSpan(Typeface.BOLD);
+        StyleSpan SP2 = new StyleSpan(Typeface.BOLD);
+        SS.setSpan(SP2,0,text.length() , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SS.setSpan(sp,text.length() ,text.length() + 17   , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SS.setSpan(sp,text.length() + 18 ,text.length() + 18 + text2.length()  , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        holder.username.setText(SS);
         holder.date.setText(posts.get(position).getDate());
         holder.desc.setText(posts.get(position).getPostdesc());
         holder.numberoflikes.setText(String.valueOf(posts.get(position).getLikes()));
@@ -166,7 +180,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             username = itemView.findViewById(R.id.username);
             userimage = itemView.findViewById(R.id.userimage);
             postimage = itemView.findViewById(R.id.postimage);
-            movieorbook = itemView.findViewById(R.id.movieorbook);
             numberoflikes = itemView.findViewById(R.id.likesnum);
             numberofcomments = itemView.findViewById(R.id.commentnum);
             like = itemView.findViewById(R.id.like);
@@ -174,11 +187,13 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             like.setOnClickListener(this);
             comment.setOnClickListener(this);
             button.setOnClickListener(this);
+            postimage.setOnClickListener(this);
 
         }
 
         @Override
         public void onClick(View v) {
+
             if (like.getId() == v.getId()) {
 
                 if(posts.get(getAdapterPosition()).getLikers().containsKey(sp2.getString("ID","")))
@@ -218,6 +233,45 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                 Toast.makeText(mcontext,posts.get(getAdapterPosition()).getPostid(),Toast.LENGTH_LONG).show();
 
             }
+            else if(v.getId() == postimage.getId())
+            {
+
+                // BEGIN_INCLUDE (get_current_ui_flags)
+                // The UI options currently enabled are represented by a bitfield.
+                // getSystemUiVisibility() gives us that bitfield.
+                int uiOptions =((Activity) mcontext).getWindow().getDecorView().getSystemUiVisibility();
+                int newUiOptions = uiOptions;
+                // END_INCLUDE (get_current_ui_flags)
+                // BEGIN_INCLUDE (toggle_ui_flags)
+                boolean isImmersiveModeEnabled =
+                        ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
+
+
+                // Navigation bar hiding:  Backwards compatible to ICS.
+                if (Build.VERSION.SDK_INT >= 14) {
+                    newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+                }
+
+                // Status bar hiding: Backwards compatible to Jellybean
+                if (Build.VERSION.SDK_INT >= 16) {
+                    newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
+                }
+
+                // Immersive mode: Backward compatible to KitKat.
+                // Note that this flag doesn't do anything by itself, it only augments the behavior
+                // of HIDE_NAVIGATION and FLAG_FULLSCREEN.  For the purposes of this sample
+                // all three flags are being toggled together.
+                // Note that there are two immersive mode UI flags, one of which is referred to as "sticky".
+                // Sticky immersive mode differs in that it makes the navigation and status bars
+                // semi-transparent, and the UI flag does not get cleared when the user interacts with
+                // the screen.
+                if (Build.VERSION.SDK_INT >= 18) {
+                    newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+                }
+
+                ((Activity) mcontext).getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
+                //END_INCLUDE (set_ui_flags)
+            }
             listenerRef.get().onPositionClicked(getAdapterPosition());
         }
         private void executeTransaction(final int change, final int state) {
@@ -231,25 +285,25 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                             .get(getAdapterPosition()).getPostid());
                     DocumentSnapshot exampleNoteSnapshot = transaction.get(exampleNoteRef);
                     long newPriority = exampleNoteSnapshot.getLong("likes") + change;
+                    if(state==0)
+                    {
+                        map.remove(sp2.getString("ID",""));
+                        transaction.update(exampleNoteRef,"Likers",map);
+                    }
+                    else
+                    {
+                        map.put(sp2.getString("ID",""),true);
+                        transaction.update(exampleNoteRef,"Likers",map);
+                    }
+
                     transaction.update(exampleNoteRef, "likes", newPriority);
+                    numberoflikes.setText(String.valueOf(newPriority));
                     return newPriority;
                 }
             }).addOnSuccessListener(new OnSuccessListener<Long>() {
                 @Override
                 public void onSuccess(Long result) {
                     Toast.makeText(mcontext, "New Priority: " + result, Toast.LENGTH_SHORT).show();
-                    if(state==0)
-                    {
-                        map.remove(sp2.getString("ID",""));
-                        db.collection("Posts").document(posts.get(use).getPostid())
-                                .update("Likers",map);
-                    }
-                    else
-                    {
-                        map.put(sp2.getString("ID",""),true);
-                        db.collection("Posts").document(posts.get(use).getPostid())
-                                .update("Likers",map);
-                    }
                 }
             });
             listenerRef.get().onPositionClicked(getAdapterPosition());

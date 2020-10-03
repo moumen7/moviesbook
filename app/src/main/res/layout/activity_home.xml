@@ -9,17 +9,15 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme"
-        android:background="#9FA8DA">
+        >
 
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#000000"
             app:tabTextAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:tabTextColor="#FFFFFF" />
+            app:tabTextColor="?android:textColorPrimary" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager
