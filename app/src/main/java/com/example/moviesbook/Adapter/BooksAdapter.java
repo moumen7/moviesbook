@@ -15,8 +15,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.squareup.picasso.Picasso;
 
@@ -29,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moviesbook.R;
@@ -45,18 +50,37 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
     DocumentReference messageRef;
     private final ClickListener listener;
     private List<Item> BooksItems = new ArrayList<>();
-    SharedPreferences sp2 ;
+    SharedPreferences sp2;
     Boolean orig = true;
     private Context mcontext;
-    public BooksAdapter(Context context,ClickListener listener,Boolean orig)
-    {
+    String id = new String("1234");
+
+    public BooksAdapter(Context context, ClickListener listener, Boolean orig, String id) {
         userdata = new Userdata();
-        db = FirebaseFirestore.getInstance();;
+        db = FirebaseFirestore.getInstance();
+        ;
         this.listener = listener;
         mcontext = context;
         this.orig = orig;
+        this.id = id;
         sp2 = mcontext.getSharedPreferences("user", Context.MODE_PRIVATE);
+        if (id != null) {
+            Query q = db.collection("Books").whereArrayContains("users", id);
+            q.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+
+                    Userdata.Userbooks.clear();
+                    int x = 0;
+                    for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
+                        Userdata.Userbooks.put(snapshot.getId(), true);
+                    }
+                }
+
+            });
+        }
     }
+
     @NonNull
     @Override
     public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -70,29 +94,26 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
                     new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-
-        holder.title.setText(BooksItems.get(position).getVolumeInfo().getTitle() +" (" +BooksItems.get(position).getVolumeInfo()
-                .getPublishedDate() +")");
+        holder.title.setText(BooksItems.get(position).getVolumeInfo().getTitle() + " (" + BooksItems.get(position).getVolumeInfo()
+                .getPublishedDate() + ")");
         holder.desc.setText(BooksItems.get(position).getVolumeInfo().getSubtitle());
-        ImageLinks imageLinks= BooksItems.get(position).getVolumeInfo().getImageLinks();
-        if(imageLinks!=null) {
+        ImageLinks imageLinks = BooksItems.get(position).getVolumeInfo().getImageLinks();
+        if (imageLinks != null) {
             String use = imageLinks.getThumbnail();
             Picasso.get().load(use).into(holder.image);
         }
-        if(orig) {
+        if (orig) {
             if ((userdata.Userbooks.containsKey(String.valueOf(BooksItems.get(position).getId())))) {
                 holder.add.setBackgroundDrawable
                         (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-                holder.add.setText("added to favorites");
+                holder.add.setText("added");
             } else {
                 holder.add.setBackgroundDrawable
                         (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
 
-                holder.add.setText("add to favoritess");
+                holder.add.setText("add");
             }
-        }
-        else
-        {
+        } else {
             holder.add.setVisibility(View.GONE);
         }
 
@@ -104,7 +125,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
         return BooksItems.size();
     }
 
-    public void setList(List<Item> itemList ) {
+    public void setList(List<Item> itemList) {
         this.BooksItems = itemList;
         notifyDataSetChanged();
     }
@@ -112,9 +133,10 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
 
     public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private WeakReference<ClickListener> listenerRef;
-        TextView author, date, desc, content,title,link;
+        TextView author, date, desc, content, title, link;
         Button add;
         ImageView image;
+
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             listenerRef = new WeakReference<>(listener);
@@ -128,65 +150,63 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(mcontext,"heree",Toast.LENGTH_LONG).show();
-            if (v.getId() == add.getId())
-            {
-                db.collection("Books").document(String.valueOf(BooksItems.get(getAdapterPosition())))
-                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
+            Toast.makeText(mcontext, "heree", Toast.LENGTH_LONG).show();
+            if (v.getId() == add.getId()) {
+                if (!Userdata.Userbooks.containsKey(String.valueOf(BooksItems.get(getAdapterPosition()).getId()))) {
 
-                            DocumentSnapshot document = task.getResult();
-
-                            if(!(document.exists()))
-                            {
-                                add.setBackgroundDrawable
-                                        (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-                                add.setText("added to favorites");
-                                Map<String,Object> write = new HashMap<>();
-                                userdata.Userbooks.put(String.valueOf(BooksItems.get(getAdapterPosition()).getId()),true);
-                                write.put("Title", String.valueOf
-                                        (BooksItems.get(getAdapterPosition()).getVolumeInfo().getTitle()));
-                                write.put("Desc", String.valueOf
-                                        (BooksItems.get(getAdapterPosition()).getVolumeInfo().getSubtitle()));
-                                write.put("Image", String.valueOf
-                                        ( BooksItems.get(getAdapterPosition()).getVolumeInfo().getImageLinks().getThumbnail()));
-                                write.put("Year", String.valueOf
-                                        ( BooksItems.get(getAdapterPosition()).getVolumeInfo().getPublishedDate()));
-
-                                db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
-                                        .set(write, SetOptions.merge());
-
-                                db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
-                                        .update("users", FieldValue.arrayUnion(sp2.getString("ID","")));
-                                db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
-                                        .update("favs", FieldValue.increment(1));
-                            }
-                            else
-                            {
-                                add.setBackgroundDrawable
-                                        (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
-                                userdata.Userbooks.remove(String.valueOf(BooksItems.get(getAdapterPosition()).getId()));
-                                add.setText("add to favoritess");
-                                db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
-                                        .update("users", FieldValue.arrayRemove(sp2.getString("ID","")));
-                                db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
-                                        .update("favs", FieldValue.increment(-1));
-                            }
-                        }
+                    add.setBackgroundDrawable
+                            (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
+                    add.setText("added to favorites");
+                    Map<String, Object> write = new HashMap<>();
+                    userdata.Userbooks.put(String.valueOf(BooksItems.get(getAdapterPosition()).getId()), true);
+                    write.put("Title", String.valueOf
+                            (BooksItems.get(getAdapterPosition()).getVolumeInfo().getTitle()));
+                    write.put("Desc", String.valueOf
+                            (BooksItems.get(getAdapterPosition()).getVolumeInfo().getSubtitle()));
+                    write.put("Image", String.valueOf
+                            (BooksItems.get(getAdapterPosition()).getVolumeInfo().getImageLinks().getThumbnail()));
+                    write.put("Year", String.valueOf
+                            (BooksItems.get(getAdapterPosition()).getVolumeInfo().getPublishedDate()));
+                    db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
+                            .set(write, SetOptions.merge());
+                    int one = id.length();
+                    String put = id.substring(sp2.getString("ID", "").length(), one);
+                    if (put.equals("")) {
+                        put = "favorites122";
+                        db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
+                                .update("favs", FieldValue.increment(1));
                     }
-                });
+                    db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
+                            .update("users", FieldValue.arrayUnion(id));
+                    db.collection("Users").document(sp2.getString("ID", ""))
+                            .collection("BooksList").document(put)
+                            .update("number", FieldValue.increment(1));
+                } else {
+                    add.setBackgroundDrawable
+                            (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
+                    userdata.Userbooks.remove(String.valueOf(BooksItems.get(getAdapterPosition()).getId()));
+                    add.setText("add to favoritess");
+                    db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
+                            .update("users", FieldValue.arrayRemove(id));
+                    int one = id.length();
+                    String put = id.substring(sp2.getString("ID","").length() , one);
+                    if(put.equals(""))
+                    {
+                        put = "favorites122";
+                        db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
+                                .update("favs", FieldValue.increment(-1));
+                    }
+                    db.collection("Users").document(sp2.getString("ID",""))
+                            .collection("BooksList").document(put)
+                            .update("number", FieldValue.increment(-1));
+                }
 
 
-            }
-            else
-            {
-                if(!orig)
-                {
+            } else {
+                if (!orig) {
                     Intent intent = new Intent(mcontext, PostActivity.class);
-                    intent.putExtra("ID",BooksItems.get(getAdapterPosition()).getId());
-                    intent.putExtra("title",BooksItems.get(getAdapterPosition()).getVolumeInfo().getTitle());
+                    intent.putExtra("ID", BooksItems.get(getAdapterPosition()).getId());
+                    intent.putExtra("title", BooksItems.get(getAdapterPosition()).getVolumeInfo().getTitle());
                     mcontext.startActivity(intent);
                 }
 
@@ -197,7 +217,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
 
         @Override
         public boolean onLongClick(View v) {
-            Toast.makeText(mcontext,"heree2",Toast.LENGTH_LONG).show();
+            Toast.makeText(mcontext, "heree2", Toast.LENGTH_LONG).show();
             return false;
         }
     }

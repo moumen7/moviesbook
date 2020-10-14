@@ -53,18 +53,18 @@ public class Mybooksadapter extends RecyclerView.Adapter<Mybooksadapter.PostView
     Boolean orig = true;
     private List<Book> BooksItems = new ArrayList<>();
     SharedPreferences sp2 ;
+    String id;
     private Context mcontext;
-    public Mybooksadapter(Context context,ClickListener listener,Boolean orig)
+    public Mybooksadapter(Context context,ClickListener listener,String id)
     {
 
 
-        userdata = new Userdata();
-        db = FirebaseFirestore.getInstance();;
+        db = FirebaseFirestore.getInstance();
+        this.id = id;
         this.listener = listener;
         mcontext = context;
-        this.orig =  orig;
         sp2 = mcontext.getSharedPreferences("user", Context.MODE_PRIVATE);
-        Query q = db.collection("Books").whereArrayContains("users",sp2.getString("ID", ""));
+        Query q = db.collection("Books").whereArrayContains("users",id);
 
         q.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -99,31 +99,22 @@ public class Mybooksadapter extends RecyclerView.Adapter<Mybooksadapter.PostView
             Picasso.get().load(use).into(holder.image);
         }
 
-        if(orig) {
 
-
-            holder.add.setBackgroundDrawable
-                    (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-
-            holder.add.setText("added to favoritess");
-        }
-        else
-        {
             if((userdata.Userbooks.containsKey(String.valueOf(BooksItems.get(position).getID()))))
             {
                 holder.add.setBackgroundDrawable
                         (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-                holder.add.setText("added to favorites");
+                holder.add.setText("added");
             }
             else
             {
                 holder.add.setBackgroundDrawable
                         (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
 
-                holder.add.setText("add to favoritess");
+                holder.add.setText("add");
             }
 
-        }
+
 
 
 
@@ -169,14 +160,20 @@ public class Mybooksadapter extends RecyclerView.Adapter<Mybooksadapter.PostView
                     add.setBackgroundDrawable
                             (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
 
-                    add.setText("add to favorites");
-                    int position = getAdapterPosition();
-                    String id = String.valueOf
-                            (BooksItems.get(position).getID());
-                    db.collection("Books").document(BooksItems.get(getAdapterPosition()).getID())
-                            .update("users", FieldValue.arrayRemove(sp2.getString("ID","")));
+                    add.setText("add");
                     db.collection("Books").document(BooksItems.get(getAdapterPosition()).getID().toString())
-                            .update("favs", FieldValue.increment(-1));
+                            .update("users", FieldValue.arrayRemove(id));
+                    int one = id.length();
+                    String put = id.substring(sp2.getString("ID","").length() , one);
+                    if(put.equals(""))
+                    {
+                        put = "favorites122";
+                        db.collection("Books").document(BooksItems.get(getAdapterPosition()).getID().toString())
+                                .update("favs", FieldValue.increment(-1));
+                    }
+                    db.collection("Users").document(sp2.getString("ID",""))
+                            .collection("BooksList").document(put)
+                            .update("number", FieldValue.increment(-1));
 
                 } else {
                     Userdata.Userbooks.put(String.valueOf
@@ -184,7 +181,7 @@ public class Mybooksadapter extends RecyclerView.Adapter<Mybooksadapter.PostView
                     add.setBackgroundDrawable
                             (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
 
-                    add.setText("added to favorites");
+                    add.setText("added");
                     Userdata.Userbooks.put(String.valueOf
                             (BooksItems.get(getAdapterPosition()).getID()),true);
                     int position = getAdapterPosition();
@@ -200,14 +197,20 @@ public class Mybooksadapter extends RecyclerView.Adapter<Mybooksadapter.PostView
                             ( BooksItems.get(getAdapterPosition()).getImage()));
                     write.put("Year", String.valueOf
                             ( BooksItems.get(getAdapterPosition()).getYear()));
-
-                    db.collection("Books").document(BooksItems.get(getAdapterPosition()).getID())
-                            .set(write, SetOptions.merge());
-
-                    db.collection("Books").document(BooksItems.get(getAdapterPosition()).getID())
-                            .update("users", FieldValue.arrayUnion(sp2.getString("ID","")));
                     db.collection("Books").document(BooksItems.get(getAdapterPosition()).getID().toString())
-                            .update("favs", FieldValue.increment(1));
+                            .set(write, SetOptions.merge());
+                    int one = id.length();
+                    String put = id.substring(sp2.getString("ID", "").length(), one);
+                    if (put.equals("")) {
+                        put = "favorites122";
+                        db.collection("Books").document(BooksItems.get(getAdapterPosition()).getID().toString())
+                                .update("favs", FieldValue.increment(1));
+                    }
+                    db.collection("Books").document(BooksItems.get(getAdapterPosition()).getID().toString())
+                            .update("users", FieldValue.arrayUnion(id));
+                    db.collection("Users").document(sp2.getString("ID", ""))
+                            .collection("BooksList").document(put)
+                            .update("number", FieldValue.increment(1));
                 }
 
 
