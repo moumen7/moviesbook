@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -32,6 +33,8 @@ import com.example.moviesbook.fragments.Post;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -46,6 +49,8 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.example.moviesbook.Userdata.Userbooks;
 
@@ -59,6 +64,8 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
     private ArrayList<Post> posts;
     private TextView following;
     private TextView AddMovies;
+    private TextView mutualBookstxt;
+    private TextView mutualMoviestxt;
     List Firstlist;
     private String img = new String();
     private TextView AddBooks;
@@ -86,7 +93,92 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
         db = FirebaseFirestore.getInstance();
-        adapter = new ListsAdapter(ViewProfile.this,new ClickListener() {
+
+        //MUTUAL BOOKS AND MOVIES
+        mutualBookstxt = findViewById(R.id.mutualbooks);
+        mutualMoviestxt = findViewById(R.id.mutualmovies);
+
+        sp = getSharedPreferences("user", MODE_PRIVATE);
+        final String id2 = getIntent().getStringExtra("ID");
+        final String id = sp.getString("ID", "");
+
+
+        //MUTUAL MOVIES
+        final ArrayList<Movie> movies = new ArrayList<>();
+        final Set<String> repeated = new HashSet<String>();
+
+        CollectionReference ref = db.collection("Movies");
+        Task task1 = ref.whereArrayContains("users", id).get();
+
+        Task task2 = ref.whereArrayContains("users", id2).get();
+
+        Task<java.util.List<QuerySnapshot>> alltasks = Tasks.whenAllSuccess(task1, task2);
+        alltasks.addOnSuccessListener(new OnSuccessListener<java.util.List<QuerySnapshot>>() {
+            @Override
+            public void onSuccess(java.util.List<QuerySnapshot> querySnapshots)
+            {
+
+                int x = 0;
+                for (QuerySnapshot queryDocumentSnapshots : querySnapshots)
+                {
+                    for (DocumentSnapshot snapshot : queryDocumentSnapshots)
+                    {
+
+                        Movie movie = snapshot.toObject(Movie.class);
+                        if(repeated.contains(snapshot.getId())) {
+                            movies.add(movie);
+                            x++;
+                        }
+                        else
+                            repeated.add(snapshot.getId());
+                    }
+
+                }
+                // SET THE MUTUALS NUMBER = movies.size()
+                mutualMoviestxt.setText(mutualMoviestxt.getText() + "   " + movies.size());
+            }
+
+        });
+
+        //MUTUAL BOOKS
+        final ArrayList<Book> books = new ArrayList<>();
+        final Set <String> repeatedbooks = new HashSet<String>();
+
+        ref = db.collection("Books");
+        task1 = ref.whereArrayContains("users", id).get();
+        task2 = ref.whereArrayContains("users", id2).get();
+
+        alltasks = Tasks.whenAllSuccess(task1, task2);
+        alltasks.addOnSuccessListener(new OnSuccessListener<java.util.List<QuerySnapshot>>() {
+            @Override
+            public void onSuccess(java.util.List<QuerySnapshot> querySnapshots) {
+                for (QuerySnapshot queryDocumentSnapshots : querySnapshots)
+                {
+                    int x = 0;
+                    for (DocumentSnapshot snapshot : queryDocumentSnapshots)
+                    {
+                        Book book = snapshot.toObject(Book.class);
+                        if(repeatedbooks.contains(snapshot.getId())) {
+                            books.add(book);
+                            x++;
+                        }
+                        else
+                            repeatedbooks.add(snapshot.getId());
+
+                    }
+                }
+                // SET THE MUTUALS NUMBER = books.size()
+                mutualBookstxt.setText(mutualBookstxt.getText() + "   " + books.size());
+            }
+
+        });
+
+
+
+
+
+
+            adapter = new ListsAdapter(ViewProfile.this,new ClickListener() {
             @Override public void onPositionClicked(int position) {
 
             }
@@ -371,4 +463,28 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
 
         }
     }
+    public void perform_action_movies(View v)
+    {
+        final String id2 = getIntent().getStringExtra("ID");
+        final String id = sp.getString("ID", "");
+        Intent mutuals = new Intent(this, ViewActivity.class);
+        mutuals.putExtra("MutualMovies", true);
+        mutuals.putExtra("id", id);
+        mutuals.putExtra("id2", id2);
+        mutuals.putExtra("Name", "Mutual Movies");
+        startActivity(mutuals);
+    }
+    public void perform_action_books(View v)
+    {
+        final String id2 = getIntent().getStringExtra("ID");
+        final String id = sp.getString("ID", "");
+        Intent mutuals = new Intent(this, ViewActivity.class);
+        mutuals.putExtra("MutualBooks", true);
+        mutuals.putExtra("id", id);
+        mutuals.putExtra("id2", id2);
+        mutuals.putExtra("Name", "Mutual Books");
+        startActivity(mutuals);
+    }
 }
+
+
