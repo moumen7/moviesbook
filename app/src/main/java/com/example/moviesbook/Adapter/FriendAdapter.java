@@ -167,6 +167,7 @@ public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHol
                             {
 
                                 imageButton.setImageResource(R.drawable.ic_done_black_24dp);
+                                sendMsgImgBtn.setImageResource(R.drawable.ic_baseline_chat_bubble_outline_24);
                                 db.collection("Users").document(sp.getString("ID",""))
                                         .update("Following", FieldValue.arrayUnion(CurrentUsersFilter.get(getAdapterPosition()).getId()));
                                 db.collection("Users").document(CurrentUsersFilter.get(getAdapterPosition()).getId())

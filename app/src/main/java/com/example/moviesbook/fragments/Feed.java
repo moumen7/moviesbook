@@ -176,7 +176,7 @@ public class Feed extends Fragment implements View.OnClickListener{
                             }
 
                         }
-                        Toast.makeText(getActivity(),String.valueOf(Userdata.following2.size()),Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity(),String.valueOf(Userdata.following2.size()),Toast.LENGTH_LONG).show();
                         tasks = new Task[Userdata.following2.size()];
                         enough = new boolean[Userdata.following2.size()];
                         lastVisible = new DocumentSnapshot[Userdata.following2.size()];
@@ -298,6 +298,13 @@ public class Feed extends Fragment implements View.OnClickListener{
         {
             Intent intent = new Intent(getContext(), MoviesorBooks.class);
             startActivity(intent);
+        }
+    }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
         }
     }
 

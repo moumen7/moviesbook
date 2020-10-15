@@ -29,17 +29,20 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment = null;
         switch (position){
             case 0:
-                fragment = new Feed();
+                fragment = new Search();
                 break;
             case 1:
-                fragment = new Chats();
+                fragment = new Feed();
                 break;
             case 2:
-                fragment = new Search();
+                fragment = new Chats();
                 break;
             case 3:
                 fragment = new Profile();
 
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + position);
         }
         return fragment;
     }
@@ -48,11 +51,11 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position){
             case 0:
-                return "Feed";
-            case 1:
-                return "Chats";
-            case 2:
                 return "Search";
+            case 1:
+                return "Feed";
+            case 2:
+                return "Chats";
             case 3:
                 return "Profile";
         }
@@ -61,7 +64,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // Show 2 total pages.
+        // Show 4 total pages.
         return 4;
     }
 }

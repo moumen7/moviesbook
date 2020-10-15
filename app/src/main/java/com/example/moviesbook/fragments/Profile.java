@@ -440,4 +440,5 @@ public class Profile extends Fragment implements View.OnClickListener {
                 break;
         }
     }
+
 }

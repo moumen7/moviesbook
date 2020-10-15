@@ -284,34 +284,6 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
         }
     }
 
-    // adapter.filterList(filteredList);
-
-    /*void showAdapter(Query q1) {
-        q1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                ArrayList<Friend> names = new ArrayList<>();
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Friend model = document.toObject(Friend.class);
-                        options.getSnapshots().clear();
-                        options = new FirestoreRecyclerOptions.Builder<Friend>().build().getClass().;
-
-                    }
-                   // mList = findViewById(R.id.listSearch);
-
-                    adapter = new FriendAdapter( options);
-                    recyclerView.setAdapter((FriendAdapter) adapter);
-
-                }
-            }
-        });
-    }*/
-
-
-
-
 
 
 
@@ -355,15 +327,11 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
     public void onnoteclick(int position) {
 
     }
-    public void replaceFragment() {
-
-
-        /*FragmentManager manager = getActivity().getSupportFragmentManager();
-        if(manager !=null) {
-            manager.beginTransaction()
-                    .replace(R.id.search_frag, someFragment, "Chats")
-                    .addToBackStack(null)
-                    .commit();
-        }*/
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+        }
     }
 }
