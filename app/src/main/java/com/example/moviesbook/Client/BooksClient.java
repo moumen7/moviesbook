@@ -7,7 +7,8 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 public class BooksClient {
-    private static final String BASE_URL = "\n" + "https://www.googleapis.com/books/v1/";
+    private static final String BASE_URL = "\n" + "https://www.googleapis.com/";
+
     private BooksApiInterface booksApiInterface;
     private static BooksClient INSTANCE;
 
@@ -30,6 +31,12 @@ public class BooksClient {
     {
 
         return booksApiInterface.getBooks(SEARCH,"AIzaSyDI6VSEg1BL0nYHhJyZEBu5RzopgV8AeP4");
+
+    }
+    public Call<BooksResult> getBook(String SEARCH)
+    {
+
+        return booksApiInterface.getBook(SEARCH,"AIzaSyDI6VSEg1BL0nYHhJyZEBu5RzopgV8AeP4");
 
     }
 }

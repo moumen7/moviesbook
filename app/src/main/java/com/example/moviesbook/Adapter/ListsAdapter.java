@@ -3,6 +3,7 @@ package com.example.moviesbook.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.example.moviesbook.Activity.ViewActivity;
 import com.example.moviesbook.List;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +29,7 @@ import com.example.moviesbook.Friend;
 import com.example.moviesbook.Interfaces.ClickListener;
 import com.example.moviesbook.R;
 import com.example.moviesbook.Userdata;
+import com.example.moviesbook.fragments.ActionBottomDialogFragment;
 import com.example.moviesbook.fragments.Chats;
 import com.example.moviesbook.fragments.Post;
 import com.example.moviesbook.fragments.Search;
@@ -40,6 +43,8 @@ import com.squareup.picasso.Picasso;
 import java.lang.ref.WeakReference;
 import java.net.Inet4Address;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.Holder> {
@@ -98,7 +103,7 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.Holder> {
     }
 
 
-    class Holder extends  RecyclerView.ViewHolder implements View.OnClickListener
+    class Holder extends  RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener
     {
         private WeakReference<ClickListener> listenerRef;
         TextView textViewName;  TextView number;
@@ -111,6 +116,7 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.Holder> {
             number = itemView.findViewById(R.id.number);
             itemView.setClickable(true);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
 
         }
         @Override
@@ -132,5 +138,26 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.Holder> {
                 context.startActivity(intent);
             }
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if(!lists.get(getAdapterPosition()).getID().equals("add") && ! (getAdapterPosition() == 0)) {
+                ActionBottomDialogFragment addPhotoBottomDialogFragment =
+                        ActionBottomDialogFragment.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putString("ID", lists.get(getAdapterPosition()).getID());
+                if (Type.equals("Movie")) {
+                    bundle.putString("choice", "MoviesList");
+                } else {
+                    bundle.putString("choice", "BooksList");
+                }
+                addPhotoBottomDialogFragment.setArguments(bundle);
+                addPhotoBottomDialogFragment.show(((FragmentActivity) context).getSupportFragmentManager(),
+                        ActionBottomDialogFragment.TAG);
+
+            }
+            return false;
+        }
+
     }
 }

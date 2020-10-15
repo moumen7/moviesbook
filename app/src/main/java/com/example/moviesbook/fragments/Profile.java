@@ -203,21 +203,22 @@ public class Profile extends Fragment implements View.OnClickListener {
 
             @Override
             public void onLongClicked(int position) {
-
             }
         });
         q = db.collection("Users").document(sp.getString("ID",""))
         .collection("MoviesList");
 
-        q.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        q
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e)
+                    {
+                        lists.clear();;
                         Firstlist = new List("",null,"Favorite movies");
                         lists.add(Firstlist);
-                        if (task.isSuccessful()) {
                             int x = 0;
-                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+
+                            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
                                 List ChatUser = snapshot.toObject(List.class);
                                 if(!snapshot.getId().equals("favorites122"))
                                 {
@@ -233,23 +234,23 @@ public class Profile extends Fragment implements View.OnClickListener {
                             lists.add(Firstlist);
                             adapter.setList(lists);
                         }
-                    }
                 });
 
         recyclerViewmovies.setAdapter(adapter);
         recyclerViewmovies.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
         q = db.collection("Users").document(sp.getString("ID",""))
                 .collection("BooksList");
-        q.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        q
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        Firstlist = new List("",null,"Favorite Books");
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e)
+                    {
+                        lists2.clear();
+                    Firstlist = new List("",null,"Favorite Books");
                         lists2.add(Firstlist);
-                        if (task.isSuccessful())
-                        {
                             int x = 0;
-                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots)
+                            {
                                 List ChatUser = snapshot.toObject(List.class);
 
                                 if(!snapshot.getId().equals("favorites122"))
@@ -266,7 +267,7 @@ public class Profile extends Fragment implements View.OnClickListener {
                             lists2.add(Firstlist);
                             adapter2.setList(lists2);
                         }
-                    }
+
                 });
         recyclerViewbooks.setAdapter(adapter2);
         recyclerViewbooks.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
@@ -311,6 +312,7 @@ public class Profile extends Fragment implements View.OnClickListener {
 
 
                 int x = 0;
+
                 for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
                     Friend ChatUser = snapshot.toObject(Friend.class);
                     if (ChatUser.getId() != null) {

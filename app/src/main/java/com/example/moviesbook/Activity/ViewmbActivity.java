@@ -15,14 +15,18 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.example.moviesbook.Adapter.BooksAdapter;
 import com.example.moviesbook.Adapter.MovieAdapter;
 import com.example.moviesbook.Adapter.Mymoviesadapter;
 import com.example.moviesbook.Adapter.PostsAdapter;
+import com.example.moviesbook.Book;
 import com.example.moviesbook.Interfaces.ClickListener;
+import com.example.moviesbook.Json_Books.BooksResult;
 import com.example.moviesbook.MovieResults;
 import com.example.moviesbook.MovieRsults2;
 import com.example.moviesbook.Movies2;
 import com.example.moviesbook.R;
+import com.example.moviesbook.ViewModel.BooksViewModel;
 import com.example.moviesbook.ViewModel.MoviesViewModel;
 import com.example.moviesbook.fragments.Post;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,9 +51,11 @@ public class ViewmbActivity extends AppCompatActivity {
     FirebaseFirestore db;
     Query q;
     MoviesViewModel moviesViewModel;
+    BooksViewModel booksViewModel;
     DocumentSnapshot lastVisible;
     PostsAdapter postsAdapter;
     MovieAdapter movieAdapter;
+    BooksAdapter booksAdapter;
     RecyclerView recyclerViewPosts;
     ScrollView scrollView;
      ArrayList <Post> posts;
@@ -73,12 +79,21 @@ public class ViewmbActivity extends AppCompatActivity {
             @Override public void onLongClicked(int position) {
             }
         });
+        booksAdapter = new BooksAdapter(ViewmbActivity.this,new ClickListener() {
+            @Override public void onPositionClicked(int position) {
+
+            }
+
+            @Override public void onLongClicked(int position) {
+            }
+        });
         posts = new ArrayList<>();
         Image = findViewById(R.id.image);
         scrollView = findViewById(R.id.scroll);
         recyclerViewPosts.setLayoutManager(new LinearLayoutManager(ViewmbActivity.this));
         rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         moviesViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
+        booksViewModel = ViewModelProviders.of(this).get(BooksViewModel.class);
         DocumentReference docIdRef =db. collection(getIntent().getStringExtra("Choice")).document(
                 String.valueOf(getIntent().getStringExtra("ID")));
         docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -97,15 +112,31 @@ public class ViewmbActivity extends AppCompatActivity {
                             favorites.setText("0" + " Favorites");
                     }
                     else {
-                        moviesViewModel.getMovies2(Integer.parseInt(getIntent().getStringExtra("ID")));
-                        moviesViewModel.MoviesMutable2.observe(ViewmbActivity.this, new Observer<Movies2>() {
-                            @Override
-                            public void onChanged(Movies2 postModels) {
-                                desc.setText(postModels.getOverview());
-                                Picasso.get().load("http://image.tmdb.org/t/p/original"+postModels.getPosterPath()).into(Image);
-                                favorites.setText(String.valueOf("0 Favorites"));
-                            }
-                        });
+                        if (getIntent().getStringExtra("Choice").equals("Movies")) {
+                            moviesViewModel.getMovies2(Integer.parseInt(getIntent().getStringExtra("ID")));
+                            moviesViewModel.MoviesMutable2.observe(ViewmbActivity.this, new Observer<Movies2>() {
+                                @Override
+                                public void onChanged(Movies2 postModels) {
+                                    desc.setText(postModels.getOverview());
+                                    Picasso.get().load("http://image.tmdb.org/t/p/original" + postModels.getPosterPath()).into(Image);
+                                    favorites.setText(String.valueOf("0 Favorites"));
+                                }
+                            });
+                        }
+                        else
+                        {
+                            booksViewModel.getBook(getIntent().getStringExtra("ID"));
+                            booksViewModel.BooksMutable.observe(ViewmbActivity.this, new Observer<BooksResult>() {
+                                @Override
+                                public void onChanged(BooksResult postModels) {
+                                    desc.setText(postModels.getItems().get(0).getVolumeInfo().getSubtitle());
+                                    if(postModels.getItems().get(0).getVolumeInfo().getImageLinks().getThumbnail() !=null)
+                                    Picasso.get().load("http://image.tmdb.org/t/p/original" + postModels.getItems().get(0).getVolumeInfo().getImageLinks().getThumbnail()
+                                    ).into(Image);
+                                    favorites.setText(String.valueOf("0 Favorites"));
+                                }
+                            });
+                        }
                     }
                 } else {
 
@@ -133,6 +164,19 @@ public class ViewmbActivity extends AppCompatActivity {
                 @Override
                 public void onChanged(MovieRsults2 postModels) {
                     movieAdapter.setList(postModels.getResults());
+                }
+            });
+        }
+        else
+        {
+            rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            rv.setAdapter(booksAdapter);
+            booksViewModel.getBooks(getIntent().getStringExtra("name"));
+            booksViewModel.BooksMutable.observe(ViewmbActivity.this, new Observer<BooksResult>() {
+
+                @Override
+                public void onChanged(BooksResult postModels) {
+                    booksAdapter.setList(postModels.getItems());
                 }
             });
         }

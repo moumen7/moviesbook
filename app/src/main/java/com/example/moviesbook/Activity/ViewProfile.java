@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,6 +30,7 @@ import com.example.moviesbook.Movie;
 import com.example.moviesbook.R;
 import com.example.moviesbook.Userdata;
 import com.example.moviesbook.fragments.Post;
+import com.example.moviesbook.mutuals;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -192,6 +194,13 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
                         }
                     }
                 });
+        mutuals mutuals = new mutuals(sp.getString("ID",""), getIntent().getStringExtra("ID"), db,ViewProfile.this);
+        mutuals.getMutualmovies();
+        mutuals.getMutualbooks();
+        int mutualmovies = mutuals.getNumberofmutualmovies();
+        int mutualbooks = mutuals.getNumberofmutualbooks();
+        Toast.makeText(ViewProfile.this,"onCreate: mutual movies____________ :" + String
+                .valueOf(mutualmovies),Toast.LENGTH_LONG).show();
         recyclerViewbooks.setAdapter(adapter2);
         recyclerViewbooks.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
         db.collection("Users").document(getIntent().getStringExtra("ID"))
@@ -265,6 +274,35 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
                         });
             }
         });
+        if(Userdata.following.containsKey(getIntent().getStringExtra("ID")))
+        {
+            imageButton.setImageResource(R.drawable.ic_done_black_24dp);
+
+            db.collection("Users").document(sp.getString("ID",""))
+                    .update("Following", FieldValue.arrayRemove(getIntent().getStringExtra("ID")));
+            db.collection("Users").document(getIntent().getStringExtra("ID"))
+                    .update("Followers", FieldValue.arrayRemove(sp.getString("ID","")));
+            db.collection("Users").document(sp.getString("ID",""))
+                    .update("numoffollowing", FieldValue.increment(-1));
+            db.collection("Users").document(getIntent().getStringExtra("ID"))
+                    .update("numoffollowers", FieldValue.increment(-1));
+            Userdata.following.remove(getIntent().getStringExtra("ID"));
+        }
+        else
+        {
+
+            imageButton.setImageResource(R.drawable.ic_baseline_person_add_24);
+            db.collection("Users").document(sp.getString("ID",""))
+                    .update("Following", FieldValue.arrayUnion(getIntent().getStringExtra("ID")));
+            db.collection("Users").document(getIntent().getStringExtra("ID"))
+                    .update("Followers", FieldValue.arrayUnion(sp.getString("ID","")));
+            db.collection("Users").document(sp.getString("ID",""))
+                    .update("numoffollowing", FieldValue.increment(1));
+            db.collection("Users").document(getIntent().getStringExtra("ID"))
+                    .update("numoffollowers", FieldValue.increment(1));
+
+            Userdata.following.put(getIntent().getStringExtra("ID"),true);
+        }
 
         recyclerViewposts.setAdapter(postsAdapter);
         recyclerViewposts.setLayoutManager(new LinearLayoutManager(ViewProfile.this) {

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.StrictMode;
 
 import com.example.moviesbook.Activity.PostActivity;
+import com.example.moviesbook.Activity.ViewmbActivity;
 import com.example.moviesbook.Interfaces.ClickListener;
 import com.example.moviesbook.Json_Books.ImageLinks;
 import com.example.moviesbook.Json_Books.Item;
@@ -51,7 +52,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
     private final ClickListener listener;
     private List<Item> BooksItems = new ArrayList<>();
     SharedPreferences sp2;
-    Boolean orig = true;
+    Boolean orig;
     private Context mcontext;
     String id = new String("1234");
 
@@ -80,6 +81,11 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
             });
         }
     }
+    public BooksAdapter(Context context,ClickListener listener)
+    {
+        mcontext = context;
+        this.listener = listener;
+    }
 
     @NonNull
     @Override
@@ -102,7 +108,13 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
             String use = imageLinks.getThumbnail();
             Picasso.get().load(use).into(holder.image);
         }
-        if (orig) {
+        if(orig==null)
+        {
+            holder.add.setVisibility(View.GONE);
+            holder.desc.setVisibility(View.GONE);
+
+        }
+        else if (orig) {
             if ((userdata.Userbooks.containsKey(String.valueOf(BooksItems.get(position).getId())))) {
                 holder.add.setBackgroundDrawable
                         (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
@@ -203,7 +215,11 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
 
 
             } else {
-                if (!orig) {
+                if(orig==null)
+                {
+
+                }
+                else if (!orig) {
                     Intent intent = new Intent(mcontext, PostActivity.class);
                     intent.putExtra("ID", BooksItems.get(getAdapterPosition()).getId());
                     intent.putExtra("title", BooksItems.get(getAdapterPosition()).getVolumeInfo().getTitle());

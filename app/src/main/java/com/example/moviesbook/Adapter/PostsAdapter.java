@@ -109,7 +109,13 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             @Override
             public void onClick(View textView) {
                 Intent intent = new Intent(mcontext, ViewmbActivity.class);
-
+                if(posts.get(position).getUsedtitle().length() > 5) {
+                    intent.putExtra("name",posts.get(position).getUsedtitle().substring(0,4) );
+                }
+                        else
+                    {
+                        intent.putExtra("name",posts.get(position).getUsedtitle() );
+                    }
                 if (String.valueOf(posts.get(position).getUsedid()).matches("[0-9]+")) {
                     intent.putExtra("Choice", "Movies");
                     intent.putExtra("ID", posts.get(position).getUsedid());

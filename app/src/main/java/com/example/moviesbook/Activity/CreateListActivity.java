@@ -121,7 +121,8 @@ public class CreateListActivity extends AppCompatActivity {
         // return the resultant string
         return r.toString();
     }
-    public void post(View view) {
+    public void post(View view)
+    {
 
             if (editText.getText().toString().equals(""))
             {
