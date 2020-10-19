@@ -28,11 +28,12 @@
             android:layout_height="57dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="8dp"
-
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/postimage"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/username"
@@ -44,7 +45,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:ellipsize="end"
-            android:inputType="textMultiLine"
             android:maxLines="10"
             android:paddingRight="10dp"
             android:text="Title"
@@ -68,8 +68,6 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/userimage"
             app:layout_constraintTop_toBottomOf="@+id/username" />
-
-
         <TextView
             android:id="@+id/desc"
             android:layout_width="370dp"
@@ -78,7 +76,6 @@
             android:layout_alignParentEnd="false"
             android:layout_marginTop="6dp"
             android:ellipsize="none"
-            android:inputType="textMultiLine"
             android:maxLines="100"
             android:paddingLeft="15dp"
             android:textColor="?android:textColorPrimary"
@@ -92,6 +89,7 @@
             android:layout_height="387dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="false"
+            android:layout_marginTop="8dp"
             android:paddingLeft="15dp"
             android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"

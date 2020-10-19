@@ -23,6 +23,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
@@ -99,9 +100,11 @@ public class RegisterActivity extends AppCompatActivity {
                                                          if (!task.getResult().exists())
                                                          {
                                                              Map<String, Object> input = new HashMap();
+                                                             final Map<String, Object> number = new HashMap();
                                                              input.put("username", current_user.getUsername());
                                                              firestore.collection("Usernames").document(current_user.getUsername())
                                                                      .set(input);
+
                                                              auth.createUserWithEmailAndPassword(current_user.getEmail(), String.valueOf(Password.getText())).
                                                                      addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                                                          @Override
@@ -113,6 +116,14 @@ public class RegisterActivity extends AppCompatActivity {
                                                                                          .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                              @Override
                                                                                              public void onSuccess(Void aVoid) {
+                                                                                                 number.put("number", 0);
+                                                                                                 firestore.collection("Users").document(current_user.getId())
+                                                                                                         .collection("MoviesList").document("favorites122")
+                                                                                                         .set(number);
+
+                                                                                                 firestore.collection("Users").document(current_user.getId())
+                                                                                                         .collection("BooksList").document("favorites122")
+                                                                                                         .set(number);
                                                                                                  SharedPreferences.Editor editor = sharedPreferences.edit();
                                                                                                  editor.putString("ID", current_user.getId());
                                                                                                  editor.putString("username", current_user.getUsername());
@@ -133,11 +144,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                                                          Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                                                                      }
                                                                                  });
-
-
                                                                              }
-
-
                                                                          }
                                                                      }).addOnFailureListener(new OnFailureListener() {
                                                                  @Override

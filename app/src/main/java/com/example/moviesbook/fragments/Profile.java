@@ -19,10 +19,12 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.webkit.MimeTypeMap;
 import android.widget.Adapter;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,10 +33,12 @@ import com.example.moviesbook.Activity.AddPicActivity;
 import com.example.moviesbook.Activity.ViewActivity;
 import com.example.moviesbook.Activity.followersorfollowing;
 import com.example.moviesbook.Adapter.BooksAdapter;
+import com.example.moviesbook.Adapter.ListsAdapter;
 import com.example.moviesbook.Adapter.Mybooksadapter;
 import com.example.moviesbook.Adapter.Mymoviesadapter;
 import com.example.moviesbook.Adapter.PostsAdapter;
 import com.example.moviesbook.Book;
+import com.example.moviesbook.EndDetectingScrollView;
 import com.example.moviesbook.Friend;
 import com.example.moviesbook.Interfaces.ClickListener;
 import com.example.moviesbook.Movie;
@@ -55,6 +59,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+import  com.example.moviesbook.List;
 
 import java.util.ArrayList;
 
@@ -81,6 +86,8 @@ public class Profile extends Fragment implements View.OnClickListener {
     private SharedPreferences sp;
     private TextView followers;
     private TextView following;
+    private int recbottom = 0;
+
     private TextView AddMovies;
     private TextView AddBooks;
     private TextView ViewMovies;
@@ -88,8 +95,8 @@ public class Profile extends Fragment implements View.OnClickListener {
     private FirebaseFirestore db;
     Query   q;
     private ImageView imageView;
-    private Mybooksadapter adapter;
-    private Mymoviesadapter adapter2;
+    private ListsAdapter adapter;
+    private ListsAdapter adapter2;
     private PostsAdapter postsAdapter;
     private RecyclerView recyclerViewmovies;
     private RecyclerView recyclerViewbooks;
@@ -99,6 +106,10 @@ public class Profile extends Fragment implements View.OnClickListener {
     private ArrayList<Book> userbooks;
     private ArrayList<Post> posts;
     private ArrayList<Movie> usermovies;
+    private ScrollView scrollView;
+    private ArrayList<List> lists;
+    private ArrayList<List> lists2;
+    List Firstlist;
     String img;
 
 
@@ -139,44 +150,20 @@ public class Profile extends Fragment implements View.OnClickListener {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         db = FirebaseFirestore.getInstance();
-        adapter = new Mybooksadapter(getContext(),new ClickListener() {
-            @Override public void onPositionClicked(int position) {
 
-            }
-
-            @Override public void onLongClicked(int position) {
-            }
-        },true);
-        adapter2 = new Mymoviesadapter(getContext(),new ClickListener() {
-            @Override public void onPositionClicked(int position) {
-
-            }
-
-            @Override public void onLongClicked(int position) {
-            }
-        },true);
-        postsAdapter = new PostsAdapter(getContext(), new ClickListener() {
-            @Override
-            public void onPositionClicked(int position) {
-
-            }
-
-            @Override
-            public void onLongClicked(int position) {
-
-            }
-        });
         followers = view.findViewById(R.id.followers);
+        scrollView = view.findViewById(R.id.scroll);
         Folder = FirebaseStorage.getInstance().getReference("Images");
         following = view.findViewById(R.id.following);
         imageView = view.findViewById(R.id.profiepic);
-        AddMovies = view.findViewById(R.id.add_Moviess);
-        AddBooks = view.findViewById(R.id.add_Books);
-        ViewMovies = view.findViewById(R.id.view_your_Movies);
-        ViewBooks = view.findViewById(R.id.view_your_books);
+        ViewMovies = view.findViewById(R.id.Movieslist);
+        Firstlist = new List();
+        ViewBooks = view.findViewById(R.id.Bookslist);
         img = new String();
         userbooks = new ArrayList<>();
         usermovies= new ArrayList<>();
+        lists = new ArrayList<>();
+        lists2 = new ArrayList<>();
         posts = new ArrayList<>();
         recyclerViewbooks = view.findViewById(R.id.profile_favsbooks);
         recyclerViewmovies = view.findViewById(R.id.profile_favsmovies);
@@ -187,61 +174,103 @@ public class Profile extends Fragment implements View.OnClickListener {
         following.setOnClickListener(this);
         followers.setOnClickListener(this);
         imageView.setOnClickListener(this);
-        AddMovies.setOnClickListener(this);
-        AddBooks.setOnClickListener(this);
         ViewMovies.setOnClickListener(this);
         ViewBooks.setOnClickListener(this);
         user = view.findViewById(R.id.username);
         sp = this.getActivity().getSharedPreferences("user", MODE_PRIVATE);
-        q = db.collection("Books").whereArrayContains("users",sp.getString("ID",""));
+        adapter = new ListsAdapter(getContext(),new ClickListener() {
+            @Override public void onPositionClicked(int position) {
 
-        q.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            }
+
+            @Override public void onLongClicked(int position) {
+            }
+        },"Movie",sp.getString("ID",""));
+        adapter2 = new ListsAdapter(getContext(),new ClickListener() {
+            @Override public void onPositionClicked(int position) {
+
+            }
+
+            @Override public void onLongClicked(int position) {
+            }
+        },"Book",sp.getString("ID",""));
+
+        postsAdapter = new PostsAdapter(getContext(), new ClickListener() {
+            @Override
+            public void onPositionClicked(int position) {
+
+            }
+
+            @Override
+            public void onLongClicked(int position) {
+            }
+        });
+        q = db.collection("Users").document(sp.getString("ID",""))
+        .collection("MoviesList");
+
+        q
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Userdata.Userbooks.clear();
-
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e)
+                    {
+                        lists.clear();;
+                        Firstlist = new List("",null,"Favorite movies");
+                        lists.add(Firstlist);
                             int x = 0;
-                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                                Book ChatUser = snapshot.toObject(Book.class);
-                                Userdata.Userbooks.put(snapshot.getId(), true);
-                                userbooks.add(ChatUser);
-                                userbooks.get(x).setID(snapshot.getId());
+
+                            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                                List ChatUser = snapshot.toObject(List.class);
+                                if(!snapshot.getId().equals("favorites122"))
+                                {
+                                    lists.add(ChatUser);
+                                }
+                                else
+                                {
+                                    lists.get(0).setNumber(ChatUser.getNumber());
+                                }
                                 x++;
                             }
-
-                            adapter.setList(userbooks);
+                            Firstlist = new List("add",null,"Add List");
+                            lists.add(Firstlist);
+                            adapter.setList(lists);
                         }
-                    }
-                });
-        recyclerViewbooks.setAdapter(adapter);
-        recyclerViewbooks.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
-        q = db.collection("Movies").whereArrayContains("users",sp.getString("ID",""));
-
-        q.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Userdata.Usermovies.clear();
-
-                            int x = 0;
-                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                                Movie ChatUser = snapshot.toObject(Movie.class);
-                                Userdata.Usermovies.put(snapshot.getId(), true);
-                                usermovies.add(ChatUser);
-                                usermovies.get(x).setID(snapshot.getId());
-                                x++;
-                            }
-
-                            adapter2.setList(usermovies);
-                        }
-                    }
                 });
 
-        recyclerViewmovies.setAdapter(adapter2);
+        recyclerViewmovies.setAdapter(adapter);
         recyclerViewmovies.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
+        q = db.collection("Users").document(sp.getString("ID",""))
+                .collection("BooksList");
+        q
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e)
+                    {
+                        lists2.clear();
+                    Firstlist = new List("",null,"Favorite Books");
+                        lists2.add(Firstlist);
+                            int x = 0;
+                            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots)
+                            {
+                                List ChatUser = snapshot.toObject(List.class);
+
+                                if(!snapshot.getId().equals("favorites122"))
+                                {
+                                    lists2.add(ChatUser);
+                                }
+                                else
+                                {
+                                    lists2.get(0).setNumber(ChatUser.getNumber());
+                                }
+                                x++;
+                            }
+                            Firstlist = new List("add",null,"Add List");
+                            lists2.add(Firstlist);
+                            adapter2.setList(lists2);
+                        }
+
+                });
+        recyclerViewbooks.setAdapter(adapter2);
+        recyclerViewbooks.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
 
         db.collection("Users").document(sp.getString("ID",""))
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -283,6 +312,7 @@ public class Profile extends Fragment implements View.OnClickListener {
 
 
                 int x = 0;
+
                 for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
                     Friend ChatUser = snapshot.toObject(Friend.class);
                     if (ChatUser.getId() != null) {
@@ -302,8 +332,8 @@ public class Profile extends Fragment implements View.OnClickListener {
             }
         });
         q = db.collection("Posts").
-                whereEqualTo("userid",sp.getString("ID","")).orderBy("Date")
-                .limit(10);
+                whereEqualTo("userid",sp.getString("ID","")).orderBy("Date", Query.Direction.DESCENDING)
+                .limit(3);
         q.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -325,38 +355,50 @@ public class Profile extends Fragment implements View.OnClickListener {
 
                     }
                 });
+
+
+        scrollView.getViewTreeObserver()
+                .addOnScrollChangedListener(new
+                                                    ViewTreeObserver.OnScrollChangedListener() {
+                                                        @Override
+                                                        public void onScrollChanged() {
+
+                                                            if (scrollView.getChildAt(0).getBottom()
+                                                                    == (scrollView.getHeight() + scrollView.getScrollY()) && posts.size()!=0)
+                                                            {
+                                                                if(recbottom != scrollView.getChildAt(0).getBottom()) {
+                                                                    recbottom = scrollView.getChildAt(0).getBottom();
+                                                                    q = db.collection("Posts").
+                                                                            whereEqualTo("userid", sp.getString("ID", "")).orderBy("Date", Query.Direction.DESCENDING)
+                                                                            .limit(3).startAfter(lastVisible);
+                                                                    q.get()
+                                                                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                                                @Override
+                                                                                public void onSuccess(QuerySnapshot documentSnapshots) {
+                                                                                    if (documentSnapshots.size() != 0) {
+                                                                                        lastVisible = documentSnapshots.getDocuments()
+                                                                                                .get(documentSnapshots.size() - 1);
+                                                                                        for (QueryDocumentSnapshot qs : documentSnapshots) {
+                                                                                            Post ChatUser = qs.toObject(Post.class);
+                                                                                            posts.add(ChatUser);
+                                                                                        }
+                                                                                        postsAdapter.setList(posts);
+                                                                                    }
+
+                                                                                }
+                                                                            });
+                                                                }
+                                                                }
+                                                            if (!scrollView.canScrollVertically(-1)) {
+                                                                // top of scroll view
+
+
+                                                            }
+                                                        }
+                                                    });
+
         recyclerViewposts.setAdapter(postsAdapter);
-        recyclerViewposts.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                LinearLayoutManager layoutManager=LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
-                int totalItemCount = layoutManager.getItemCount();
-                int LastVisible = layoutManager.findLastVisibleItemPosition();
-
-                boolean endHasBeenReached = !recyclerView.canScrollVertically(1);
-                if (totalItemCount > 0 && endHasBeenReached) {
-                    q = db.collection("Posts").
-                            whereEqualTo("userid",sp.getString("ID","")).orderBy("Date")
-                            .limit(10).startAfter(lastVisible);
-                    q.get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot documentSnapshots) {
-                                    if(documentSnapshots.size()!=0) {
-                                        lastVisible = documentSnapshots.getDocuments()
-                                                .get(documentSnapshots.size() - 1);
-                                        for (QueryDocumentSnapshot qs : documentSnapshots) {
-                                            Post ChatUser = qs.toObject(Post.class);
-                                            posts.add(ChatUser);
-                                        }
-                                        postsAdapter.setList(posts);
-                                    }
-
-                                }
-                            });
-                }
-            }
-        });
+        recyclerViewposts.setNestedScrollingEnabled(false);
         return view;
 
     }
@@ -417,26 +459,6 @@ public class Profile extends Fragment implements View.OnClickListener {
                 break;
             case R.id.profiepic:
                 filechooser();
-                break;
-            case R.id.add_Moviess:
-                intent = new Intent(getActivity(), AddActivity.class);
-                intent.putExtra("Movies",true);
-                startActivity(intent);
-                break;
-            case R.id.add_Books:
-                intent = new Intent(getActivity(), AddActivity.class);
-                intent.putExtra("Books",true);
-                startActivity(intent);
-                break;
-            case R.id.view_your_Movies:
-                intent = new Intent(getActivity(), ViewActivity.class);
-                intent.putExtra("Movies",true);
-                startActivity(intent);
-                break;
-            case R.id.view_your_books:
-                intent = new Intent(getActivity(), ViewActivity.class);
-                intent.putExtra("Books",true);
-                startActivity(intent);
                 break;
         }
     }

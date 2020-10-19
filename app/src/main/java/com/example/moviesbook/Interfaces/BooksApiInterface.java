@@ -8,9 +8,15 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface BooksApiInterface {
-    @GET("volumes")
+    @GET("books/v1/volumes")
     Call<BooksResult> getBooks(
             @Query("q") String query,
+            @Query("key") String yourAPIKey
+    );
+
+    @GET("ebooks")
+    Call<BooksResult> getBook(
+            @Query("q") String id,
             @Query("key") String yourAPIKey
     );
 }

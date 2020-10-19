@@ -49,21 +49,20 @@ import java.util.Map;
 public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostViewHolder> {
     FirebaseFirestore db;
     DocumentReference messageRef;
-    private final ClickListener listener;
+    private ClickListener listener;
     private List<Movie> MoviesItems = new ArrayList<>();
     SharedPreferences sp2;
     private Context mcontext;
     Boolean orig = true;
-
-    public Mymoviesadapter(Context context, ClickListener listener, Boolean orig) {
+    String id;
+    public Mymoviesadapter(Context context, ClickListener listener, String id) {
 
         db = FirebaseFirestore.getInstance();
-        ;
+        this.id = id;
         this.listener = listener;
         mcontext = context;
-        this.orig = orig;
         sp2 = mcontext.getSharedPreferences("user", Context.MODE_PRIVATE);
-            Query q = db.collection("Movies").whereArrayContains("users",sp2.getString("ID", ""));
+            Query q = db.collection("Movies").whereArrayContains("users",id);
 
         q.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -76,6 +75,12 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
                 }
             }
         });
+    }
+    public Mymoviesadapter(Context context) {
+
+        db = FirebaseFirestore.getInstance();
+        mcontext = context;
+        sp2 = mcontext.getSharedPreferences("user", Context.MODE_PRIVATE);
     }
 
     @NonNull
@@ -98,28 +103,21 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
             String use = MoviesItems.get(position).getImage();
             Picasso.get().load(use).into(holder.image);
         }
-        if (orig) {
 
-
-            holder.add.setBackgroundDrawable
-                    (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-
-            holder.add.setText("added to favoritess");
-        } else {
             if ((Userdata.Usermovies.containsKey(String.valueOf(MoviesItems.get(position).getID())))) {
                 holder.add.setBackgroundDrawable
                         (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-                holder.add.setText("added to favorites");
+                holder.add.setText("added");
             } else {
                 holder.add.setBackgroundDrawable
                         (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
 
-                holder.add.setText("add to favoritess");
+                holder.add.setText("add");
             }
-
-        }
-
-
+            if(!id.contains(sp2.getString("ID","")))
+            {
+                holder.add.setVisibility(View.GONE);
+            }
     }
 
     @Override
@@ -158,11 +156,22 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
                     add.setBackgroundDrawable
                             (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
 
-                    add.setText("add to favoritess");
+                    add.setText("add");
                     db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
-                            .update("users", FieldValue.arrayRemove(sp2.getString("ID","")));
-                    db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
-                            .update("favs", FieldValue.increment(-1));
+                            .update("users", FieldValue.arrayRemove(id));
+                    int one = id.length();
+                    String put = id.substring(sp2.getString("ID","").length() , one);
+                    if(put.equals(""))
+                    {
+                        put = "favorites122";
+                        db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
+                                .update("favs", FieldValue.increment(-1));
+                    }
+
+
+                    db.collection("Users").document(sp2.getString("ID",""))
+                            .collection("MoviesList").document(put)
+                            .update("number", FieldValue.increment(-1));
 
                 } else {
                     Userdata.Usermovies.put(String.valueOf
@@ -170,8 +179,8 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
                     add.setBackgroundDrawable
                             (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
 
-                    add.setText("added to favorites");
-                    db.collection("Users").document(sp2.getString("ID", ""))
+                    add.setText("added");
+                    db.collection("Users").document(id)
                             .collection("MoviesList").document
                             (String.valueOf
                                     (MoviesItems.get(getAdapterPosition()).getID())).delete();
@@ -186,12 +195,21 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
                     write.put("Year", String.valueOf
                             (MoviesItems.get(getAdapterPosition()).getYear()));
 
+                    int one = id.length();
+                    String put = id.substring(sp2.getString("ID","").length() , one);
+                    if(put.equals(""))
+                    {
+                        put = "favorites122";
+                        db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
+                                .update("favs", FieldValue.increment(1));
+                    }
                     db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
                             .set(write, SetOptions.merge());
                     db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
-                            .update("users", FieldValue.arrayUnion(sp2.getString("ID","")));
-                    db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
-                            .update("favs", FieldValue.increment(1));
+                            .update("users", FieldValue.arrayUnion(id));
+                    db.collection("Users").document(sp2.getString("ID",""))
+                            .collection("MoviesList").document(put)
+                            .update("number", FieldValue.increment(1));
                 }
                 listenerRef.get().onPositionClicked(getAdapterPosition());
 

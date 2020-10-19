@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="10dp">
+
+
+    <ImageView
+        android:id="@+id/listImage"
+        android:layout_width="114dp"
+        android:layout_height="125dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/fav" />
+
+    <TextView
+        android:id="@+id/Listname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="124dp"
+        android:text="TextView"
+        android:textColor="?android:textColorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/listImage"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/listImage"
+        app:layout_constraintTop_toTopOf="@+id/listImage" />
+
+    <TextView
+        android:id="@+id/number"
+        android:layout_width="85dp"
+        android:layout_height="17dp"
+        android:layout_marginEnd="28dp"
+
+        android:textColor="?android:textColorSecondary"
+        app:layout_constraintEnd_toEndOf="@+id/listImage"
+        app:layout_constraintTop_toBottomOf="@+id/Listname" />
+</androidx.constraintlayout.widget.ConstraintLayout>

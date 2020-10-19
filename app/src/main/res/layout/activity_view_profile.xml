@@ -49,27 +49,61 @@
 
                 <TextView
 
+                    android:id="@+id/mutualmovies"
+                    android:layout_width="135dp"
+                    android:layout_height="29dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="Mutual Movies   "
+                    android:textColor="?android:textColorPrimary"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:onClick="perform_action_movies"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.812"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+
+                    android:id="@+id/mutualbooks"
+                    android:layout_width="135dp"
+                    android:layout_height="29dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="Mutual Books   "
+                    android:onClick="perform_action_books"
+                    android:textColor="?android:textColorPrimary"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.227"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+
                     android:id="@+id/username"
-                    android:layout_width="258dp"
-                    android:layout_height="31dp"
-                    android:layout_marginBottom="120dp"
+                    android:layout_width="140dp"
+                    android:layout_height="55dp"
+                    android:layout_marginBottom="104dp"
                     android:textColor="?android:textColorPrimary"
                     android:textSize="20dp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
 
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.805"
+                    app:layout_constraintHorizontal_bias="0.857"
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
                     android:id="@+id/followers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="?android:textColorPrimary"
-                    android:layout_marginStart="112dp"
-                    android:layout_marginTop="120dp"
+                    android:layout_marginStart="204dp"
+                    android:layout_marginTop="96dp"
                     android:clickable="true"
+                    android:textColor="?android:textColorPrimary"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -77,54 +111,88 @@
                     android:id="@+id/following"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="?android:textColorPrimary"
-                    android:layout_marginTop="120dp"
-                    android:layout_marginEnd="104dp"
+                    android:layout_marginTop="96dp"
+                    android:layout_marginEnd="88dp"
                     android:clickable="true"
+                    android:textColor="?android:textColorPrimary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>
-
+        <TextView
+            android:id="@+id/Movieslist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="176dp"
+            android:layout_marginEnd="224dp"
+            android:clickable="true"
+            android:fontFamily="Bold"
+            android:text="Movies List"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/profile_favsmovies"
-            android:layout_width="401dp"
-            android:layout_height="233dp"
-            android:layout_marginTop="224dp"
-            android:layout_marginEnd="4dp"
+            android:layout_width="371dp"
+            android:layout_height="181dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/Movieslist">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/profile_favsbooks"
-            android:layout_width="411dp"
-            android:layout_height="217dp"
-            android:layout_marginTop="488dp"
+            android:layout_width="371dp"
+            android:layout_height="175dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-        <TextView
-            android:id="@+id/view_your_books"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="12dp"
-            android:clickable="true"
-            android:text="View Fav books"
-            app:layout_constraintBottom_toTopOf="@+id/profile_favsbooks"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintHorizontal_bias="0.75"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/Bookslist" />
 
         <TextView
-            android:id="@+id/view_your_Movies"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
-            android:layout_marginBottom="4dp"
+            android:id="@+id/Bookslist"
+            android:layout_width="152dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="8dp"
             android:clickable="true"
-            android:text="View Fav Movies"
-            app:layout_constraintBottom_toTopOf="@+id/profile_favsmovies"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:fontFamily="Bold"
+            android:text="Books List"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/profile_favsbooks"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_favsmovies"
+            app:layout_constraintVertical_bias="1.0" />
+        <TextView
+            android:id="@+id/posttext"
+            android:layout_width="152dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="8dp"
+            android:clickable="true"
+            android:fontFamily="Bold"
+            android:text="Posts"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/profile_favsbooks"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

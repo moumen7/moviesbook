@@ -64,13 +64,13 @@
 
         <Button
             android:id="@+id/addbtn"
-            android:layout_width="232dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="76dp"
+            android:layout_width="127dp"
+            android:layout_height="42dp"
+            android:layout_marginEnd="128dp"
             android:background="@drawable/rounder_corners"
-            android:text="Add to favorites"
-            android:textColor="#FFF"
             android:clickable="true"
+            android:text="Add"
+            android:textColor="#FFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/moviedesc" />
 

@@ -13,11 +13,13 @@ import android.os.StrictMode;
 import com.example.moviesbook.Activity.CommentActivity;
 import com.example.moviesbook.Activity.MainActivity;
 import com.example.moviesbook.Activity.PostActivity;
+import com.example.moviesbook.Activity.ViewmbActivity;
 import com.example.moviesbook.Interfaces.ClickListener;
 import com.example.moviesbook.Prefmanager;
 import com.example.moviesbook.Userdata;
 import com.example.moviesbook.fragments.Post;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -33,6 +35,9 @@ import android.preference.PreferenceManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -100,13 +105,44 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         String text = posts.get(position).getUsername();
         String text2 = posts.get(position).getUsedtitle();
         SpannableString SS = new SpannableString(text + " is posting about " + text2);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View textView) {
+                Intent intent = new Intent(mcontext, ViewmbActivity.class);
+                if(posts.get(position).getUsedtitle().length() > 5) {
+                    intent.putExtra("name",posts.get(position).getUsedtitle().substring(0,4) );
+                }
+                        else
+                    {
+                        intent.putExtra("name",posts.get(position).getUsedtitle() );
+                    }
+                if (String.valueOf(posts.get(position).getUsedid()).matches("[0-9]+")) {
+                    intent.putExtra("Choice", "Movies");
+                    intent.putExtra("ID", posts.get(position).getUsedid());
+                }
+                else {
+                    intent.putExtra("Choice", "Books");
+                    intent.putExtra("ID", posts.get(position).getUsedid());
+                }
+
+                    mcontext.startActivity(intent);
+
+            }
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+            }
+        };
+
+        SS.setSpan(clickableSpan, text.length() + 18 ,text.length() + 18 + text2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         StyleSpan sp = new StyleSpan(Typeface.BOLD);
         StyleSpan SP2 = new StyleSpan(Typeface.BOLD);
         SS.setSpan(SP2,0,text.length() , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         SS.setSpan(sp,text.length() ,text.length() + 17   , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        SS.setSpan(sp,text.length() + 18 ,text.length() + 18 + text2.length()  , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         holder.username.setText(SS);
         holder.date.setText(posts.get(position).getDate());
+        holder.username.setMovementMethod(LinkMovementMethod.getInstance());
         holder.desc.setText(posts.get(position).getPostdesc());
         holder.numberoflikes.setText(String.valueOf(posts.get(position).getLikes()));
         holder.numberofcomments.setText(String.valueOf(posts.get(position).getComments()));
@@ -133,6 +169,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
             }
         });
+        if(posts.get(position).getPostdesc() == null || posts.get(position).getPostdesc().equals("") )
+            holder.desc.setVisibility(View.GONE);
+
         if(posts.get(position).getImage() == null)
         holder.postimage.setVisibility(View.GONE);
         else
@@ -199,11 +238,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                 if(posts.get(getAdapterPosition()).getLikers().containsKey(sp2.getString("ID","")))
                 {
                     executeTransaction(-1,0);
+                    numberoflikes.setText(String.valueOf(posts.get(getAdapterPosition()).getLikes() - 1));
+                    posts.get(getAdapterPosition()).setLikes(posts.get(getAdapterPosition()).getLikes() - 1);
                 }
                 else
                 {
 
                     executeTransaction(1,1);
+                    numberoflikes.setText(String.valueOf(posts.get(getAdapterPosition()).getLikes() + 1));
+                    posts.get(getAdapterPosition()).setLikes(posts.get(getAdapterPosition()).getLikes() + 1);
                 }
 
             }
@@ -278,6 +321,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             final int use = getAdapterPosition();
             final Map <String,Boolean> map;
              map = (Map <String,Boolean>) posts.get(getAdapterPosition()).getLikers();
+
             db.runTransaction(new Transaction.Function<Long>() {
                 @Override
                 public Long apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
@@ -297,7 +341,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                     }
 
                     transaction.update(exampleNoteRef, "likes", newPriority);
-                    numberoflikes.setText(String.valueOf(newPriority));
+
                     return newPriority;
                 }
             }).addOnSuccessListener(new OnSuccessListener<Long>() {
@@ -305,8 +349,14 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                 public void onSuccess(Long result) {
                     Toast.makeText(mcontext, "New Priority: " + result, Toast.LENGTH_SHORT).show();
                 }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(mcontext,  e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             });
             listenerRef.get().onPositionClicked(getAdapterPosition());
+
         }
 
 

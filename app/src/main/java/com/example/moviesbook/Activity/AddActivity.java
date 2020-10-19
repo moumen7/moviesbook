@@ -67,7 +67,6 @@ public class AddActivity extends AppCompatActivity implements SearchView.OnQuery
     String where = "Movie";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         userdata= new Userdata();
@@ -110,48 +109,14 @@ public class AddActivity extends AppCompatActivity implements SearchView.OnQuery
         {
 
             if (where.equals("Movie")) {
-                setTitle("Add Movies to your favs");
+                setTitle("Add Movies");
             } else {
-                setTitle("Add Books to your favs");
+                setTitle("Add Books");
             }
         }
         moviesViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
         booksViewModel = ViewModelProviders.of(this).get(BooksViewModel.class);
         recyclerView = findViewById(R.id.recycler);
-
-        userdata.Usermovies.clear();
-        db.collection("Movies")
-                .whereArrayContains("users",sp2.getString("ID",""))
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult())
-                            {
-                                userdata.Usermovies.put(document.getId(),true);
-                            }
-                        } else
-                            {
-
-                        }
-                    }
-                });
-        userdata.Userbooks.clear();
-        db.collection("Books")
-                .whereArrayContains("users",sp2.getString("ID",""))
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                userdata.Userbooks.put(document.getId(),true);
-                            }
-                        } else {
-                        }
-                    }
-                });
         adapter2 = new BooksAdapter(AddActivity.this, new ClickListener() {
             @Override
             public void onPositionClicked(int position) {
@@ -162,7 +127,7 @@ public class AddActivity extends AppCompatActivity implements SearchView.OnQuery
             public void onLongClicked(int position) {
 
             }
-        },orig);
+        },orig,getIntent().getStringExtra("id"));
         adapter= new MovieAdapter(AddActivity.this, new ClickListener() {
             @Override public void onPositionClicked(int position) {
 
@@ -171,7 +136,7 @@ public class AddActivity extends AppCompatActivity implements SearchView.OnQuery
             @Override public void onLongClicked(int position) {
                 Toast.makeText(AddActivity.this,"heree4",Toast.LENGTH_LONG).show();
             }
-        },orig);
+        },orig,getIntent().getStringExtra("id"));
 
     }
 
@@ -208,14 +173,13 @@ public class AddActivity extends AppCompatActivity implements SearchView.OnQuery
             }
             else
             {
-                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
+                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
                 recyclerView.setAdapter(adapter);
                 moviesViewModel.getMovies(query);
                 moviesViewModel.MoviesMutable.observe(AddActivity.this, new Observer<MovieResults>() {
 
                     @Override
                     public void onChanged(MovieResults postModels) {
-
                         adapter.setList(postModels.getResults());
                     }
                 });

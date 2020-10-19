@@ -3,6 +3,8 @@ package com.example.moviesbook.Interfaces;
 import android.app.DownloadManager;
 
 import com.example.moviesbook.MovieResults;
+import com.example.moviesbook.MovieRsults2;
+import com.example.moviesbook.Movies2;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -15,4 +17,17 @@ public interface MoviesApiInterface {
         @Query("query") String query,
         @Query("api_key") String api_key
     );
+    @GET("/3/movie/{movie_id}")
+    Call<Movies2> getMovies2(
+            @Path("movie_id") int movie_id,
+            @Query("api_key") String api_key
+    );
+
+    @GET("/3/movie/{movie_id}/recommendations")
+    Call<MovieRsults2> getRecommedations
+    (
+            @Path("movie_id") int movie_id,
+            @Query("api_key") String api_key
+    );
+
 }

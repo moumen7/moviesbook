@@ -26,4 +26,17 @@ public class BooksViewModel extends ViewModel {
             }
         });
     }
+    public void getBook(String page)
+    {
+        x=page;
+        BooksClient.getINSTANCE().getBook(x).enqueue(new Callback<BooksResult>() {
+            @Override
+            public void onResponse(Call<BooksResult> call, Response<BooksResult> response) {
+                BooksMutable.setValue(response.body());
+            }
+            @Override
+            public void onFailure(Call<BooksResult> call, Throwable t) {
+            }
+        });
+    }
 }
