@@ -147,10 +147,10 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
         ET = view.findViewById(R.id.search_edit_text);
         userslist = new ArrayList<>();
 
-         end = false;
+        end = false;
         recyclerView.setAdapter(adapter);
 
-         first = db.collection("Users")
+        first = db.collection("Users")
                 .orderBy("id")
                 .limit(5);
         first.get()
@@ -158,7 +158,7 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
                     @Override
                     public void onSuccess(QuerySnapshot documentSnapshots) {
 
-                         int i=0;
+                        int i=0;
                         for (QueryDocumentSnapshot qs : documentSnapshots) {
                             Friend ChatUser = qs.toObject(Friend.class);
                             if(!sp.getString("ID","").equals(ChatUser.getId())) {
@@ -284,40 +284,68 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
         }
     }
 
+    // adapter.filterList(filteredList);
+
+    /*void showAdapter(Query q1) {
+        q1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                ArrayList<Friend> names = new ArrayList<>();
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Friend model = document.toObject(Friend.class);
+                        options.getSnapshots().clear();
+                        options = new FirestoreRecyclerOptions.Builder<Friend>().build().getClass().;
+
+                    }
+                   // mList = findViewById(R.id.listSearch);
+
+                    adapter = new FriendAdapter( options);
+                    recyclerView.setAdapter((FriendAdapter) adapter);
+
+                }
+            }
+        });
+    }*/
+
+
+
+
 
 
 
     private void ReadUsers()
     {
         final FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
-         query = db.collection("Users").limit(3).orderBy("username");
+        query = db.collection("Users").limit(3).orderBy("username");
 
         query.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot documentSnapshots) {
-                if (documentSnapshots.size() != 0) {
-                    lastVisible = documentSnapshots.getDocuments()
-                            .get(documentSnapshots.size() - 1);
-                }
-                userslist.clear();
-                int x = 0;
-                for (DocumentSnapshot snapshot : documentSnapshots) {
-                    Friend ChatUser = snapshot.toObject(Friend.class);
-                    if (!fUser.getUid().equals(ChatUser.getId())) {
-                        userslist.add(ChatUser);
+                        if (documentSnapshots.size() != 0) {
+                            lastVisible = documentSnapshots.getDocuments()
+                                    .get(documentSnapshots.size() - 1);
+                        }
+                        userslist.clear();
+                        int x = 0;
+                        for (DocumentSnapshot snapshot : documentSnapshots) {
+                            Friend ChatUser = snapshot.toObject(Friend.class);
+                            if (!fUser.getUid().equals(ChatUser.getId())) {
+                                userslist.add(ChatUser);
+                            }
+
+                        }
+
+
+                        adapter.setList(userslist);
+
+
+
                     }
 
-                }
-
-
-                adapter.setList(userslist);
-
-
-
-            }
-
-        }) ;
+                }) ;
 
 
 
@@ -327,11 +355,15 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
     public void onnoteclick(int position) {
 
     }
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
-        }
+    public void replaceFragment() {
+
+
+        /*FragmentManager manager = getActivity().getSupportFragmentManager();
+        if(manager !=null) {
+            manager.beginTransaction()
+                    .replace(R.id.search_frag, someFragment, "Chats")
+                    .addToBackStack(null)
+                    .commit();
+        }*/
     }
 }

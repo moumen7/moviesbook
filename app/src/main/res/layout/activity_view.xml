@@ -5,48 +5,72 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Activity.ViewActivity">
-
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Add">
+        android:layout_height="match_parent"
+        tools:context=".Activity.ViewActivity">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="0dp"
+        <TextView
+            android:id="@+id/number"
+            android:layout_width="156dp"
+            android:layout_height="27dp"
+            android:layout_marginTop="228dp"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingLeft="3dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_marginTop="30dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView3">
 
-    <Button
-        android:id="@+id/Add"
-        android:layout_width="139dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="44dp"
-        android:background="@drawable/rounder_corners"
-        android:onClick="go"
-        android:text="Add Movies"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.444"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="44dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="-43dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/Add"
+            android:layout_width="111dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="96dp"
+            android:background="@drawable/rounder_corners"
+            android:onClick="go"
+            android:text="Add Movies"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="413dp"
+            android:layout_height="225dp"
+            android:layout_alignParentTop="true"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

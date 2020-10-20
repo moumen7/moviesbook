@@ -1,9 +1,11 @@
 package com.example.moviesbook.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.StrictMode;
 
+import com.example.moviesbook.Activity.ViewmbActivity;
 import com.example.moviesbook.Book;
 import com.example.moviesbook.Friend;
 import com.example.moviesbook.Interfaces.ClickListener;
@@ -56,13 +58,12 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
     Boolean orig = true;
     String id;
     public Mymoviesadapter(Context context, ClickListener listener, String id) {
-
         db = FirebaseFirestore.getInstance();
         this.id = id;
         this.listener = listener;
         mcontext = context;
         sp2 = mcontext.getSharedPreferences("user", Context.MODE_PRIVATE);
-            Query q = db.collection("Movies").whereArrayContains("users",id);
+        Query q = db.collection("Movies").whereArrayContains("users",id);
 
         q.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -86,7 +87,7 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
     @NonNull
     @Override
     public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new PostViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.grid, parent, false));
+        return new PostViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.anothergrid, parent, false));
     }
 
     @Override
@@ -97,27 +98,12 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
             StrictMode.setThreadPolicy(policy);
         }
 
-        holder.title.setText(MoviesItems.get(position).getTitle() + " (" + MoviesItems.get(position)
-                .getYear() + ")");
+
         if (MoviesItems.get(position).getImage() != null) {
             String use = MoviesItems.get(position).getImage();
-            Picasso.get().load(use).into(holder.image);
+            Picasso.get().load(use).fit().into(holder.image);
         }
 
-            if ((Userdata.Usermovies.containsKey(String.valueOf(MoviesItems.get(position).getID())))) {
-                holder.add.setBackgroundDrawable
-                        (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-                holder.add.setText("added");
-            } else {
-                holder.add.setBackgroundDrawable
-                        (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
-
-                holder.add.setText("add");
-            }
-            if(!id.contains(sp2.getString("ID","")))
-            {
-                holder.add.setVisibility(View.GONE);
-            }
     }
 
     @Override
@@ -140,80 +126,27 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             listenerRef = new WeakReference<>(listener);
-            title = itemView.findViewById(R.id.movietitle);
             image = itemView.findViewById(R.id.movieimg);
-            add = itemView.findViewById(R.id.addbtn);
-            add.setOnClickListener(this);
+            image.setOnClickListener(this);
+
         }
 
         @Override
         public void onClick(View v) {
-
-                if (Userdata.Usermovies.containsKey(String.valueOf
-                        (MoviesItems.get(getAdapterPosition()).getID()))) {
-                    Userdata.Usermovies.remove(String.valueOf
-                            (MoviesItems.get(getAdapterPosition()).getID()));
-                    add.setBackgroundDrawable
-                            (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
-
-                    add.setText("add");
-                    db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
-                            .update("users", FieldValue.arrayRemove(id));
-                    int one = id.length();
-                    String put = id.substring(sp2.getString("ID","").length() , one);
-                    if(put.equals(""))
-                    {
-                        put = "favorites122";
-                        db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
-                                .update("favs", FieldValue.increment(-1));
-                    }
-
-
-                    db.collection("Users").document(sp2.getString("ID",""))
-                            .collection("MoviesList").document(put)
-                            .update("number", FieldValue.increment(-1));
-
-                } else {
-                    Userdata.Usermovies.put(String.valueOf
-                            (MoviesItems.get(getAdapterPosition()).getID()), true);
-                    add.setBackgroundDrawable
-                            (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-
-                    add.setText("added");
-                    db.collection("Users").document(id)
-                            .collection("MoviesList").document
-                            (String.valueOf
-                                    (MoviesItems.get(getAdapterPosition()).getID())).delete();
-                    Map<String, Object> write = new HashMap<>();
-                    Userdata.Usermovies.put(String.valueOf(MoviesItems.get(getAdapterPosition()).getID()), true);
-                    write.put("Title", String.valueOf
-                            (MoviesItems.get(getAdapterPosition()).getTitle()));
-                    write.put("Desc", String.valueOf
-                            (MoviesItems.get(getAdapterPosition()).getDesc()));
-                    write.put("Image", String.valueOf
-                            (MoviesItems.get(getAdapterPosition()).getImage()));
-                    write.put("Year", String.valueOf
-                            (MoviesItems.get(getAdapterPosition()).getYear()));
-
-                    int one = id.length();
-                    String put = id.substring(sp2.getString("ID","").length() , one);
-                    if(put.equals(""))
-                    {
-                        put = "favorites122";
-                        db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
-                                .update("favs", FieldValue.increment(1));
-                    }
-                    db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
-                            .set(write, SetOptions.merge());
-                    db.collection("Movies").document(MoviesItems.get(getAdapterPosition()).getID().toString())
-                            .update("users", FieldValue.arrayUnion(id));
-                    db.collection("Users").document(sp2.getString("ID",""))
-                            .collection("MoviesList").document(put)
-                            .update("number", FieldValue.increment(1));
-                }
-                listenerRef.get().onPositionClicked(getAdapterPosition());
-
+            Intent intent = new Intent(mcontext, ViewmbActivity.class);
+            if(MoviesItems.get(getAdapterPosition()).getTitle().length() > 5) {
+                intent.putExtra("name", MoviesItems.get(getAdapterPosition()).getTitle().substring(0,4) );
             }
+            else
+            {
+                intent.putExtra("name", MoviesItems.get(getAdapterPosition()).getTitle() );
+            }
+            intent.putExtra("Choice", "Movies");
+            intent.putExtra("ID",MoviesItems.get(getAdapterPosition()).getID());
+
+            mcontext.startActivity(intent);
+
+        }
 
 
 

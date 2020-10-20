@@ -173,7 +173,7 @@ public class AddActivity extends AppCompatActivity implements SearchView.OnQuery
             }
             else
             {
-                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
+                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
                 recyclerView.setAdapter(adapter);
                 moviesViewModel.getMovies(query);
                 moviesViewModel.MoviesMutable.observe(AddActivity.this, new Observer<MovieResults>() {

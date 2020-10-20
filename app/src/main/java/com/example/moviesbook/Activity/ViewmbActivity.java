@@ -58,7 +58,7 @@ public class ViewmbActivity extends AppCompatActivity {
     BooksAdapter booksAdapter;
     RecyclerView recyclerViewPosts;
     ScrollView scrollView;
-     ArrayList <Post> posts;
+    ArrayList <Post> posts;
     RecyclerView rv;
     int recbottom = 0;
     @Override
@@ -107,7 +107,7 @@ public class ViewmbActivity extends AppCompatActivity {
                         Picasso.get().load(String.valueOf(document.get("Image"))).into(Image);
                         String add = String.valueOf(document.get("favs"));
                         if(!add.equals("null"))
-                        favorites.setText(add + " Favorites");
+                            favorites.setText(add + " Favorites");
                         else
                             favorites.setText("0" + " Favorites");
                     }
@@ -131,8 +131,8 @@ public class ViewmbActivity extends AppCompatActivity {
                                 public void onChanged(BooksResult postModels) {
                                     desc.setText(postModels.getItems().get(0).getVolumeInfo().getSubtitle());
                                     if(postModels.getItems().get(0).getVolumeInfo().getImageLinks().getThumbnail() !=null)
-                                    Picasso.get().load("http://image.tmdb.org/t/p/original" + postModels.getItems().get(0).getVolumeInfo().getImageLinks().getThumbnail()
-                                    ).into(Image);
+                                        Picasso.get().load("http://image.tmdb.org/t/p/original" + postModels.getItems().get(0).getVolumeInfo().getImageLinks().getThumbnail()
+                                        ).into(Image);
                                     favorites.setText(String.valueOf("0 Favorites"));
                                 }
                             });

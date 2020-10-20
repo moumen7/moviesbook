@@ -9,10 +9,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moviesbook.Adapter.MovieAdapter;
@@ -36,6 +40,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -51,7 +56,8 @@ public class ViewActivity extends AppCompatActivity {
     Mymoviesadapter mymoviesadapter;
     Mybooksadapter mybooksadapter;
     Button button;
-
+    ImageView imageView;
+    TextView number;
     Boolean pass;
     Query q;
     @Override
@@ -61,11 +67,17 @@ public class ViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view);
         recyclerView = findViewById(R.id.view);
         button = findViewById(R.id.Add);
+        imageView = findViewById(R.id.imageView3);
         fb =  FirebaseFirestore.getInstance();
+        recyclerView.setHasFixedSize(true);
+        number = findViewById(R.id.number);
+        recyclerView.setItemViewCacheSize(10);
+        recyclerView.setDrawingCacheEnabled(true);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
 
         if(!getIntent().getStringExtra("id").contains(sp.getString("ID","")))
-        button.setVisibility(View.GONE);
+            button.setVisibility(View.GONE);
         mymoviesadapter = new Mymoviesadapter(ViewActivity.this,new ClickListener() {
             @Override
             public void onPositionClicked(int position) {
@@ -90,6 +102,16 @@ public class ViewActivity extends AppCompatActivity {
         }, getIntent().getStringExtra("id"));
         usermovies = new ArrayList<>();
         userbooks = new ArrayList<>();
+        if(getIntent().getStringExtra("id").equals(sp.getString("ID",""))) {
+            imageView.setImageDrawable(getResources().getDrawable(R.drawable.fav));
+        }
+        else
+        {
+            Picasso.get().load(getIntent().getStringExtra("Image")).into(imageView);
+        }
+        Toast.makeText(ViewActivity.this, getIntent().getStringExtra("id"),Toast.LENGTH_LONG).show();
+
+
 
         if(getIntent().hasExtra("MutualMovies"))
         {
@@ -126,12 +148,17 @@ public class ViewActivity extends AppCompatActivity {
                             else
                                 repeated.add(snapshot.getId());
                         }
-                        mymoviesadapter.setList(movies);
 
                     }
+                    mymoviesadapter.setList(movies);
+                    number.setText(movies.size() + " Movies");
                     recyclerView.setAdapter(mymoviesadapter);
                     recyclerView.setNestedScrollingEnabled(false);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(ViewActivity.this));
+                    recyclerView.setLayoutManager(new GridLayoutManager(ViewActivity.this,4));
+                    recyclerView.setHasFixedSize(true);
+                    recyclerView.setItemViewCacheSize(10);
+                    recyclerView.setDrawingCacheEnabled(true);
+                    recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
                 }
 
@@ -172,9 +199,14 @@ public class ViewActivity extends AppCompatActivity {
                         }
                         mybooksadapter.setList(books);
                     }
+                    number.setText(books.size() + " Books");
                     recyclerView.setAdapter(mybooksadapter);
                     recyclerView.setNestedScrollingEnabled(false);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(ViewActivity.this));
+                    recyclerView.setLayoutManager(new GridLayoutManager(ViewActivity.this,4));
+                    recyclerView.setHasFixedSize(true);
+                    recyclerView.setItemViewCacheSize(10);
+                    recyclerView.setDrawingCacheEnabled(true);
+                    recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
                 }
 
             });
@@ -185,7 +217,7 @@ public class ViewActivity extends AppCompatActivity {
             button.setText("Add Movies");
             setTitle(getIntent().getStringExtra("Name"));
 
-                q = fb.collection("Movies").whereArrayContains("users",getIntent().getStringExtra("id"));
+            q = fb.collection("Movies").whereArrayContains("users",getIntent().getStringExtra("id"));
 
 
             q.get()
@@ -200,20 +232,26 @@ public class ViewActivity extends AppCompatActivity {
                                     usermovies.get(x).setID(snapshot.getId());
                                     x++;
                                 }
+                                number.setText(usermovies.size() + " Movies");
                                 mymoviesadapter.setList(usermovies);
                             }
                         }
                     });
+
             recyclerView.setAdapter(mymoviesadapter);
             recyclerView.setNestedScrollingEnabled(false);
-            recyclerView.setLayoutManager(new LinearLayoutManager(ViewActivity.this));
+            recyclerView.setLayoutManager(new GridLayoutManager(ViewActivity.this,4));
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setItemViewCacheSize(10);
+            recyclerView.setDrawingCacheEnabled(true);
+            recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         }
         else
         {
             button.setText("Add Books");
             setTitle(getIntent().getStringExtra("Name"));
 
-                q = fb.collection("Books").whereArrayContains("users",getIntent().getStringExtra("id"));
+            q = fb.collection("Books").whereArrayContains("users",getIntent().getStringExtra("id"));
             q.get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -226,14 +264,18 @@ public class ViewActivity extends AppCompatActivity {
                                     userbooks.get(x).setID(snapshot.getId());
                                     x++;
                                 }
-
+                                number.setText(userbooks.size() + " Books");
                                 mybooksadapter.setList(userbooks);
                             }
                         }
                     });
             recyclerView.setAdapter(mybooksadapter);
             recyclerView.setNestedScrollingEnabled(false);
-            recyclerView.setLayoutManager(new LinearLayoutManager(ViewActivity.this));
+            recyclerView.setLayoutManager(new GridLayoutManager(ViewActivity.this,4));
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setItemViewCacheSize(10);
+            recyclerView.setDrawingCacheEnabled(true);
+            recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         }
 
     }
@@ -243,9 +285,9 @@ public class ViewActivity extends AppCompatActivity {
         {
             Intent intent = new Intent(ViewActivity.this,AddActivity.class);
             if(getIntent().hasExtra("Movie"))
-            intent.putExtra("Movies",true);
+                intent.putExtra("Movies",true);
             else
-            intent.putExtra("Books",true);
+                intent.putExtra("Books",true);
             intent.putExtra("id", getIntent().getStringExtra("id"));
             startActivity(intent);
         }

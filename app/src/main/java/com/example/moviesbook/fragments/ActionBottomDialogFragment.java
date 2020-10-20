@@ -13,6 +13,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.moviesbook.Activity.followersorfollowing;
 import com.example.moviesbook.R;
@@ -59,18 +62,35 @@ public class ActionBottomDialogFragment extends BottomSheetDialogFragment
                                         FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .collection(getArguments().getString("choice"))
                                         .document(getArguments().getString("ID")).delete();
+                                getActivity().getSupportFragmentManager().beginTransaction().remove(
+                                        ActionBottomDialogFragment.this).commit();
                             }
                         })
-
-
                         .setNegativeButton(android.R.string.no, null)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
                 break;
             case R.id.textView2:
-                Intent intent = new Intent(getActivity(), followersorfollowing.class);
-                intent.putExtra("Following",true);
-                startActivity(intent);
+                FragmentTransaction ft = (getActivity()).getSupportFragmentManager().beginTransaction();
+                Fragment prev = ((getActivity()).getSupportFragmentManager().findFragmentByTag("dialog"));
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                CreatelistFragment addPhotoBottomDialogFragment =
+                        CreatelistFragment.newInstance();
+
+                Bundle bundle = new Bundle();
+                bundle.putString("ID", getArguments().getString("ID"));
+                if(getArguments().getString("choice").equals("MoviesList"))
+                    bundle.putString("choice", "Movie");
+                else
+                    bundle.putString("choice", "Book");
+                bundle.putString("name",getArguments().getString("name"));
+                bundle.putString("image",getArguments().getString("image"));
+                bundle.putString("act","edit");
+                addPhotoBottomDialogFragment.setArguments(bundle);
+                ft.addToBackStack(null);
+                addPhotoBottomDialogFragment.show(ft, CreatelistFragment.TAG);
                 break;
         }
     }

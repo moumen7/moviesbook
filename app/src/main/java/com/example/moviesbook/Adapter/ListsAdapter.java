@@ -16,6 +16,8 @@ import com.example.moviesbook.Activity.CreateListActivity;
 import com.example.moviesbook.Activity.ViewActivity;
 import com.example.moviesbook.List;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -31,6 +33,7 @@ import com.example.moviesbook.R;
 import com.example.moviesbook.Userdata;
 import com.example.moviesbook.fragments.ActionBottomDialogFragment;
 import com.example.moviesbook.fragments.Chats;
+import com.example.moviesbook.fragments.CreatelistFragment;
 import com.example.moviesbook.fragments.Post;
 import com.example.moviesbook.fragments.Search;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -89,6 +92,7 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.Holder> {
             Picasso.get().load(s).into(holder.imageView);
         }
 
+
         holder.textViewName.setText(lists.get(position).getName());
         if(lists.get(position).getID().equals("add"))
         {
@@ -117,15 +121,33 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.Holder> {
             itemView.setClickable(true);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
-
         }
         @Override
         public void onClick(View v) {
             if(lists.get(getAdapterPosition()).getID().equals("add"))
             {
-                Intent intent = new Intent(context, CreateListActivity.class);
-                intent.putExtra(Type,true);
-                context.startActivity(intent);
+                FragmentTransaction ft = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
+                Fragment prev = ((AppCompatActivity)context).getSupportFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                CreatelistFragment addPhotoBottomDialogFragment =
+                        CreatelistFragment.newInstance();
+
+                Bundle bundle = new Bundle();
+                bundle.putString("ID", lists.get(getAdapterPosition()).getID());
+                if (Type.equals("Movie")) {
+                    bundle.putString("choice", "Movie");
+                } else {
+                    bundle.putString("choice", "Book");
+                }
+
+                bundle.putString("name",lists.get(getAdapterPosition()).getName());
+                bundle.putString("image",lists.get(getAdapterPosition()).getImage());
+                bundle.putString("act","create");
+                addPhotoBottomDialogFragment.setArguments(bundle);
+                ft.addToBackStack(null);
+                addPhotoBottomDialogFragment.show(ft, CreatelistFragment.TAG);
 
             }
             else
@@ -134,6 +156,7 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.Holder> {
 
                 intent.putExtra("id",id + lists.get(getAdapterPosition()).getID());
                 intent.putExtra("Name",lists.get(getAdapterPosition()).getName());
+                intent.putExtra("Image",lists.get(getAdapterPosition()).getImage());
                 intent.putExtra(Type,true);
                 context.startActivity(intent);
             }
@@ -151,6 +174,9 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.Holder> {
                 } else {
                     bundle.putString("choice", "BooksList");
                 }
+                bundle.putString("name",lists.get(getAdapterPosition()).getName());
+                bundle.putString("image",lists.get(getAdapterPosition()).getImage());
+                bundle.putString("act","edit");
                 addPhotoBottomDialogFragment.setArguments(bundle);
                 addPhotoBottomDialogFragment.show(((FragmentActivity) context).getSupportFragmentManager(),
                         ActionBottomDialogFragment.TAG);

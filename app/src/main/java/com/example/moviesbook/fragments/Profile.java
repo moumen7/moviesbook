@@ -206,7 +206,7 @@ public class Profile extends Fragment implements View.OnClickListener {
             }
         });
         q = db.collection("Users").document(sp.getString("ID",""))
-        .collection("MoviesList");
+                .collection("MoviesList");
 
         q
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -216,24 +216,24 @@ public class Profile extends Fragment implements View.OnClickListener {
                         lists.clear();;
                         Firstlist = new List("",null,"Favorite movies");
                         lists.add(Firstlist);
-                            int x = 0;
+                        int x = 0;
 
-                            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
-                                List ChatUser = snapshot.toObject(List.class);
-                                if(!snapshot.getId().equals("favorites122"))
-                                {
-                                    lists.add(ChatUser);
-                                }
-                                else
-                                {
-                                    lists.get(0).setNumber(ChatUser.getNumber());
-                                }
-                                x++;
+                        for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                            List ChatUser = snapshot.toObject(List.class);
+                            if(!snapshot.getId().equals("favorites122"))
+                            {
+                                lists.add(ChatUser);
                             }
-                            Firstlist = new List("add",null,"Add List");
-                            lists.add(Firstlist);
-                            adapter.setList(lists);
+                            else
+                            {
+                                lists.get(0).setNumber(ChatUser.getNumber());
+                            }
+                            x++;
                         }
+                        Firstlist = new List("add",null,"Add List");
+                        lists.add(Firstlist);
+                        adapter.setList(lists);
+                    }
                 });
 
         recyclerViewmovies.setAdapter(adapter);
@@ -246,27 +246,27 @@ public class Profile extends Fragment implements View.OnClickListener {
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e)
                     {
                         lists2.clear();
-                    Firstlist = new List("",null,"Favorite Books");
+                        Firstlist = new List("",null,"Favorite Books");
                         lists2.add(Firstlist);
-                            int x = 0;
-                            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots)
-                            {
-                                List ChatUser = snapshot.toObject(List.class);
+                        int x = 0;
+                        for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots)
+                        {
+                            List ChatUser = snapshot.toObject(List.class);
 
-                                if(!snapshot.getId().equals("favorites122"))
-                                {
-                                    lists2.add(ChatUser);
-                                }
-                                else
-                                {
-                                    lists2.get(0).setNumber(ChatUser.getNumber());
-                                }
-                                x++;
+                            if(!snapshot.getId().equals("favorites122"))
+                            {
+                                lists2.add(ChatUser);
                             }
-                            Firstlist = new List("add",null,"Add List");
-                            lists2.add(Firstlist);
-                            adapter2.setList(lists2);
+                            else
+                            {
+                                lists2.get(0).setNumber(ChatUser.getNumber());
+                            }
+                            x++;
                         }
+                        Firstlist = new List("add",null,"Add List");
+                        lists2.add(Firstlist);
+                        adapter2.setList(lists2);
+                    }
 
                 });
         recyclerViewbooks.setAdapter(adapter2);
@@ -301,7 +301,7 @@ public class Profile extends Fragment implements View.OnClickListener {
 
                     }
 
-        });
+                });
 
         user.setText(sp.getString("username",""));
         Query query = db.collection("Users").whereEqualTo("id" , sp.getString("ID", ""));
@@ -344,7 +344,7 @@ public class Profile extends Fragment implements View.OnClickListener {
                             Post ChatUser = qs.toObject(Post.class);
 
 
-                                posts.add(ChatUser);
+                            posts.add(ChatUser);
 
                         }
                         if(documentSnapshots.size()!=0) {
@@ -388,7 +388,7 @@ public class Profile extends Fragment implements View.OnClickListener {
                                                                                 }
                                                                             });
                                                                 }
-                                                                }
+                                                            }
                                                             if (!scrollView.canScrollVertically(-1)) {
                                                                 // top of scroll view
 

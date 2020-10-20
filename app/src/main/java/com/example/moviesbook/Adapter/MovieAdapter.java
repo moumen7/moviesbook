@@ -120,28 +120,28 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
         String use= url + MoviesList.get(position).getPosterPath();
         Picasso.get().load(use).into(holder.image);
 
-            if (orig==null )
-            {
-                holder.add.setVisibility(View.GONE);
-                holder.desc.setVisibility(View.GONE);
+        if (orig==null )
+        {
+            holder.add.setVisibility(View.GONE);
+            holder.desc.setVisibility(View.GONE);
 
-            }
-            else if(!orig)
-            {
-                holder.add.setVisibility(View.GONE);
-            }
-            else {
-                if ((Userdata.Usermovies.containsKey(String.valueOf(MoviesList.get(position).getId())))) {
-                    holder.add.setBackgroundDrawable
-                            (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-                    holder.add.setText("added");
-                } else {
-                    holder.add.setBackgroundDrawable
-                            (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
+        }
+        else if(!orig)
+        {
+            holder.add.setVisibility(View.GONE);
+        }
+        else {
+            if ((Userdata.Usermovies.containsKey(String.valueOf(MoviesList.get(position).getId())))) {
+                holder.add.setBackgroundDrawable
+                        (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
+                holder.add.setText("added");
+            } else {
+                holder.add.setBackgroundDrawable
+                        (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
 
-                    holder.add.setText("add");
-                }
+                holder.add.setText("add");
             }
+        }
 
 
 
@@ -179,64 +179,64 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
             Toast.makeText(mcontext,"heree",Toast.LENGTH_LONG).show();
             if (v.getId() == add.getId())
             {
-                            if(!Userdata.Usermovies.containsKey(String.valueOf(MoviesList.get(getAdapterPosition()).getId())))
-                            {
-                                add.setBackgroundDrawable
-                                        (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-                                add.setText("added");
-                                Map<String,Object> write = new HashMap<>();
-                                Userdata.Usermovies.put(String.valueOf(MoviesList.get(getAdapterPosition()).getId()),true);
-                                write.put("Title", String.valueOf
-                                        (MoviesList.get(getAdapterPosition()).getTitle()));
-                                write.put("Desc", String.valueOf
-                                        (MoviesList.get(getAdapterPosition()).getOverview()));
-                                write.put("Image", String.valueOf
-                                        ( url + MoviesList.get(getAdapterPosition()).getPosterPath()));
-                                write.put("Rating", String.valueOf
-                                        ( MoviesList.get(getAdapterPosition()).getVoteAverage()));
-                                if(MoviesList.get(getAdapterPosition()).getReleaseDate()!=null && MoviesList.get(getAdapterPosition()).getReleaseDate().length()>=4)
-                                    write.put("Year", String.valueOf
-                                            ( MoviesList.get(getAdapterPosition()).getReleaseDate().substring(0,4)));
-                                else
-                                    write.put("Year", String.valueOf
-                                            ( MoviesList.get(getAdapterPosition()).getReleaseDate()));
+                if(!Userdata.Usermovies.containsKey(String.valueOf(MoviesList.get(getAdapterPosition()).getId())))
+                {
+                    add.setBackgroundDrawable
+                            (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
+                    add.setText("added");
+                    Map<String,Object> write = new HashMap<>();
+                    Userdata.Usermovies.put(String.valueOf(MoviesList.get(getAdapterPosition()).getId()),true);
+                    write.put("Title", String.valueOf
+                            (MoviesList.get(getAdapterPosition()).getTitle()));
+                    write.put("Desc", String.valueOf
+                            (MoviesList.get(getAdapterPosition()).getOverview()));
+                    write.put("Image", String.valueOf
+                            ( url + MoviesList.get(getAdapterPosition()).getPosterPath()));
+                    write.put("Rating", String.valueOf
+                            ( MoviesList.get(getAdapterPosition()).getVoteAverage()));
+                    if(MoviesList.get(getAdapterPosition()).getReleaseDate()!=null && MoviesList.get(getAdapterPosition()).getReleaseDate().length()>=4)
+                        write.put("Year", String.valueOf
+                                ( MoviesList.get(getAdapterPosition()).getReleaseDate().substring(0,4)));
+                    else
+                        write.put("Year", String.valueOf
+                                ( MoviesList.get(getAdapterPosition()).getReleaseDate()));
 
-                                db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
-                                        .set(write, SetOptions.merge());
-                                int one = id.length();
-                                String put = id.substring(sp2.getString("ID","").length() , one);
-                                if(put.equals(""))
-                                {
-                                    put = "favorites122";
-                                    db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
-                                            .update("favs", FieldValue.increment(1));
-                                }
-                                db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
-                                        .update("users", FieldValue.arrayUnion(id));
-                                db.collection("Users").document(sp2.getString("ID",""))
-                                        .collection("MoviesList").document(put)
-                                        .update("number", FieldValue.increment(1));
-                            }
-                            else
-                            {
-                                add.setBackgroundDrawable
-                                        (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
-                                Userdata.Usermovies.remove(String.valueOf(MoviesList.get(getAdapterPosition()).getId()));
-                                add.setText("add");
-                                db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
-                                .update("users", FieldValue.arrayRemove(id));
-                                int one = id.length();
-                                String put = id.substring(sp2.getString("ID","").length() , one);
-                                if(put.equals(""))
-                                {
-                                    put = "favorites122";
-                                    db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
-                                            .update("favs", FieldValue.increment(-1));
-                                }
-                                db.collection("Users").document(sp2.getString("ID",""))
-                                        .collection("MoviesList").document(put)
-                                        .update("number", FieldValue.increment(-1));
-                            }
+                    db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
+                            .set(write, SetOptions.merge());
+                    int one = id.length();
+                    String put = id.substring(sp2.getString("ID","").length() , one);
+                    if(put.equals(""))
+                    {
+                        put = "favorites122";
+                        db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
+                                .update("favs", FieldValue.increment(1));
+                    }
+                    db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
+                            .update("users", FieldValue.arrayUnion(id));
+                    db.collection("Users").document(sp2.getString("ID",""))
+                            .collection("MoviesList").document(put)
+                            .update("number", FieldValue.increment(1));
+                }
+                else
+                {
+                    add.setBackgroundDrawable
+                            (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
+                    Userdata.Usermovies.remove(String.valueOf(MoviesList.get(getAdapterPosition()).getId()));
+                    add.setText("add");
+                    db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
+                            .update("users", FieldValue.arrayRemove(id));
+                    int one = id.length();
+                    String put = id.substring(sp2.getString("ID","").length() , one);
+                    if(put.equals(""))
+                    {
+                        put = "favorites122";
+                        db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
+                                .update("favs", FieldValue.increment(-1));
+                    }
+                    db.collection("Users").document(sp2.getString("ID",""))
+                            .collection("MoviesList").document(put)
+                            .update("number", FieldValue.increment(-1));
+                }
 
 
             }

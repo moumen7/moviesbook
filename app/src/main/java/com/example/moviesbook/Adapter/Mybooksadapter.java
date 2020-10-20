@@ -1,9 +1,11 @@
 package com.example.moviesbook.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.StrictMode;
 
+import com.example.moviesbook.Activity.ViewmbActivity;
 import com.example.moviesbook.Book;
 import com.example.moviesbook.Interfaces.ClickListener;
 import com.example.moviesbook.Json_Books.ImageLinks;
@@ -82,7 +84,7 @@ public class Mybooksadapter extends RecyclerView.Adapter<Mybooksadapter.PostView
     @NonNull
     @Override
     public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new PostViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.grid, parent, false));
+        return new PostViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.anothergrid, parent, false));
     }
 
     @Override
@@ -92,27 +94,12 @@ public class Mybooksadapter extends RecyclerView.Adapter<Mybooksadapter.PostView
                     new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-        holder.title.setText(BooksItems.get(position).getTitle() + " (" + BooksItems.get(position)
-                .getYear() + ")");
+
         if (BooksItems.get(position).getImage() != null) {
             String use = BooksItems.get(position).getImage();
             Picasso.get().load(use).into(holder.image);
         }
 
-
-            if((userdata.Userbooks.containsKey(String.valueOf(BooksItems.get(position).getID()))))
-            {
-                holder.add.setBackgroundDrawable
-                        (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-                holder.add.setText("added");
-            }
-            else
-            {
-                holder.add.setBackgroundDrawable
-                        (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
-
-                holder.add.setText("add");
-            }
 
 
 
@@ -140,81 +127,24 @@ public class Mybooksadapter extends RecyclerView.Adapter<Mybooksadapter.PostView
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             listenerRef = new WeakReference<>(listener);
-            title = itemView.findViewById(R.id.movietitle);
-            desc = itemView.findViewById(R.id.moviedesc);
             image = itemView.findViewById(R.id.movieimg);
-            add = itemView.findViewById(R.id.addbtn);
-            add.setOnClickListener(this);
-
-
+            image.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            if(v.getId() == add.getId())
-            {
-                if (Userdata.Userbooks.containsKey(String.valueOf
-                        (BooksItems.get(getAdapterPosition()).getID()))) {
-                    Userdata.Userbooks.remove(String.valueOf
-                            (BooksItems.get(getAdapterPosition()).getID()));
-                    add.setBackgroundDrawable
-                            (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
-
-                    add.setText("add");
-                    db.collection("Books").document(BooksItems.get(getAdapterPosition()).getID().toString())
-                            .update("users", FieldValue.arrayRemove(id));
-                    int one = id.length();
-                    String put = id.substring(sp2.getString("ID","").length() , one);
-                    if(put.equals(""))
-                    {
-                        put = "favorites122";
-                        db.collection("Books").document(BooksItems.get(getAdapterPosition()).getID().toString())
-                                .update("favs", FieldValue.increment(-1));
-                    }
-                    db.collection("Users").document(sp2.getString("ID",""))
-                            .collection("BooksList").document(put)
-                            .update("number", FieldValue.increment(-1));
-
-                } else {
-                    Userdata.Userbooks.put(String.valueOf
-                            (BooksItems.get(getAdapterPosition()).getID()), true);
-                    add.setBackgroundDrawable
-                            (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-
-                    add.setText("added");
-                    Userdata.Userbooks.put(String.valueOf
-                            (BooksItems.get(getAdapterPosition()).getID()),true);
-                    int position = getAdapterPosition();
-                    String id = String.valueOf
-                            (BooksItems.get(position).getID());
-                    Map<String,Object> write = new HashMap<>();
-                    userdata.Userbooks.put(String.valueOf(BooksItems.get(getAdapterPosition()).getID()),true);
-                    write.put("Title", String.valueOf
-                            (BooksItems.get(getAdapterPosition()).getTitle()));
-                    write.put("Desc", String.valueOf
-                            (BooksItems.get(getAdapterPosition()).getDesc()));
-                    write.put("Image", String.valueOf
-                            ( BooksItems.get(getAdapterPosition()).getImage()));
-                    write.put("Year", String.valueOf
-                            ( BooksItems.get(getAdapterPosition()).getYear()));
-                    db.collection("Books").document(BooksItems.get(getAdapterPosition()).getID().toString())
-                            .set(write, SetOptions.merge());
-                    int one = id.length();
-                    String put = id.substring(sp2.getString("ID", "").length(), one);
-                    if (put.equals("")) {
-                        put = "favorites122";
-                        db.collection("Books").document(BooksItems.get(getAdapterPosition()).getID().toString())
-                                .update("favs", FieldValue.increment(1));
-                    }
-                    db.collection("Books").document(BooksItems.get(getAdapterPosition()).getID().toString())
-                            .update("users", FieldValue.arrayUnion(id));
-                    db.collection("Users").document(sp2.getString("ID", ""))
-                            .collection("BooksList").document(put)
-                            .update("number", FieldValue.increment(1));
-                }
-
-
+            Intent intent = new Intent(mcontext, ViewmbActivity.class);
+            if(BooksItems.get(getAdapterPosition()).getTitle().length() > 5) {
+                intent.putExtra("name", BooksItems.get(getAdapterPosition()).getTitle().substring(0,4) );
             }
+            else
+            {
+                intent.putExtra("name", BooksItems.get(getAdapterPosition()).getTitle() );
+            }
+            intent.putExtra("Choice", "Books");
+            intent.putExtra("ID",BooksItems.get(getAdapterPosition()).getID());
+
+            mcontext.startActivity(intent);
             listenerRef.get().onPositionClicked(getAdapterPosition());
         }
 

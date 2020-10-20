@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.fonts.Font;
 import android.icu.text.Transliterator;
 import android.os.Build;
 import android.os.StrictMode;
@@ -38,6 +40,7 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -104,6 +107,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         }
         String text = posts.get(position).getUsername();
         String text2 = posts.get(position).getUsedtitle();
+        ForegroundColorSpan fcs = new ForegroundColorSpan(Color.BLUE);
         SpannableString SS = new SpannableString(text + " is posting about " + text2);
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
@@ -112,10 +116,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                 if(posts.get(position).getUsedtitle().length() > 5) {
                     intent.putExtra("name",posts.get(position).getUsedtitle().substring(0,4) );
                 }
-                        else
-                    {
-                        intent.putExtra("name",posts.get(position).getUsedtitle() );
-                    }
+                else
+                {
+                    intent.putExtra("name",posts.get(position).getUsedtitle() );
+                }
                 if (String.valueOf(posts.get(position).getUsedid()).matches("[0-9]+")) {
                     intent.putExtra("Choice", "Movies");
                     intent.putExtra("ID", posts.get(position).getUsedid());
@@ -125,12 +129,14 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                     intent.putExtra("ID", posts.get(position).getUsedid());
                 }
 
-                    mcontext.startActivity(intent);
+                mcontext.startActivity(intent);
 
             }
+
             @Override
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
+                ds.setColor(mcontext.getResources().getColor(R.color.Orange));
                 ds.setUnderlineText(false);
             }
         };
@@ -139,7 +145,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         StyleSpan sp = new StyleSpan(Typeface.BOLD);
         StyleSpan SP2 = new StyleSpan(Typeface.BOLD);
         SS.setSpan(SP2,0,text.length() , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        SS.setSpan(sp,text.length() ,text.length() + 17   , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SS.setSpan(sp,text.length() + 17 ,SS.length()   , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         holder.username.setText(SS);
         holder.date.setText(posts.get(position).getDate());
         holder.username.setMovementMethod(LinkMovementMethod.getInstance());
@@ -173,9 +179,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             holder.desc.setVisibility(View.GONE);
 
         if(posts.get(position).getImage() == null)
-        holder.postimage.setVisibility(View.GONE);
+            holder.postimage.setVisibility(View.GONE);
         else
-        Picasso.get().load(posts.get(position).getImage()).into(holder.postimage);
+            Picasso.get().load(posts.get(position).getImage()).into(holder.postimage);
         Map <String,Boolean> map = new HashMap<>();
         map =  posts.get(position).getLikers();
         if(map.containsKey(sp2.getString("ID","")))
@@ -187,10 +193,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             holder.like.setChecked(false);
         }
         Toast.makeText(mcontext, posts.get(position).getPostid(),Toast.LENGTH_LONG).show();
-        if(!sp2.getString("ID","").equals(posts.get(position).getUserid()))
-        {
-            holder.button.setVisibility(View.GONE);
-        }
+
+        holder.button.setVisibility(View.GONE);
     }
 
     @Override
@@ -320,7 +324,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         private void executeTransaction(final int change, final int state) {
             final int use = getAdapterPosition();
             final Map <String,Boolean> map;
-             map = (Map <String,Boolean>) posts.get(getAdapterPosition()).getLikers();
+            map = (Map <String,Boolean>) posts.get(getAdapterPosition()).getLikers();
 
             db.runTransaction(new Transaction.Function<Long>() {
                 @Override

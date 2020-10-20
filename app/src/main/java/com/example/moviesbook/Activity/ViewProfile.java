@@ -179,7 +179,7 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
 
 
 
-            adapter = new ListsAdapter(ViewProfile.this,new ClickListener() {
+        adapter = new ListsAdapter(ViewProfile.this,new ClickListener() {
             @Override public void onPositionClicked(int position) {
 
             }
@@ -300,20 +300,20 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
 
-                           if(task.getResult().get("numoffollowers") == null)
-                           {
-                               followers.setText(0 + " Followers");
-                           }
-                           else
-                           {
-                               String x = String.valueOf((long) task.getResult().getData().get("numoffollowers"));
-                               followers.setText(x + " Followers");
-                           }
-                        } else {
-                            followers.setText(0 + " Followers");
-                        }
+                    if(task.getResult().get("numoffollowers") == null)
+                    {
+                        followers.setText(0 + " Followers");
                     }
-                });
+                    else
+                    {
+                        String x = String.valueOf((long) task.getResult().getData().get("numoffollowers"));
+                        followers.setText(x + " Followers");
+                    }
+                } else {
+                    followers.setText(0 + " Followers");
+                }
+            }
+        });
         db.collection("Users").document(getIntent().getStringExtra("ID"))
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -335,7 +335,7 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
             }
         });
         q = db.collection("Posts").whereEqualTo("userid",getIntent().getStringExtra("ID"))
-        .orderBy("Date", Query.Direction.DESCENDING).limit(5);
+                .orderBy("Date", Query.Direction.DESCENDING).limit(5);
         DocumentReference docRef = db.collection("Users").document(getIntent().getStringExtra("ID"));
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override

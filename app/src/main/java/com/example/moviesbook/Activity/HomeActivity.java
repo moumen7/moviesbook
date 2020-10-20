@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -51,20 +53,23 @@ public class HomeActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
-        tabs.addTab(tabs.newTab().setIcon(R.drawable.search_frag));
+
         tabs.addTab(tabs.newTab().setIcon(R.drawable.home));
         tabs.addTab(tabs.newTab().setIcon(R.drawable.chats_frag));
+        tabs.addTab(tabs.newTab().setIcon(R.drawable.search_frag));
         tabs.addTab(tabs.newTab().setIcon(R.drawable.profile));
-       // SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        // SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         //viewPager.setAdapter(sectionsPagerAdapter);
 
         PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new Search());
+
         adapter.addFragment(new Feed());
         adapter.addFragment(new Chats());
+        adapter.addFragment(new Search());
         adapter.addFragment(new Profile());
 
+        getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#F57C00\">" + getString(R.string.app_name) + "</font>"));
         //Setting adapter
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
@@ -88,7 +93,7 @@ public class HomeActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         bar.setElevation(0);
 
 
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(0);
 
     }
 
