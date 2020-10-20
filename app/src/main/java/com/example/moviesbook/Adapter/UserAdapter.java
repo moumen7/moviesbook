@@ -2,6 +2,7 @@ package com.example.moviesbook.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,19 @@ import com.example.moviesbook.Interfaces.ClickListener;
 import com.example.moviesbook.R;
 import com.example.moviesbook.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
@@ -32,6 +41,7 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
 
+    private static final String TAG = "user adapter";
     Context context;
     List<User> mUsers;
     private final ClickListener listener;
@@ -102,31 +112,43 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
     private void showLastMessage(final String userid, final TextView msg){
         last_msg = "Default";
         final FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         db.collection("Chats").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for(QueryDocumentSnapshot document : task.getResult()){
-                    Chat chat = new Chat();
-                    //chat.sender = document.get("sender").toString();
-                    //chat.receiver = document.get("receiver").toString();
-                    //chat.message = document.get("message").toString();
-                    //if(fUser.getUid().equals(chat.receiver) && chat.sender.equals(userid)||
-                    //        fUser.getUid().equals(chat.sender)&& chat.receiver.equals(userid)){
-                    //    last_msg = chat.message;
-                    //}
-                //}
-                //switch (last_msg){
-                //    case "Default":
-                //        msg.setText("No messages.");
-                //        break;
-                //    default:
-                //        msg.setText(last_msg);
-                //        break;
+                for (final QueryDocumentSnapshot document : task.getResult()) {
+                    if (document.getId().contains(fUser.getUid()) && document.getId().contains(userid)) {
+                        db.collection("Chats").document(document.getId())
+                                .collection("messages").orderBy("Date", Query.Direction.DESCENDING)
+                                .limit(1).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                DocumentSnapshot lastVisible = queryDocumentSnapshots.getDocuments()
+                                        .get(0);
+                                last_msg = lastVisible.get("message").toString();
+                                msg.setText(last_msg);
+                                Log.d(TAG,"Last message" +last_msg);
+
+                            }
+                        });
                     }
-                //last_msg = "Default";
-            }
-        });
+                }
+            }});
+
+        Log.d(TAG,last_msg);
+                switch (last_msg){
+                    case "Default":
+                       msg.setText("No messages.");
+                       break;
+                   default:
+                        msg.setText(last_msg);
+                        break;
+                    }
+                last_msg = "Default";
 
     }
 }
+
+
+

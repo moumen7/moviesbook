@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.provider.DocumentsContract;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,10 +109,13 @@ public class Chats extends Fragment {
         fUser = FirebaseAuth.getInstance().getCurrentUser();
 
 
-        db.collection("Chats").addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+        db.collection("Chats").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    for (DocumentSnapshot document: queryDocumentSnapshots.getDocuments()) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document: task.getResult()) {
+
                         if(document.getId().contains(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             // index of fUser id in the room id
                             index = document.getId().indexOf(fUser.getUid());
@@ -135,11 +138,12 @@ public class Chats extends Fragment {
                             }
                             //Log.d(TAG, "index of the other user: " + index);
 
-            }
+                        }
 
-
+                    }
+                    readChats();
                 }
-                readChats();
+
             }
         });
 
@@ -188,5 +192,14 @@ public class Chats extends Fragment {
             }
         });
     }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+        }
+    }
+
 
 }

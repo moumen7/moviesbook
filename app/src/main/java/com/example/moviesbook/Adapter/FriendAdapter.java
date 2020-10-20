@@ -94,6 +94,7 @@ public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHol
         if(Userdata.following.containsKey(CurrentUsersFilter.get(position).getId()))
         {
             friendholder.imageButton.setImageResource(R.drawable.ic_done_black_24dp);
+            friendholder.sendMsgImgBtn.setImageResource(R.drawable.ic_baseline_chat_bubble_outline_24);
         }
         else
         {
@@ -153,6 +154,7 @@ public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHol
                             if(Userdata.following.containsKey(CurrentUsersFilter.get(getAdapterPosition()).getId()))
                             {
                                 imageButton.setImageResource(R.drawable.ic_baseline_person_add_24);
+                                sendMsgImgBtn.setImageResource(R.drawable.send_message);
                                 db.collection("Users").document(sp.getString("ID",""))
                                         .update("Following", FieldValue.arrayRemove(CurrentUsersFilter.get(getAdapterPosition()).getId()));
                                 db.collection("Users").document(CurrentUsersFilter.get(getAdapterPosition()).getId())
@@ -167,6 +169,7 @@ public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHol
                             {
 
                                 imageButton.setImageResource(R.drawable.ic_done_black_24dp);
+                                sendMsgImgBtn.setImageResource(R.drawable.ic_baseline_chat_bubble_outline_24);
                                 db.collection("Users").document(sp.getString("ID",""))
                                         .update("Following", FieldValue.arrayUnion(CurrentUsersFilter.get(getAdapterPosition()).getId()));
                                 db.collection("Users").document(CurrentUsersFilter.get(getAdapterPosition()).getId())
