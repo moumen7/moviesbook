@@ -14,7 +14,9 @@ public class MoviesorBooks extends AppCompatActivity {
     ImageView books;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_moviesor_books);
         movies = findViewById(R.id.imageView);
         books = findViewById(R.id.imageView2);

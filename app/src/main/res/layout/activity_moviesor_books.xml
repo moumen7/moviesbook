@@ -8,12 +8,12 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="212dp"
-        android:layout_height="733dp"
+        android:layout_width="226dp"
+        android:layout_height="753dp"
+        android:onClick="movies"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:onClick="movies"
         app:srcCompat="@drawable/black_photo" />
 
     <TextView
@@ -21,9 +21,9 @@
         android:layout_width="170dp"
         android:layout_height="116dp"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="280dp"
+        android:layout_marginBottom="260dp"
         android:gravity="center"
-        android:text="Post about A movie"
+        android:text="Movie"
         android:textColor="#FFFFFF"
         android:textSize="30dp"
         android:textStyle="bold"
@@ -32,22 +32,22 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="212dp"
-        android:layout_height="733dp"
-        android:onClick="Books"
+        android:layout_width="201dp"
+        android:layout_height="745dp"
         android:background="@color/whitecolor"
+        android:onClick="Books"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
-        android:layout_width="174dp"
+        android:layout_width="185dp"
         android:layout_height="189dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.004"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.262"
+        app:layout_constraintVertical_bias="0.212"
         app:srcCompat="@drawable/moviechoice" />
 
     <ImageView
@@ -55,24 +55,25 @@
         android:layout_height="175dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.965"
+        app:layout_constraintHorizontal_bias="0.885"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.285"
+        app:layout_constraintVertical_bias="0.282"
         app:srcCompat="@drawable/bookschoice2" />
 
     <TextView
         android:id="@+id/Bookchoice"
-        android:layout_width="170dp"
-        android:layout_height="116dp"
-        android:layout_marginStart="224dp"
-        android:layout_marginBottom="272dp"
-        android:gravity="center"
-        android:text="Post about A book"
+        android:layout_width="166dp"
+        android:layout_height="126dp"
+        android:layout_marginBottom="260dp"
         android:background="#FFFFFF"
+        android:gravity="center"
+        android:text="Book"
         android:textColor="#000000"
         android:textSize="30dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.934"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

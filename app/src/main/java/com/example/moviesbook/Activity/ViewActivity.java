@@ -63,6 +63,8 @@ public class ViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         sp = getSharedPreferences("user",MODE_PRIVATE);
         setContentView(R.layout.activity_view);
         recyclerView = findViewById(R.id.view);

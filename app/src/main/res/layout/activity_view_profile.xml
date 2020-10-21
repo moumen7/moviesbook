@@ -12,120 +12,200 @@
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="412dp"
-            android:layout_height="167dp"
+            android:layout_width="414dp"
+            android:layout_height="313dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="167dp">
+                android:layout_height="match_parent">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profiepic"
-                    android:layout_width="98dp"
-                    android:layout_height="115dp"
-                    android:layout_marginEnd="288dp"
+                    android:layout_width="179dp"
+                    android:layout_height="150dp"
+                    android:layout_marginEnd="116dp"
                     android:onClick="changeImage"
                     android:outlineAmbientShadowColor="#FFFFFF"
                     android:padding="7dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintVertical_bias="0.171" />
 
                 <ImageButton
                     android:id="@+id/imgbutton"
-                    android:layout_width="51dp"
-                    android:layout_height="61dp"
+                    android:layout_width="43dp"
+                    android:layout_height="40dp"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_marginEnd="236dp"
+                    android:layout_marginTop="140dp"
+                    android:layout_marginEnd="68dp"
                     android:onClick="follow"
                     android:src="@drawable/ic_baseline_person_add_24"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/username" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
 
-                    android:id="@+id/mutualmovies"
-                    android:layout_width="135dp"
-                    android:layout_height="29dp"
-                    android:layout_marginBottom="4dp"
-                    android:text="Mutual Movies   "
-                    android:textColor="?android:textColorPrimary"
-                    android:textSize="14dp"
+                    android:layout_width="85dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginBottom="24dp"
+                    android:text="Mutual Movies"
+                    android:textAlignment="center"
+                    android:textSize="12dp"
                     android:textStyle="bold"
-                    android:clickable="true"
-                    android:onClick="perform_action_movies"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.812"
                     app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/followers"
+                    android:layout_width="50dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="344dp"
+                    android:layout_marginTop="240dp"
+                    android:clickable="true"
+                    android:text="0 "
+                    android:textAlignment="center"
+                    android:textColor="?android:textColorPrimary"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+
+                    android:layout_width="85dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="324dp"
+                    android:layout_marginTop="268dp"
+                    android:text="Followers"
+                    android:textAlignment="center"
+                    android:textSize="12dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+
+                    android:layout_width="85dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="228dp"
+                    android:layout_marginTop="268dp"
+                    android:text="Following"
+                    android:textAlignment="center"
+                    android:textSize="12dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/following"
+                    android:layout_width="50dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="240dp"
+                    android:layout_marginEnd="116dp"
+                    android:clickable="true"
+                    android:text="0 "
+                    android:textAlignment="center"
+                    android:textColor="?android:textColorPrimary"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+
+                    android:layout_width="85dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="132dp"
+                    android:layout_marginTop="268dp"
+                    android:text="Mutual Books"
+                    android:textAlignment="center"
+                    android:textSize="12dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
 
                     android:id="@+id/mutualbooks"
-                    android:layout_width="135dp"
-                    android:layout_height="29dp"
-                    android:layout_marginBottom="4dp"
-                    android:text="Mutual Books   "
+                    android:layout_width="50dp"
+                    android:layout_height="20dp"
+                    android:layout_marginBottom="52dp"
+                    android:clickable="true"
                     android:onClick="perform_action_books"
+                    android:text="0"
+                    android:textAlignment="center"
                     android:textColor="?android:textColorPrimary"
                     android:textSize="14dp"
                     android:textStyle="bold"
-                    android:clickable="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.227"
+                    app:layout_constraintHorizontal_bias="0.403"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+
+                    android:id="@+id/mutualmovies"
+                    android:layout_width="50dp"
+                    android:layout_height="20dp"
+                    android:layout_marginBottom="52dp"
+                    android:clickable="true"
+                    android:onClick="perform_action_movies"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textColor="?android:textColorPrimary"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.142"
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
 
                     android:id="@+id/username"
-                    android:layout_width="140dp"
-                    android:layout_height="55dp"
-                    android:layout_marginBottom="104dp"
+                    android:layout_width="183dp"
+                    android:layout_height="33dp"
+                    android:layout_marginBottom="100dp"
+                    android:text="John Doe"
+                    android:textAlignment="center"
                     android:textColor="?android:textColorPrimary"
                     android:textSize="20dp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
 
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.857"
+                    app:layout_constraintHorizontal_bias="0.515"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <TextView
-                    android:id="@+id/followers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="204dp"
-                    android:layout_marginTop="96dp"
-                    android:clickable="true"
-                    android:textColor="?android:textColorPrimary"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/following"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="96dp"
-                    android:layout_marginEnd="88dp"
-                    android:clickable="true"
-                    android:textColor="?android:textColorPrimary"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/profile_favsmovies"
+            android:layout_width="371dp"
+            android:layout_height="181dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/Movieslist">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
         <TextView
             android:id="@+id/Movieslist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="176dp"
-            android:layout_marginEnd="224dp"
+            android:layout_marginTop="320dp"
+            android:layout_marginEnd="216dp"
             android:clickable="true"
             android:fontFamily="Bold"
             android:text="Movies List"
@@ -136,26 +216,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/profile_favsmovies"
-            android:layout_width="371dp"
-            android:layout_height="181dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/Movieslist">
-
-        </androidx.recyclerview.widget.RecyclerView>
-
-
-        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/profile_favsbooks"
             android:layout_width="371dp"
             android:layout_height="175dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.75"
             app:layout_constraintStart_toStartOf="parent"
@@ -177,6 +242,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_favsmovies"
             app:layout_constraintVertical_bias="1.0" />
+
         <TextView
             android:id="@+id/posttext"
             android:layout_width="152dp"
