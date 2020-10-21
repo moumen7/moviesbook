@@ -81,6 +81,17 @@ public class Mybooksadapter extends RecyclerView.Adapter<Mybooksadapter.PostView
             }
         });
     }
+    public Mybooksadapter(Context context,ClickListener listener)
+    {
+
+
+        db = FirebaseFirestore.getInstance();
+        this.id = id;
+        this.listener = listener;
+        mcontext = context;
+        sp2 = mcontext.getSharedPreferences("user", Context.MODE_PRIVATE);
+
+    }
     @NonNull
     @Override
     public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

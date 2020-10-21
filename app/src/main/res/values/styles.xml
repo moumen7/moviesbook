@@ -8,6 +8,7 @@
 
     <style name="NoActionBar" parent="@android:style/Theme.Holo.Light">
         <item name="android:windowActionBar">false</item>
+        <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowNoTitle">true</item>
 
     </style>
@@ -15,19 +16,28 @@
         <item name="android:textSize">@dimen/text_size</item>
         <item name="android:drawablePadding">@dimen/drawable_padding</item>
         <item name="android:layout_width">0dp</item>
+        <item name="android:windowActivityTransitions">true</item>
         <item name="android:layout_height">wrap_content</item>
+
         <item name="android:padding">@dimen/normal_padding</item>
     </style>
 
-    <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
+        <item name="android:windowActivityTransitions">true</item>
+    </style>
+    <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" >
+        <item name="android:windowActivityTransitions">true</item>
+    </style>
 
-    <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="DarkMood" parent="Theme.AppCompat.DayNight"/>
+    <style name="DarkMood" parent="Theme.AppCompat.DayNight">
+        <item name="android:windowActivityTransitions">true</item>
+        </style>
 
     <style name="AppTheme.Transparent" parent="AppTheme">
         <item name="windowActionBarOverlay">true</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowActivityTransitions">true</item>
     </style>
 
 </resources>

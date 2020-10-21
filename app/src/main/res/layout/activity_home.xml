@@ -4,26 +4,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".Activity.HomeActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
-
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:id="@+id/toolbar"
+            android:layout_height="?android:attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
+            />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabTextAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:tabGravity="fill"
-            app:tabSelectedTextColor="#F57C00"
-            app:tabTextColor="#BDBDBD"
+            android:layout_width="400dp"
+            android:layout_height="match_parent"
+            app:tabGravity="center"
             app:tabIconTint="@color/selector_tab"
-            app:tabIndicatorColor="#F57C00"/>
+            app:tabIndicatorColor="@android:color/transparent"
+            android:layout_gravity="bottom"
+            app:tabSelectedTextColor="#F57C00"
+            app:tabTextAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:tabTextColor="#BDBDBD"/>
     </com.google.android.material.appbar.AppBarLayout>
-
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabpost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:onClick="click"
+        android:background="#FB8C00"
+        android:backgroundTint="#FB8C00"
+        android:padding="16dp"
+        android:src="@drawable/newpost"
+        app:maxImageSize="48dp"
+        app:rippleColor="#FB8C00"
+        app:borderWidth="0dp"/>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"

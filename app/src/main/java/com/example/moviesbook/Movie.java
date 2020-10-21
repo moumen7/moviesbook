@@ -20,7 +20,11 @@ public class Movie {
     {
 
     }
-
+    public Movie(String ID, String image,  String title) {
+        this.ID = ID;
+        this.Image = image;
+        this.Title = title;
+    }
     public Movie(String desc, String image, String rating, String title, String year) {
         Desc = desc;
         Image = image;

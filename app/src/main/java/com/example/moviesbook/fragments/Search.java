@@ -20,24 +20,35 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.example.moviesbook.Activity.AddActivity;
 import com.example.moviesbook.Activity.AddPicActivity;
 import com.example.moviesbook.Activity.ChatActivity;
 import com.example.moviesbook.Activity.HomeActivity;
 import com.example.moviesbook.Activity.LoginActivity;
 import com.example.moviesbook.Activity.RegisterActivity;
 import com.example.moviesbook.Activity.ViewProfile;
+import com.example.moviesbook.Adapter.BooksAdapter;
 import com.example.moviesbook.Adapter.FriendAdapter;
+import com.example.moviesbook.Adapter.MovieAdapter;
 import com.example.moviesbook.Friend;
 import com.example.moviesbook.Interfaces.ClickListener;
+import com.example.moviesbook.Json_Books.BooksResult;
+import com.example.moviesbook.MovieResults;
 import com.example.moviesbook.R;
 import com.example.moviesbook.Userdata;
+import com.example.moviesbook.ViewModel.BooksViewModel;
+import com.example.moviesbook.ViewModel.MoviesViewModel;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -70,9 +81,15 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
 
     private CollectionReference users = db.collection("Users");
     private FriendAdapter adapter;
+    private TabLayout tabLayout;
+    MoviesViewModel moviesViewModel;
+    BooksViewModel booksViewModel;
     private RecyclerView recyclerView;
     Query first;
+
     SharedPreferences sp;
+    MovieAdapter movieAdapter;
+    BooksAdapter booksAdapter;
     DocumentSnapshot lastVisible;
     private ListView mList;
     Query query;
@@ -138,91 +155,74 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
 
             }
         });
+
         same = new ArrayList<>();
+        moviesViewModel = ViewModelProviders.of(this).get(MoviesViewModel.class);
+        booksViewModel = ViewModelProviders.of(this).get(BooksViewModel.class);
         ArrayList<Userdata> followers = new ArrayList<>();
-        View view = inflater.inflate(R.layout.fragment_search, container, false);
+        final View view = inflater.inflate(R.layout.fragment_search, container, false);
         recyclerView = view.findViewById(R.id.recycler);
         sp = this.getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        tabLayout = view.findViewById(R.id.tablay);
         ET = view.findViewById(R.id.search_edit_text);
+        booksAdapter = new BooksAdapter(getContext(), new ClickListener() {
+            @Override
+            public void onPositionClicked(int position) {
+
+            }
+
+            @Override
+            public void onLongClicked(int position) {
+
+            }
+        },null,sp.getString("ID",""));
+        movieAdapter = new MovieAdapter(getContext(), new ClickListener() {
+            @Override public void onPositionClicked(int position) {
+
+            }
+
+            @Override public void onLongClicked(int position) {
+
+            }
+        },null,sp.getString("ID",""));
         userslist = new ArrayList<>();
+        tabLayout.addTab(tabLayout.newTab().setText("People"));
+        tabLayout.addTab(tabLayout.newTab().setText("Movies"));
+        tabLayout.addTab(tabLayout.newTab().setText("Books"));
 
         end = false;
         recyclerView.setAdapter(adapter);
 
-        first = db.collection("Users")
-                .orderBy("id")
-                .limit(5);
-        first.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot documentSnapshots) {
-
-                        int i=0;
-                        for (QueryDocumentSnapshot qs : documentSnapshots) {
-                            Friend ChatUser = qs.toObject(Friend.class);
-                            if(!sp.getString("ID","").equals(ChatUser.getId())) {
-                                userslist.add(ChatUser);
-                                Toast.makeText(getContext(), ChatUser.getId(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                        if (documentSnapshots.size() > 0) {
-                            lastVisible = documentSnapshots.getDocuments()
-                                    .get(documentSnapshots.size() - 1);
-                            adapter.setList(userslist);
-                        }
-                    }
-                });
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
+        ReadUsers();
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                LinearLayoutManager layoutManager=LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
-                int totalItemCount = layoutManager.getItemCount();
-                int LastVisible = layoutManager.findLastVisibleItemPosition();
-                boolean endHasBeenReached = !recyclerView.canScrollVertically(1);
-                if (endHasBeenReached || totalItemCount == 0) {
+            public void onTabSelected(TabLayout.Tab tab) {
+                if(tabLayout.getSelectedTabPosition()== 0)
+                {
 
-                    Query query;
-                    if (lastVisible == null) {
-                        query = users
-                                .limit(5);
-                    } else {
-                        query = users.
-                                startAfter(lastVisible)
-                                .limit(5);
-                    }
-                    query.get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                    String data = "";
-                                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                        Friend note = documentSnapshot.toObject(Friend.class);
-                                        if(!sp.getString("ID","").equals(note.getId())) {
-                                            userslist.add(note);
-                                            Toast.makeText(getContext(), sp.getString("ID", ""), Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                    if (queryDocumentSnapshots.size() > 0) {
-                                        data += "___________\n\n";
-                                        lastVisible = queryDocumentSnapshots.getDocuments()
-                                                .get(queryDocumentSnapshots.size() - 1);
-                                        adapter.setList(userslist);
-                                    }
-                                    if(ET.getText().toString()!="")
-                                    {
-                                        filter(ET.getText().toString());
-                                    }
-                                }
-                            });
-
-
+                    filter(ET.getText().toString());
+                }
+                else  if(tabLayout.getSelectedTabPosition()== 2)
+                {
+                  showbooks(ET.getText().toString());
+                }
+                else
+                {
+                    showmovies(ET.getText().toString());
                 }
 
             }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
+
 
 
 
@@ -263,7 +263,12 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
 
                 if(!editable.equals(""))
                 {
+                    if(tabLayout.getSelectedTabPosition()== 0)
                     filter(editable.toString());
+                    else  if(tabLayout.getSelectedTabPosition()== 1)
+                        showmovies(editable.toString());
+                    else
+                        showbooks(editable.toString());
                 }
 
             }
@@ -274,6 +279,8 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
     private void filter(String text) {
         if (text != "")
         {
+            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
+            recyclerView.setAdapter(adapter);
             filteredList = new ArrayList<>();
             for (Friend item : userslist) {
                 if (item.getUsername().toLowerCase().contains(text.toLowerCase())) {
@@ -281,6 +288,39 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
                 }
             }
             adapter.filterList(filteredList);
+        }
+    }
+    private void showmovies(String x)
+    {
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setAdapter(movieAdapter);
+        if(x!=null && !x.equals("")) {
+
+            moviesViewModel.getMovies(x);
+            moviesViewModel.MoviesMutable.observe(getActivity(), new Observer<MovieResults>() {
+
+                @Override
+                public void onChanged(MovieResults postModels) {
+                    movieAdapter.setList(postModels.getResults());
+                }
+            });
+        }
+
+    }
+    private void showbooks(String x)
+    {
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setAdapter(booksAdapter);
+        if(x!=null && !x.equals("")) {
+
+            booksViewModel.getBooks(x);
+            booksViewModel.BooksMutable.observe(getActivity(), new Observer<BooksResult>() {
+
+                @Override
+                public void onChanged(BooksResult postModels) {
+                    booksAdapter.setList(postModels.getItems());
+                }
+            });
         }
     }
 
@@ -318,7 +358,7 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
     private void ReadUsers()
     {
         final FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
-        query = db.collection("Users").limit(3).orderBy("username");
+        query = db.collection("Users").limit(30).orderBy("username");
 
         query.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -335,7 +375,6 @@ public class Search extends Fragment implements FriendAdapter.onNoteListener {
                             if (!fUser.getUid().equals(ChatUser.getId())) {
                                 userslist.add(ChatUser);
                             }
-
                         }
 
 
