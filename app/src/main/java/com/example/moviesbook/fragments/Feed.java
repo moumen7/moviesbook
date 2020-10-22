@@ -7,11 +7,13 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +31,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -141,8 +144,7 @@ public class Feed extends Fragment implements View.OnClickListener{
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
-        post = (FloatingActionButton) view.findViewById(R.id.fabpost);
-        post.setOnClickListener(this);
+
         recyclerViewposts = view.findViewById(R.id.posts);
         recyclerViewposts.setLayoutManager(new LinearLayoutManager(getContext()));
         db = FirebaseFirestore.getInstance();
@@ -215,6 +217,7 @@ public class Feed extends Fragment implements View.OnClickListener{
                         });
                     }
                 });
+
         recyclerViewposts.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewposts.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

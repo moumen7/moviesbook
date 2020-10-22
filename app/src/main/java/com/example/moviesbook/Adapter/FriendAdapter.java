@@ -1,8 +1,11 @@
 package com.example.moviesbook.Adapter;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -186,7 +189,10 @@ public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHol
             {
                         Intent intent = new Intent(context, ViewProfile.class);
                         intent.putExtra("ID",CurrentUsersFilter.get(getAdapterPosition()).getId());
-                        context.startActivity(intent);
+                        Pair[] pairs = new Pair[1];
+                        pairs[0] = new Pair<View,String>(imageView,"imagetrans");
+                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context,pairs);
+                        context.startActivity(intent,options.toBundle());
             }
         }
     }

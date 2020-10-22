@@ -32,6 +32,7 @@ import com.example.moviesbook.fragments.Feed;
 import com.example.moviesbook.fragments.Profile;
 import com.example.moviesbook.fragments.Search;
 import com.example.moviesbook.fragments.SectionsPagerAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
@@ -41,8 +42,8 @@ import java.util.List;
 
 
 public class HomeActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
-
-
+    Toolbar toolbar;
+    FloatingActionButton post;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -52,6 +53,9 @@ public class HomeActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         firestore.setFirestoreSettings(settings);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        post = (FloatingActionButton)findViewById(R.id.fabpost);
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
 
         tabs.addTab(tabs.newTab().setIcon(R.drawable.home));
@@ -146,6 +150,13 @@ public class HomeActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
+        }
+    }
+    public void click(View v) {
+        if(v.getId() == post.getId())
+        {
+            Intent intent = new Intent(HomeActivity.this, MoviesorBooks.class);
+            startActivity(intent);
         }
     }
     class PagerAdapter extends FragmentPagerAdapter {

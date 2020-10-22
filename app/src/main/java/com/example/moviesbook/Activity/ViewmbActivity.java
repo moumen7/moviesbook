@@ -20,15 +20,19 @@ import android.widget.TextView;
 
 import com.example.moviesbook.Adapter.BooksAdapter;
 import com.example.moviesbook.Adapter.MovieAdapter;
+import com.example.moviesbook.Adapter.Mybooksadapter;
 import com.example.moviesbook.Adapter.Mymoviesadapter;
 import com.example.moviesbook.Adapter.PostsAdapter;
 import com.example.moviesbook.Book;
 import com.example.moviesbook.Interfaces.ClickListener;
 import com.example.moviesbook.Json_Books.BooksResult;
+import com.example.moviesbook.Json_Books.Item;
+import com.example.moviesbook.Movie;
 import com.example.moviesbook.MovieResults;
 import com.example.moviesbook.MovieRsults2;
 import com.example.moviesbook.Movies2;
 import com.example.moviesbook.R;
+import com.example.moviesbook.Result;
 import com.example.moviesbook.ViewModel.BooksViewModel;
 import com.example.moviesbook.ViewModel.MoviesViewModel;
 import com.example.moviesbook.fragments.Post;
@@ -48,6 +52,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class ViewmbActivity extends AppCompatActivity {
     private static final String TAG = "ViewmbActivity";
@@ -58,11 +63,14 @@ public class ViewmbActivity extends AppCompatActivity {
     FirebaseFirestore db;
     Query q;
     MoviesViewModel moviesViewModel;
+    ArrayList<Movie> movies;
+    ArrayList<Book> books;
     BooksViewModel booksViewModel;
     DocumentSnapshot lastVisible;
     PostsAdapter postsAdapter;
-    MovieAdapter movieAdapter;
-    BooksAdapter booksAdapter;
+    Mymoviesadapter movieAdapter;
+    private List<Movie> MoviesItems = new ArrayList<>();
+    Mybooksadapter booksAdapter;
     RecyclerView recyclerViewPosts;
     TextView getName;
     ScrollView scrollView;
@@ -78,9 +86,12 @@ public class ViewmbActivity extends AppCompatActivity {
         favorites = findViewById(R.id.Favorites);
         getName = (TextView) findViewById(R.id.NameOfChoosen);
         db = FirebaseFirestore.getInstance();
+        books = new ArrayList<>();
+
         desc = findViewById(R.id.Desc);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         recyclerViewPosts = findViewById(R.id.myposts);
+
         /// show only title of movie or book in toolbar when collapsing
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.cardInfo_collapsing_mb);
         collapsingToolbarLayout.setTitleEnabled(false);
@@ -107,24 +118,33 @@ public class ViewmbActivity extends AppCompatActivity {
                 }
             }
         });
-        movieAdapter = new MovieAdapter(ViewmbActivity.this,new ClickListener() {
-            @Override public void onPositionClicked(int position) {
+
+        movieAdapter = new Mymoviesadapter(ViewmbActivity.this,new ClickListener() {
+            @Override
+            public void onPositionClicked(int position) {
 
             }
 
-            @Override public void onLongClicked(int position) {
+            @Override
+            public void onLongClicked(int position) {
+
             }
         });
-        booksAdapter = new BooksAdapter(ViewmbActivity.this,new ClickListener() {
-            @Override public void onPositionClicked(int position) {
+
+        booksAdapter = new Mybooksadapter(ViewmbActivity.this,new ClickListener() {
+            @Override
+            public void onPositionClicked(int position) {
 
             }
 
-            @Override public void onLongClicked(int position) {
+            @Override
+            public void onLongClicked(int position) {
+
             }
         });
         posts = new ArrayList<>();
         Image = findViewById(R.id.image);
+        movies = new ArrayList<>();
         scrollView = findViewById(R.id.scroll);
         recyclerViewPosts.setLayoutManager(new LinearLayoutManager(ViewmbActivity.this));
         rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -168,7 +188,7 @@ public class ViewmbActivity extends AppCompatActivity {
                                 public void onChanged(BooksResult postModels) {
                                     desc.setText(postModels.getItems().get(0).getVolumeInfo().getSubtitle());
                                     if(postModels.getItems().get(0).getVolumeInfo().getImageLinks().getThumbnail() !=null)
-                                        Picasso.get().load("http://image.tmdb.org/t/p/original" + postModels.getItems().get(0).getVolumeInfo().getImageLinks().getThumbnail()
+                                        Picasso.get().load( postModels.getItems().get(0).getVolumeInfo().getImageLinks().getThumbnail()
                                         ).into(Image);
                                     favorites.setText(String.valueOf("0 Favorites"));
                                 }
@@ -200,7 +220,12 @@ public class ViewmbActivity extends AppCompatActivity {
 
                 @Override
                 public void onChanged(MovieRsults2 postModels) {
-                    movieAdapter.setList(postModels.getResults());
+                    for ( Result x:postModels.getResults())
+                    {
+                        Movie add = new Movie(x.getId().toString(),"http://image.tmdb.org/t/p/original" + x.getPosterPath(),x.getTitle());
+                        movies.add(add);
+                    }
+                    movieAdapter.setList(movies);
                 }
             });
         }
@@ -213,7 +238,12 @@ public class ViewmbActivity extends AppCompatActivity {
 
                 @Override
                 public void onChanged(BooksResult postModels) {
-                    booksAdapter.setList(postModels.getItems());
+                    for ( Item x:postModels.getItems())
+                    {
+                        Book add = new Book(x.getId().toString(),x.getVolumeInfo().getImageLinks().getThumbnail(),x.getVolumeInfo().getTitle());
+                        books.add(add);
+                    }
+                    booksAdapter.setList(books);
                 }
             });
         }

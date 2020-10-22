@@ -11,6 +11,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +25,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Adapter;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -90,6 +92,7 @@ public class Profile extends Fragment implements View.OnClickListener {
 
     private TextView AddMovies;
     private TextView AddBooks;
+    ProgressBar progressBar ;
     private TextView ViewMovies;
     private TextView ViewBooks;
     private FirebaseFirestore db;
@@ -106,7 +109,7 @@ public class Profile extends Fragment implements View.OnClickListener {
     private ArrayList<Book> userbooks;
     private ArrayList<Post> posts;
     private ArrayList<Movie> usermovies;
-    private ScrollView scrollView;
+    private NestedScrollView scrollView;
     private ArrayList<List> lists;
     private ArrayList<List> lists2;
     List Firstlist;
@@ -157,6 +160,7 @@ public class Profile extends Fragment implements View.OnClickListener {
         following = view.findViewById(R.id.following);
         imageView = view.findViewById(R.id.profiepic);
         ViewMovies = view.findViewById(R.id.Movieslist);
+        progressBar = view.findViewById(R.id.progressBar);
         Firstlist = new List();
         ViewBooks = view.findViewById(R.id.Bookslist);
         img = new String();
@@ -367,6 +371,7 @@ public class Profile extends Fragment implements View.OnClickListener {
                                                                     == (scrollView.getHeight() + scrollView.getScrollY()) && posts.size()!=0)
                                                             {
                                                                 if(recbottom != scrollView.getChildAt(0).getBottom()) {
+                                                                    showProgressView();
                                                                     recbottom = scrollView.getChildAt(0).getBottom();
                                                                     q = db.collection("Posts").
                                                                             whereEqualTo("userid", sp.getString("ID", "")).orderBy("Date", Query.Direction.DESCENDING)
@@ -461,6 +466,13 @@ public class Profile extends Fragment implements View.OnClickListener {
                 filechooser();
                 break;
         }
+    }
+    void showProgressView() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    void hideProgressView() {
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
 }

@@ -26,6 +26,11 @@ public class Book {
         Title = title;
         Year = year;
     }
+    public Book(String ID, String image, String title) {
+        this.ID = ID;
+        this.Image = image;
+        this.Title = title;
+    }
 
     public String getDesc() {
         return Desc;

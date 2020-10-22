@@ -1,5 +1,7 @@
 package com.example.moviesbook.Adapter;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,6 +31,7 @@ import com.squareup.picasso.Picasso;
 
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +59,7 @@ import static androidx.constraintlayout.motion.widget.MotionScene.TAG;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHolder> {
     String url = "http://image.tmdb.org/t/p/original";
+
     FirebaseFirestore db;
 
     DocumentReference messageRef;
@@ -116,14 +120,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
         else
             holder.title.setText(MoviesList.get(position).getTitle());
 
-        holder.desc.setText(MoviesList.get(position).getOverview());
+
         String use= url + MoviesList.get(position).getPosterPath();
         Picasso.get().load(use).into(holder.image);
 
         if (orig==null )
         {
             holder.add.setVisibility(View.GONE);
-            holder.desc.setVisibility(View.GONE);
 
         }
         else if(!orig)
@@ -160,14 +163,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
 
     public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private WeakReference<ClickListener> listenerRef;
-        TextView author, date, desc, content,title,link;
+        TextView author, date, content,title,link;
         Button add;
         ImageView image;
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             listenerRef = new WeakReference<>(listener);
             title = itemView.findViewById(R.id.movietitle);
-            desc = itemView.findViewById(R.id.moviedesc);
             image = itemView.findViewById(R.id.movieimg);
             add = itemView.findViewById(R.id.addbtn);
             add.setOnClickListener(this);
@@ -247,6 +249,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
                     Intent intent = new Intent(mcontext, ViewmbActivity.class);
                     intent.putExtra("Choice", "Movies");
                     intent.putExtra("ID", MoviesList.get(getAdapterPosition()).getId().toString());
+
                     mcontext.startActivity(intent);
                 }
                 else if(!orig)

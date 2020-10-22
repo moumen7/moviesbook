@@ -32,6 +32,7 @@
 
     <ImageView
         android:id="@+id/imageView2"
+
         android:layout_width="212dp"
         android:layout_height="733dp"
         android:onClick="Books"

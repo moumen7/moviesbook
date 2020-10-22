@@ -32,7 +32,8 @@
         <activity android:name=".Activity.followersorfollowing" />
         <activity android:name=".Activity.AddActivity" />
         <activity android:name=".Activity.BooksActivity" />
-        <activity android:name=".Activity.HomeActivity" />
+        <activity android:name=".Activity.HomeActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
         <activity android:name=".Activity.AddPicActivity" />
         <activity android:name=".Activity.UserActivity" />
         <activity android:name=".Activity.MainActivity" />

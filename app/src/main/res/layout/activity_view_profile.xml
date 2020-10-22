@@ -27,6 +27,7 @@
                     android:layout_height="115dp"
                     android:layout_marginEnd="288dp"
                     android:onClick="changeImage"
+                    android:transitionName="imagetrans"
                     android:outlineAmbientShadowColor="#FFFFFF"
                     android:padding="7dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -82,9 +83,9 @@
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
-
                     android:id="@+id/username"
                     android:layout_width="140dp"
+                    android:transitionName="nametrans"
                     android:layout_height="55dp"
                     android:layout_marginBottom="104dp"
                     android:textColor="?android:textColorPrimary"
