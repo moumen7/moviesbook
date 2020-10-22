@@ -3,16 +3,21 @@ package com.example.moviesbook.Activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -32,6 +37,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -55,18 +62,22 @@ public class ViewActivity extends AppCompatActivity {
     ArrayList<Book> userbooks;
     Mymoviesadapter mymoviesadapter;
     Mybooksadapter mybooksadapter;
-    Button button;
+    //Button button;
+    FloatingActionButton button;
     ImageView imageView;
     TextView number;
+    TextView listName;
     Boolean pass;
     Query q;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         sp = getSharedPreferences("user",MODE_PRIVATE);
         setContentView(R.layout.activity_view);
         recyclerView = findViewById(R.id.view);
-        button = findViewById(R.id.Add);
+        button =(FloatingActionButton) findViewById(R.id.Add);
+        listName = (TextView) findViewById(R.id.Listname);
         imageView = findViewById(R.id.imageView3);
         fb =  FirebaseFirestore.getInstance();
         recyclerView.setHasFixedSize(true);
@@ -75,9 +86,38 @@ public class ViewActivity extends AppCompatActivity {
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
+        /// show only title of movie or book in toolbar when collapsing
+        CollapsingToolbarLayout collapsingToolbarLayout;
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.cardInfo_collapsing_list);
+        collapsingToolbarLayout.setTitleEnabled(false);
+        final androidx.appcompat.widget.Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_list);
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.cardInfo_appbar_list);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = true;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    toolbar.setTitle(listName.getText());
+                    imageView.setVisibility(View.GONE);
+                    isShow = true;
+                } else if(isShow) {
+                    isShow = false;
+                    toolbar.setTitle(" ");
+                    imageView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         if(!getIntent().getStringExtra("id").contains(sp.getString("ID","")))
-            button.setVisibility(View.GONE);
+            //button.setVisibility(View.GONE);
+            //button.hide();
+            //hideFloatingActionButton(button);
+            button.clearAnimation();
         mymoviesadapter = new Mymoviesadapter(ViewActivity.this,new ClickListener() {
             @Override
             public void onPositionClicked(int position) {
@@ -117,9 +157,11 @@ public class ViewActivity extends AppCompatActivity {
         {
             String id = getIntent().getStringExtra("id");
             String id2 = getIntent().getStringExtra("id2");
-
-            button.setVisibility(View.GONE);
-            setTitle(getIntent().getStringExtra("Name"));
+            // button.hide();
+            //hideFloatingActionButton(button);
+            //setTitle(getIntent().getStringExtra("Name"));
+            button.clearAnimation();
+            listName.setText(getIntent().getStringExtra("Name"));
             //MUTUAL MOVIES
             final ArrayList<Movie> movies = new ArrayList<>();
             final Set<String> repeated = new HashSet<String>();
@@ -169,8 +211,12 @@ public class ViewActivity extends AppCompatActivity {
             String id = getIntent().getStringExtra("id");
             String id2 = getIntent().getStringExtra("id2");
 
-            button.setVisibility(View.GONE);
-            setTitle(getIntent().getStringExtra("Name"));
+            //button.setVisibility(View.GONE);
+            //button.hide();
+            //hideFloatingActionButton(button);
+            //setTitle(getIntent().getStringExtra("Name"));
+            button.clearAnimation();
+            listName.setText(getIntent().getStringExtra("Name"));
             //MUTUAL BOOKS
             final ArrayList<Book> books = new ArrayList<>();
             final Set <String> repeatedbooks = new HashSet<String>();
@@ -214,8 +260,12 @@ public class ViewActivity extends AppCompatActivity {
 
         if(getIntent().hasExtra("Movie"))
         {
-            button.setText("Add Movies");
-            setTitle(getIntent().getStringExtra("Name"));
+            //button.setText("Add Movies");
+            button.show();
+            //showFloatingActionButton(button);
+            //setTitle(getIntent().getStringExtra("Name"));
+            listName.setText(getIntent().getStringExtra("Name"));
+            //toolbar.setTitle(getIntent().getStringExtra("Name"));
 
             q = fb.collection("Movies").whereArrayContains("users",getIntent().getStringExtra("id"));
 
@@ -248,8 +298,11 @@ public class ViewActivity extends AppCompatActivity {
         }
         else
         {
-            button.setText("Add Books");
-            setTitle(getIntent().getStringExtra("Name"));
+            //button.setText("Add Books");
+            button.show();
+            //showFloatingActionButton(button);
+           // setTitle(getIntent().getStringExtra("Name"));
+            listName.setText(getIntent().getStringExtra("Name"));
 
             q = fb.collection("Books").whereArrayContains("users",getIntent().getStringExtra("id"));
             q.get()
@@ -290,6 +343,39 @@ public class ViewActivity extends AppCompatActivity {
                 intent.putExtra("Books",true);
             intent.putExtra("id", getIntent().getStringExtra("id"));
             startActivity(intent);
+        }
+    }
+    /// gets the id of user clicked on from Posts adapter
+    ///(see "onClick" in Posts adapter line 325)
+     public void ToProfile(String id){
+        Intent intent = new Intent(ViewActivity.this, ViewProfile.class);
+        intent.putExtra("ID", id);
+        startActivity(intent);
+    }
+
+    //////////////// these don't work //////////////
+    private void hideFloatingActionButton(FloatingActionButton fab) {
+        CoordinatorLayout.LayoutParams params =
+                (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+        FloatingActionButton.Behavior behavior =
+                (FloatingActionButton.Behavior) params.getBehavior();
+
+        if (behavior != null) {
+            behavior.setAutoHideEnabled(false);
+        }
+
+        fab.hide();
+    }
+
+    private void showFloatingActionButton(FloatingActionButton fab) {
+        fab.show();
+        CoordinatorLayout.LayoutParams params =
+                (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+        FloatingActionButton.Behavior behavior =
+                (FloatingActionButton.Behavior) params.getBehavior();
+
+        if (behavior != null) {
+            behavior.setAutoHideEnabled(true);
         }
     }
 }

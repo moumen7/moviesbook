@@ -2,6 +2,7 @@ package com.example.moviesbook.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,6 +11,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -32,18 +35,22 @@ import com.example.moviesbook.fragments.Post;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.protobuf.StringValue;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class ViewmbActivity extends AppCompatActivity {
+    private static final String TAG = "ViewmbActivity";
     TextView name;
     ImageView Image;
     TextView desc;
@@ -57,9 +64,11 @@ public class ViewmbActivity extends AppCompatActivity {
     MovieAdapter movieAdapter;
     BooksAdapter booksAdapter;
     RecyclerView recyclerViewPosts;
+    TextView getName;
     ScrollView scrollView;
     ArrayList <Post> posts;
     RecyclerView rv;
+    CollapsingToolbarLayout collapsingToolbarLayout;
     int recbottom = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +76,37 @@ public class ViewmbActivity extends AppCompatActivity {
         setContentView(R.layout.activity_viewmb);
         rv = findViewById(R.id.recommendations);
         favorites = findViewById(R.id.Favorites);
+        getName = (TextView) findViewById(R.id.NameOfChoosen);
         db = FirebaseFirestore.getInstance();
         desc = findViewById(R.id.Desc);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         recyclerViewPosts = findViewById(R.id.myposts);
+        /// show only title of movie or book in toolbar when collapsing
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.cardInfo_collapsing_mb);
+        collapsingToolbarLayout.setTitleEnabled(false);
+        final androidx.appcompat.widget.Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_mb);
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.cardInfo_appbar_mb);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = true;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    toolbar.setTitle("Title");
+                    Image.setVisibility(View.GONE);
+                    isShow = true;
+                    Log.w(TAG, "Collapsing toolbar shown.");
+                } else if(isShow) {
+                    isShow = false;
+                    toolbar.setTitle(" ");
+                    Image.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         movieAdapter = new MovieAdapter(ViewmbActivity.this,new ClickListener() {
             @Override public void onPositionClicked(int position) {
 
@@ -103,6 +139,7 @@ public class ViewmbActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists())
                     {
+                        //getName.setText((String.valueOf(document.get("Name"))));
                         desc.setText((String.valueOf(document.get("Desc"))));
                         Picasso.get().load(String.valueOf(document.get("Image"))).into(Image);
                         String add = String.valueOf(document.get("favs"));
