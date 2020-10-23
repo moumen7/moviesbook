@@ -27,6 +27,7 @@
                     android:layout_height="150dp"
                     android:layout_marginEnd="116dp"
                     android:onClick="changeImage"
+                    android:transitionName="imagetrans"
                     android:outlineAmbientShadowColor="#FFFFFF"
                     android:padding="7dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -156,6 +157,7 @@
                     android:onClick="perform_action_movies"
                     android:text="0"
                     android:textAlignment="center"
+
                     android:textColor="?android:textColorPrimary"
                     android:textSize="14dp"
                     android:textStyle="bold"

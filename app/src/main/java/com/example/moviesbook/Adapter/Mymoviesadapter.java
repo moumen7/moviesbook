@@ -1,5 +1,7 @@
 package com.example.moviesbook.Adapter;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +30,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.squareup.picasso.Picasso;
 
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +79,13 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
                 }
             }
         });
+    }
+    public Mymoviesadapter(Context context, ClickListener listener) {
+        db = FirebaseFirestore.getInstance();
+        this.id = id;
+        this.listener = listener;
+        mcontext = context;
+        sp2 = mcontext.getSharedPreferences("user", Context.MODE_PRIVATE);
     }
     public Mymoviesadapter(Context context) {
 
@@ -143,6 +153,7 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
             }
             intent.putExtra("Choice", "Movies");
             intent.putExtra("ID",MoviesItems.get(getAdapterPosition()).getID());
+
 
             mcontext.startActivity(intent);
 

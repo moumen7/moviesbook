@@ -1,5 +1,7 @@
 package com.example.moviesbook.Adapter;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +27,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.squareup.picasso.Picasso;
 
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +105,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
         }
         holder.title.setText(BooksItems.get(position).getVolumeInfo().getTitle() + " (" + BooksItems.get(position).getVolumeInfo()
                 .getPublishedDate() + ")");
-        holder.desc.setText(BooksItems.get(position).getVolumeInfo().getSubtitle());
+
         ImageLinks imageLinks = BooksItems.get(position).getVolumeInfo().getImageLinks();
         if (imageLinks != null) {
             String use = imageLinks.getThumbnail();
@@ -111,7 +114,6 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
         if(orig==null)
         {
             holder.add.setVisibility(View.GONE);
-            holder.desc.setVisibility(View.GONE);
 
         }
         else if (orig) {
@@ -145,7 +147,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
 
     public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private WeakReference<ClickListener> listenerRef;
-        TextView author, date, desc, content, title, link;
+        TextView author, date, content, title, link;
         Button add;
         ImageView image;
 
@@ -153,7 +155,6 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
             super(itemView);
             listenerRef = new WeakReference<>(listener);
             title = itemView.findViewById(R.id.movietitle);
-            desc = itemView.findViewById(R.id.moviedesc);
             image = itemView.findViewById(R.id.movieimg);
             add = itemView.findViewById(R.id.addbtn);
             add.setOnClickListener(this);
@@ -217,7 +218,10 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
             } else {
                 if(orig==null)
                 {
-
+                    Intent intent = new Intent(mcontext, ViewmbActivity.class);
+                    intent.putExtra("Choice", "Books");
+                    intent.putExtra("ID",BooksItems.get(getAdapterPosition()).getId());
+                    mcontext.startActivity(intent);
                 }
                 else if (!orig) {
                     Intent intent = new Intent(mcontext, PostActivity.class);

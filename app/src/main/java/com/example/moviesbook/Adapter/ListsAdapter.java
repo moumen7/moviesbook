@@ -1,9 +1,12 @@
 package com.example.moviesbook.Adapter;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -158,7 +161,10 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.Holder> {
                 intent.putExtra("Name",lists.get(getAdapterPosition()).getName());
                 intent.putExtra("Image",lists.get(getAdapterPosition()).getImage());
                 intent.putExtra(Type,true);
-                context.startActivity(intent);
+                Pair x = new Pair<View,String>(imageView,"listimg");
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context,x);
+                context.startActivity(intent,options.toBundle());
+
             }
         }
 

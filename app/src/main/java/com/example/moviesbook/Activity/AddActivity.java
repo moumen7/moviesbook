@@ -56,11 +56,11 @@ public class AddActivity extends AppCompatActivity implements SearchView.OnQuery
     Userdata userdata;
     Intent mIntent;
     RecyclerView recyclerView;
-    MoviesViewModel moviesViewModel;
-    BooksViewModel booksViewModel;
-    MovieAdapter adapter;
+    private MoviesViewModel moviesViewModel;
+    private BooksViewModel booksViewModel;
+    MovieAdapter adapter;BooksAdapter adapter2;
     FirebaseFirestore db;
-    BooksAdapter adapter2;
+
     Boolean [] check;
     int ind;
     private Activity mActivity;

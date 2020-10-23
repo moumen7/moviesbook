@@ -5,11 +5,13 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginRight="10dp">
+    android:layout_marginLeft="10dp"
+    android:clickable="true">
 
 
     <ImageView
         android:id="@+id/listImage"
+        android:transitionName="listimg"
         android:layout_width="114dp"
         android:layout_height="125dp"
         android:scaleType="centerCrop"
@@ -36,7 +38,6 @@
         android:layout_width="85dp"
         android:layout_height="17dp"
         android:layout_marginEnd="28dp"
-
         android:textColor="?android:textColorSecondary"
         app:layout_constraintEnd_toEndOf="@+id/listImage"
         app:layout_constraintTop_toBottomOf="@+id/Listname" />
