@@ -15,6 +15,8 @@ import android.os.StrictMode;
 import com.example.moviesbook.Activity.CommentActivity;
 import com.example.moviesbook.Activity.MainActivity;
 import com.example.moviesbook.Activity.PostActivity;
+import com.example.moviesbook.Activity.ViewActivity;
+import com.example.moviesbook.Activity.ViewProfile;
 import com.example.moviesbook.Activity.ViewmbActivity;
 import com.example.moviesbook.Interfaces.ClickListener;
 import com.example.moviesbook.Prefmanager;
@@ -78,6 +80,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     Userdata userdata;
     DocumentReference messageRef;
     Boolean orig;
+    ViewActivity viewActivity;
     private final ClickListener listener;
     private List<Post> posts = new ArrayList<>();
 
@@ -318,6 +321,11 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
                 ((Activity) mcontext).getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
                 //END_INCLUDE (set_ui_flags)
+            }
+            ///// if clicked on name of post author go to toProfile() in viewActivity
+            ///// but it doesn't work so I didn't do the same in feeds fragment
+            else if(v.getId() == username.getId()){
+                viewActivity.ToProfile(posts.get(getAdapterPosition()).getUserid());
             }
             listenerRef.get().onPositionClicked(getAdapterPosition());
         }
