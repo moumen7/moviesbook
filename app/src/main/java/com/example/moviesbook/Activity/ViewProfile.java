@@ -92,6 +92,7 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_view_profile);
         db = FirebaseFirestore.getInstance();
 
@@ -136,7 +137,7 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
 
                 }
                 // SET THE MUTUALS NUMBER = movies.size()
-                mutualMoviestxt.setText(mutualMoviestxt.getText() + "   " + movies.size());
+                mutualMoviestxt.setText(Integer.toString(movies.size()));
             }
 
         });
@@ -149,8 +150,8 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
         task1 = ref.whereArrayContains("users", id).get();
         task2 = ref.whereArrayContains("users", id2).get();
 
-        alltasks = Tasks.whenAllSuccess(task1, task2);
-        alltasks.addOnSuccessListener(new OnSuccessListener<java.util.List<QuerySnapshot>>() {
+        Task<java.util.List<QuerySnapshot>> alltasks2 = Tasks.whenAllSuccess(task1, task2);
+        alltasks2.addOnSuccessListener(new OnSuccessListener<java.util.List<QuerySnapshot>>() {
             @Override
             public void onSuccess(java.util.List<QuerySnapshot> querySnapshots) {
                 for (QuerySnapshot queryDocumentSnapshots : querySnapshots)
@@ -169,7 +170,7 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
                     }
                 }
                 // SET THE MUTUALS NUMBER = books.size()
-                mutualBookstxt.setText(mutualBookstxt.getText() + "   " + books.size());
+                mutualBookstxt.setText(Integer.toString(books.size()));
             }
 
         });
@@ -302,15 +303,15 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
 
                     if(task.getResult().get("numoffollowers") == null)
                     {
-                        followers.setText(0 + " Followers");
+                        followers.setText("0");
                     }
                     else
                     {
                         String x = String.valueOf((long) task.getResult().getData().get("numoffollowers"));
-                        followers.setText(x + " Followers");
+                        followers.setText(x);
                     }
                 } else {
-                    followers.setText(0 + " Followers");
+                    followers.setText("0");
                 }
             }
         });
@@ -322,15 +323,15 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
 
                     if(task.getResult().get("numoffollowing") == null)
                     {
-                        following.setText(0 + " Following");
+                        following.setText("0");
                     }
                     else
                     {
                         String x = String.valueOf((long) task.getResult().getData().get("numoffollowing"));
-                        following.setText(x + " Following");
+                        following.setText(x );
                     }
                 } else {
-                    following.setText(0 + " Following");
+                    following.setText("0");
                 }
             }
         });
