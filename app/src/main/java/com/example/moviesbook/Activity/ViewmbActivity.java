@@ -355,4 +355,9 @@ public class ViewmbActivity extends AppCompatActivity {
         recyclerViewPosts.setNestedScrollingEnabled(false);
 
     }
+
+    /// this one here needs to have a body...
+    public void go(View view) {
+
+    }
 }

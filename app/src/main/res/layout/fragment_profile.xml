@@ -16,6 +16,7 @@
 
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_view"
             android:layout_width="412dp"
             android:layout_height="167dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -30,13 +31,14 @@
                     android:layout_width="98dp"
                     android:layout_height="115dp"
                     android:layout_marginEnd="288dp"
-                    android:onClick="changeImage"
                     android:outlineAmbientShadowColor="#FFFFFF"
                     android:padding="7dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
+<!--                android:onClick="changeImage"-->
+
 
                 <TextView
 
@@ -84,16 +86,16 @@
             android:id="@+id/Movieslist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="176dp"
-            android:layout_marginEnd="224dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="16dp"
             android:clickable="true"
             android:fontFamily="Bold"
             android:text="Movies List"
             android:textColor="?android:textColorPrimary"
             android:textSize="30dp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/card_view"/>
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -142,7 +144,7 @@
             android:id="@+id/posttext"
             android:layout_width="152dp"
             android:layout_height="44dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="12dp"
             android:layout_marginBottom="8dp"
             android:clickable="true"
             android:fontFamily="Bold"

@@ -7,12 +7,16 @@
     android:orientation="vertical"
     android:background="@color/lightwhite"
     android:padding="10dp"
-    tools:context=".Activity.RegisterActivity">
+    tools:context=".Activity.RegisterActivity"
+    android:backgroundTint="#FB8C00"
+    android:theme="@style/AppTheme.TranslucentStatusBar"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -29,43 +33,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="40dp">
-
-            <ImageView
-                android:layout_width="110dp"
-                android:layout_height="133dp"
-                android:src="@drawable/movie2"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
-        </LinearLayout>
+        android:gravity="center_horizontal">
 
         <TextView
-
+            android:id="@+id/moviesbook"
             android:layout_width="wrap_content"
-            android:layout_height="47dp"
-            android:layout_gravity="center"
-            android:fontFamily="sans-serif-medium"
-            android:text="Create Your Account"
-            android:textColor="@color/blackcolor"
-            android:textSize="25dp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="50dp"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="cursive"
+            android:textStyle="bold"
+            android:text="Moviesbook"
+            android:textColor="#424242"
+            android:textSize="50sp" />
 
         <EditText
             android:id="@+id/username"
             android:layout_width="280dp"
             android:layout_height="45dp"
             android:hint=" Your Name"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="50dp"
             android:paddingLeft="15dp"
             android:inputType="text"
             android:textColorHint="@color/fullwhite"
@@ -104,7 +92,7 @@
             android:layout_width="280dp"
             android:layout_height="45dp"
             android:id="@+id/joinus"
-            android:text="Join Us"
+            android:text="JOIN US"
             android:textColor="@color/whitecolor"
             android:textAllCaps="false"
             android:layout_marginTop="25dp"
@@ -113,11 +101,12 @@
             android:background="@drawable/joinbtn"/>
 
         <TextView
-            android:layout_width="200dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="By Pressing 'Join Us' You agree\n     to our trems and conditions"
-            android:textColor="@color/fullwhite"
-            android:layout_marginTop="25dp"/>
+            android:textColor="#424242"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="center_horizontal"/>
 
     </LinearLayout>
 

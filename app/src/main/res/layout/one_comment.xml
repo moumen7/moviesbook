@@ -17,14 +17,9 @@
         android:layout_marginStart="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" /><![CDATA[
-
-
-
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp">
-
     ]]>
 
     <TextView
