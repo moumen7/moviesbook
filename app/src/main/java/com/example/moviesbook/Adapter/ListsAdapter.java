@@ -158,6 +158,10 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.Holder> {
                 Intent intent = new Intent(context, ViewActivity.class);
 
                 intent.putExtra("id",id + lists.get(getAdapterPosition()).getID());
+                if(!id.equals(sp.getString("ID","")))
+                {
+                    intent.putExtra("hide",true);
+                }
                 intent.putExtra("Name",lists.get(getAdapterPosition()).getName());
                 intent.putExtra("Image",lists.get(getAdapterPosition()).getImage());
                 intent.putExtra(Type,true);

@@ -226,8 +226,14 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
                 else if (!orig) {
                     Intent intent = new Intent(mcontext, PostActivity.class);
                     intent.putExtra("ID", BooksItems.get(getAdapterPosition()).getId());
-                    intent.putExtra("title", BooksItems.get(getAdapterPosition()).getVolumeInfo().getTitle());
-                    mcontext.startActivity(intent);
+                    intent.putExtra("Image",String.valueOf(BooksItems.get(getAdapterPosition())
+                            .getVolumeInfo().getImageLinks().getThumbnail()));
+                    intent.putExtra("title",title.getText().toString());
+                    Pair[] arr = new Pair[2];
+                    arr[0]= new Pair<View,String>(title,"mbnametrans");
+                    arr[1]= new Pair<View,String>(image,"mbimagetrans");
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) mcontext,arr);
+                    mcontext.startActivity(intent,options.toBundle());
                 }
 
             }

@@ -6,33 +6,54 @@
     android:layout_height="match_parent"
     tools:context=".Activity.CommentActivity">
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/comments"
-        android:layout_width="401dp"
-        android:layout_height="652dp"
-        app:layout_constraintBottom_toTopOf="@+id/commentcontent"
+        android:layout_width="397dp"
+        android:layout_height="509dp"
+        android:layout_marginEnd="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/commentcontent"
-        android:layout_width="366dp"
-        android:layout_height="66dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="4dp"
-        android:hint=" Add comment"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:colorBackground"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <ImageButton
-        android:id="@+id/comm"
-        android:layout_width="80dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:onClick="comment"
-        android:src="@drawable/ic_play_arrow_black_24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/commentcontent" />
+        <EditText
+
+            android:id="@+id/commentcontent"
+            android:paddingLeft="5dp"
+            android:layout_width="310dp"
+            android:layout_height="52dp"
+            android:layout_marginEnd="84dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/edittext_button_style_rounded"
+            android:ems="10"
+            android:hint="Write Comment"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/comm"
+            android:layout_width="63dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/edittext_button_style_rounded"
+            android:onClick="comment"
+            android:text="Add"
+            app:layout_constraintBottom_toBottomOf="@+id/commentcontent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.724"
+            app:layout_constraintStart_toEndOf="@+id/commentcontent"
+            app:layout_constraintTop_toTopOf="@+id/commentcontent"
+            app:layout_constraintVertical_bias="1.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

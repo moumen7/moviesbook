@@ -11,13 +11,19 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+
         android:supportsRtl="true"
         android:theme="@style/DarkMood"
         android:usesCleartextTraffic="true"
         android:windowSoftInputMode="adjustNothing">
-        <activity android:name=".Activity.ViewmbActivity"
-            android:theme="@style/AppTheme.Transparent"
-        />
+        <activity
+            android:name=".Activity.FullscreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_fullscreen"
+            android:theme="@style/FullscreenTheme"></activity>
+        <activity
+            android:name=".Activity.ViewmbActivity"
+            android:theme="@style/AppTheme.Transparent" />
         <activity android:name=".Activity.CreateListActivity" />
         <activity
             android:name=".Activity.ChatActivity"
@@ -32,8 +38,9 @@
         <activity android:name=".Activity.followersorfollowing" />
         <activity android:name=".Activity.AddActivity" />
         <activity android:name=".Activity.BooksActivity" />
-        <activity android:name=".Activity.HomeActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+        <activity
+            android:name=".Activity.HomeActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity android:name=".Activity.AddPicActivity" />
         <activity android:name=".Activity.UserActivity" />
         <activity android:name=".Activity.MainActivity" />

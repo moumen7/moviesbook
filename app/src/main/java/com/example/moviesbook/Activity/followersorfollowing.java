@@ -40,6 +40,7 @@ public class followersorfollowing extends AppCompatActivity {
     ArrayList<Friend> userslist;
     FriendAdapter adapter ;
     SharedPreferences sp;
+    Query query;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,21 +52,7 @@ public class followersorfollowing extends AppCompatActivity {
         userslist = new ArrayList<>();
         ReadUsers();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Users").document(sp.getString("ID",""))
-                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    if(task.getResult().get("Following") != null)
-                    {
-                        for (String x : (ArrayList<String>) task.getResult().getData().get("Following")) {
-                            Userdata.following.put(x, true);
-                        }
-                    }
 
-                }
-            }
-        });
         final EditText searchBar = findViewById(R.id.search_f);
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -135,7 +122,7 @@ public class followersorfollowing extends AppCompatActivity {
 
     private void ReadUsers()
     {
-        Query query;
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         if(getIntent().hasExtra("Following")) {
             query = db.collection("Users").whereArrayContains("Followers", sp.getString("ID", ""));
@@ -144,6 +131,18 @@ public class followersorfollowing extends AppCompatActivity {
         {
             query = db.collection("Users").whereArrayContains("Following", sp.getString("ID", ""));
         }
+        db.collection("Users").document(sp.getString("ID",""))
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    if(task.getResult().get("Following") != null)
+                    {
+                        for (String x : (ArrayList<String>) task.getResult().getData().get("Following")) {
+                            Userdata.following.put(x, true);
+                        }
+                    }
+
 
         query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -156,7 +155,6 @@ public class followersorfollowing extends AppCompatActivity {
                     userslist.add(ChatUser);
                     x++;
                 }
-
                 adapter = new FriendAdapter(followersorfollowing.this,userslist,new ClickListener() {
                     @Override public void onPositionClicked(int position) {
 
@@ -166,7 +164,6 @@ public class followersorfollowing extends AppCompatActivity {
 
                     }
                 });
-                LinearLayoutManager layoutManager = new LinearLayoutManager(followersorfollowing.this);
                 recyclerView.setAdapter(adapter);
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(new LinearLayoutManager(followersorfollowing.this));
@@ -177,8 +174,9 @@ public class followersorfollowing extends AppCompatActivity {
 
         }) ;
 
-
-
-
+                }
+            }
+        });
     }
+
 }

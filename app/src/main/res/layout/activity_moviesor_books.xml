@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="226dp"
-        android:layout_height="753dp"
+        android:layout_height="match_parent"
         android:onClick="movies"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="201dp"
-        android:layout_height="745dp"
+        android:layout_height="match_parent"
 
         android:background="@color/whitecolor"
         android:onClick="Books"

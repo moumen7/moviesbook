@@ -5,55 +5,95 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
+
 tools:ignore="RtlHardcoded">
-<com.google.android.material.appbar.AppBarLayout
-    android:id="@+id/cardInfo_appbar_list"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-    <com.google.android.material.appbar.CollapsingToolbarLayout
-        android:id="@+id/cardInfo_collapsing_list"
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/cardInfo_appbar_list"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
-        app:layout_collapseMode="pin"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_list"
+        android:layout_height="262dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/cardInfo_collapsing_list"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="0dp"
-            android:minHeight="?attr/actionBarSize"
+            android:layout_height="256dp"
             app:layout_collapseMode="pin"
-            app:titleTextColor="#FB8C00"
-            />
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            app:layout_collapseMode="parallax"
-            />
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/Add"
-            android:visibility="invisible"
-            android:onClick="go"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:src="@drawable/ic_baseline_add_24"
-            android:backgroundTint="#FB8C00"
-            app:borderWidth="0dp"
-            app:fabSize="mini"
-            app:layout_anchor="@id/cardInfo_appbar_list"
-            app:layout_anchorGravity="bottom|end"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
-            android:layout_alignTop="@+id/fabmain2"
-            android:layout_toStartOf="@+id/fabmain2"
-            android:layout_marginEnd="20dp" />
-    </com.google.android.material.appbar.CollapsingToolbarLayout>
-</com.google.android.material.appbar.AppBarLayout>
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+            <TextView
+                android:id="@+id/Listname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="0dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="List Name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="#FB8C00"
+                android:textSize="30sp"
+                android:textStyle="bold"
+
+                />
+
+            <TextView
+                android:id="@+id/number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="bottom|end"
+                android:layout_marginTop="28dp"
+                android:layout_marginEnd="8dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="Number"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#FB8C00"
+                android:textStyle="normal" />
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="0dp"
+                android:minHeight="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:titleTextColor="#FB8C00" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="match_parent"
+                android:layout_height="212dp"
+                android:scaleType="fitXY"
+                android:transitionName="listimg"
+                app:layout_collapseMode="parallax" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="231dp">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/Add"
+                    android:layout_width="65dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:backgroundTint="#FB8C00"
+                    android:onClick="go"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="30dp"
+                    android:src="@drawable/ic_baseline_add_24"
+                    android:visibility="invisible"
+                    app:borderWidth="1dp"
+                    app:fabSize="mini"
+                    app:layout_anchorGravity="bottom|end"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 <androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -62,37 +102,7 @@ tools:ignore="RtlHardcoded">
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/Listname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="8dp"
-            android:textColor="#FB8C00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textStyle="bold"
-            android:text="List Name"
-            android:textSize="30sp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
 
-            />
-        <TextView
-            android:id="@+id/number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:layout_marginEnd="8dp"
-            android:textColor="#FB8C00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textStyle="normal"
-            android:text="Number"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
 
              />
 
@@ -101,12 +111,12 @@ tools:ignore="RtlHardcoded">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="1dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="0dp"
             android:layout_marginEnd="4dp"
-            android:layout_marginBottom="-43dp"
-            android:layout_below="@+id/number" />
+            android:layout_marginBottom="0dp" />
 
     </RelativeLayout>
 </androidx.core.widget.NestedScrollView>

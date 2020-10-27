@@ -53,8 +53,9 @@ interface MyCallback {
 public class ChatActivity extends Activity {
 
     private static final String TAG = "1";
-    final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-    final Date date = new Date();
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    Date date = new Date();
+    String path;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("Chats");
@@ -100,25 +101,44 @@ public class ChatActivity extends Activity {
         fUser = FirebaseAuth.getInstance().getCurrentUser();
         intent = getIntent();
         final String id = intent.getStringExtra("ID");
-        db.collection("Users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        username.setText(getIntent().getStringExtra("username"));
+        if(id.compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid()) > 0)
+        {
+            path = FirebaseAuth.getInstance().getCurrentUser().getUid()+ id;
+
+        }
+        else
+        {
+            path = id + FirebaseAuth.getInstance().getCurrentUser().getUid() ;
+        }
+
+
+        mChats = new ArrayList<>();
+        db.collection("Chats").document(path + "i").collection("messages").orderBy("Date", Query.Direction.ASCENDING).
+                addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (document.getId().equals(id)) {
-                                    username.setText(document.get("username").toString());
-                                    // searchForRoom_id(fUser.getUid(), id);
-                                    readMessage(fUser.getUid(), id);
-                                    Log.w(TAG, "Done, finding the user");
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e)
+                    {
+                        mChats.clear();
+                        Toast.makeText(ChatActivity.this, String.valueOf(path) , Toast.LENGTH_LONG).show();
+                               for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+
+                                        Log.d(TAG, "Now iterating over messages...");
+                                            Chat chat = new Chat();
+                                            chat.sender = document.get("sender").toString();
+                                            chat.receiver = document.get("receiver").toString();
+                                            chat.message = document.get("message").toString();
+                                            // chat.timestamp = Long.parseLong(document.get("Date").toString());
+                                            mChats.add(chat);
+                                            Log.d(TAG, "messages added!");
+                                    }
+                        adapter = new ChatAdapter(mChats, context);
+                        recyclerView.setAdapter(adapter);
+                        Log.w(TAG, "Adapter attached");
                                 }
-                            }
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
-                        }
-                    }
-                });
+                            });
+
+
 
         editText = (EditText) findViewById(R.id.edit_text_message);
         send = (ImageButton) findViewById(R.id.text_message_send);
@@ -138,53 +158,29 @@ public class ChatActivity extends Activity {
 
     private void sendMessage(final String sender, final String receiver, final String msg) {
         hashMap.clear();
-        db.collection("Chats").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    boolean isFound=false;
-                    for(QueryDocumentSnapshot doc:task.getResult()){
-                        if(doc.getId().contains(sender) && doc.getId().contains(receiver)){
-                            isFound=true;
-                            Log.d(TAG,"Room was found");
-                            hashMap.put("sender", sender);
-                            hashMap.put("receiver", receiver);
-                            hashMap.put("message", msg);
-                            hashMap.put("Date", formatter.format(date));
-                            db.collection("Chats").document(doc.getId()).collection("messages").document()
-                                    .set(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    readMessage(sender,receiver);
-                                }
-                            });
 
-                        }
-                    }
-                    if(!isFound){
-                        Log.d(TAG,"Room wasn't found");
+                        date = new Date();
                         hashMap.put("user1",sender);
                         hashMap.put("user2",receiver);
-                        db.collection("Chats").document(sender+receiver+"i").set(hashMap);
+                        hashMap.put("lastmessage",msg);
+                        hashMap.put("Date",formatter.format(date));
+                        db.collection("Chats").document(path+"i").set(hashMap);
                         hashMap.clear();
                         hashMap.put("sender", sender);
                         hashMap.put("receiver", receiver);
                         hashMap.put("message", msg);
                         hashMap.put("Date", formatter.format(date));
-                        db.collection("Chats").document(sender+receiver+"i")
+                        db.collection("Chats").document(path + "i")
                                 .collection("messages").document().set(hashMap)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        readMessage(sender,receiver);
+
                                     }
                                 });
                     }
-                }else{
-                    Log.d(TAG,"Error getting documents");
-                }
-            }
-        });
+
+
 
         /*if(id.equals(null)){
             hashMap.put("user1",sender);
@@ -215,48 +211,10 @@ public class ChatActivity extends Activity {
         }*/
 
 
-    }
+
 
     private void readMessage(final String myId, final String userId) {
-        mChats = new ArrayList<>();
 
-        db.collection("Chats").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                        if (documentSnapshot.getId().contains(myId) && documentSnapshot.getId().contains(userId)) {
-                            db.collection("Chats").document(documentSnapshot.getId())
-                                    .collection("messages").orderBy("Date", Query.Direction.ASCENDING)
-                                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d(TAG, "Now iterating over messages...");
-                                        for (final QueryDocumentSnapshot document : task.getResult()) {
-                                            Chat chat = new Chat();
-                                            chat.sender = document.get("sender").toString();
-                                            chat.receiver = document.get("receiver").toString();
-                                            chat.message = document.get("message").toString();
-                                            // chat.timestamp = Long.parseLong(document.get("Date").toString());
-                                            mChats.add(chat);
-                                            Log.d(TAG, "messages added!");
-                                        }
-                                        adapter = new ChatAdapter(mChats, context);
-                                        recyclerView.setAdapter(adapter);
-                                        Log.w(TAG, "Adapter attached");
-                                    } else {
-                                        Log.w(TAG, "Error getting documents.", task.getException());
-                                    }
-                                }
-                            });
-                        }
-                    }
-                } else {
-                    Log.d(TAG, "Error getting docs" + task.getException());
-                }
-            }
-        });
     }
 
 

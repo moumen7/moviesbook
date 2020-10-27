@@ -30,7 +30,9 @@ import com.example.moviesbook.Userdata;
 import com.example.moviesbook.fragments.Chats;
 import com.example.moviesbook.fragments.Post;
 import com.example.moviesbook.fragments.Search;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -60,6 +62,7 @@ public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHol
         this.context = context;
         CurrentUsersFilter = new ArrayList<>();
         sp = context.getSharedPreferences("user", Context.MODE_PRIVATE);
+
 
     }
     public void setList(List<Friend> friends) {
@@ -94,6 +97,7 @@ public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHol
             {
             Picasso.get().load(s).into(friendholder.imageView);
         }
+
         if(Userdata.following.containsKey(CurrentUsersFilter.get(position).getId()))
         {
             friendholder.imageButton.setImageResource(R.drawable.ic_done_black_24dp);
@@ -184,7 +188,7 @@ public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHol
 
                                 Userdata.following.put(CurrentUsersFilter.get(getAdapterPosition()).getId(),true);
                             }
-                        }
+             }
             else
             {
                         Intent intent = new Intent(context, ViewProfile.class);

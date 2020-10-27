@@ -9,6 +9,25 @@ public class User implements Serializable {
     String id;
     String Username;
 
+    public String getDate() {
+        return Date;
+    }
+
+    public void setDate(String date) {
+        Date = date;
+    }
+
+    public String getLastmessage() {
+        return lastmessage;
+    }
+
+    public void setLastmessage(String last) {
+        this.lastmessage = last;
+    }
+
+    String Date;
+    String lastmessage;
+
     public String getImage() {
         return Image;
     }
@@ -23,7 +42,6 @@ public class User implements Serializable {
         Email = email;
         Username = username;
     }
-
 
     public User() {
     }

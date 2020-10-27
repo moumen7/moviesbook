@@ -2,6 +2,7 @@ package com.example.moviesbook.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -18,7 +19,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,13 +74,12 @@ public class AddActivity extends AppCompatActivity implements SearchView.OnQuery
         setContentView(R.layout.activity_add);
         userdata= new Userdata();
         mIntent = getIntent();
-        TextView tv = findViewById(R.id.textView5);
         db = FirebaseFirestore.getInstance();
 
         if(!mIntent.hasExtra("addpic"))
         {
             where = "Book";
-            tv.setText("Click here when done");
+
         }
         else
         {
@@ -98,7 +100,6 @@ public class AddActivity extends AppCompatActivity implements SearchView.OnQuery
         mActivity = AddActivity.this;
         if(mIntent.hasExtra("post")) {
             orig = false;
-            tv.setVisibility(View.GONE);
             if (where.equals("Movie")) {
                 setTitle("Choose Movie to post");
             } else {
@@ -143,11 +144,43 @@ public class AddActivity extends AppCompatActivity implements SearchView.OnQuery
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search, menu);
+        MenuCompat.setGroupDividerEnabled(menu, true);
+        if(mIntent.hasExtra("post"))
+        {
+            menu.getItem(1).setVisible(false);
+        }
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(AddActivity.this);
 
         return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case R.id.done:
+
+                if (!(mIntent.hasExtra("Movies") || mIntent.hasExtra("Books"))) {
+                    if (mIntent.hasExtra("addpic")) {
+                        getIntent().removeExtra("addpic");
+                        restartActivity(mActivity);
+                    } else {
+                        Intent intent = new Intent(AddActivity.this, HomeActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                } else {
+                    Intent intent = new Intent(AddActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+                break;
+            default:
+                break;
+        }
+        return false;
     }
 
     @Override
@@ -199,24 +232,7 @@ public class AddActivity extends AppCompatActivity implements SearchView.OnQuery
 
     }
 
-    public void Next(View view) {
-        if(!(mIntent.hasExtra("Movies") || mIntent.hasExtra("Books"))) {
-            if (mIntent.hasExtra("addpic")) {
-                getIntent().removeExtra("addpic");
-                restartActivity(mActivity);
-            } else {
-                Intent intent = new Intent(AddActivity.this, HomeActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        }
-        else
-        {
-            Intent intent = new Intent(AddActivity.this, HomeActivity.class);
-            startActivity(intent);
-            finish();
-        }
-    }
+
     public static void restartActivity(Activity activity) {
         if (Build.VERSION.SDK_INT >= 11) {
             activity.recreate();

@@ -2,18 +2,22 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
         <!-- Customize your theme here. -->
 
     </style>
 
     <style name="NoActionBar" parent="@android:style/Theme.Holo.Light">
         <item name="android:windowActionBar">false</item>
+        <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowNoTitle">true</item>
 
     </style>
+
     <style name="ActionItem">
         <item name="android:textSize">@dimen/text_size</item>
+        <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
         <item name="android:drawablePadding">@dimen/drawable_padding</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:windowActivityTransitions">true</item>
@@ -22,26 +26,50 @@
         <item name="android:padding">@dimen/normal_padding</item>
     </style>
 
-    <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
+    <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:windowActivityTransitions">true</item>
+        <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
     </style>
-    <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" >
+
+    <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:windowActivityTransitions">true</item>
+        <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
     </style>
 
 
     <style name="DarkMood" parent="Theme.AppCompat.DayNight">
         <item name="android:windowActivityTransitions">true</item>
-        </style>
+        <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
+    </style>
+
+    <style name="PopupMenuListView" parent="@style/Widget.AppCompat.ListView.DropDown">
+        <item name="android:divider">@color/blackcolor</item>
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
+    </style>
 
     <style name="AppTheme.Transparent" parent="AppTheme">
+        <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
         <item name="windowActionBarOverlay">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowActivityTransitions">true</item>
     </style>
 
-    <style name="TransparentText" parent="@android:style/TextAppearance" >
+    <style name="TransparentText" parent="@android:style/TextAppearance">
         <item name="android:textColor">#00666666</item>
+        <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="DarkMood">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
     </style>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.example.moviesbook.Adapter;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.os.Build;
 import android.os.StrictMode;
 
 import com.example.moviesbook.Activity.CommentActivity;
+import com.example.moviesbook.Activity.FullscreenActivity;
 import com.example.moviesbook.Activity.MainActivity;
 import com.example.moviesbook.Activity.PostActivity;
 import com.example.moviesbook.Activity.ViewActivity;
@@ -45,6 +47,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,13 +119,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             @Override
             public void onClick(View textView) {
                 Intent intent = new Intent(mcontext, ViewmbActivity.class);
-                if(posts.get(position).getUsedtitle().length() > 5) {
-                    intent.putExtra("name",posts.get(position).getUsedtitle().substring(0,4) );
-                }
-                else
-                {
+
                     intent.putExtra("name",posts.get(position).getUsedtitle() );
-                }
+
                 if (String.valueOf(posts.get(position).getUsedid()).matches("[0-9]+")) {
                     intent.putExtra("Choice", "Movies");
                     intent.putExtra("ID", posts.get(position).getUsedid());
@@ -183,8 +182,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
         if(posts.get(position).getImage() == null)
             holder.postimage.setVisibility(View.GONE);
-        else
+        else {
             Picasso.get().load(posts.get(position).getImage()).into(holder.postimage);
+            holder.postimage.setVisibility(View.VISIBLE);
+        }
         Map <String,Boolean> map = new HashMap<>();
         map =  posts.get(position).getLikers();
         if(map.containsKey(sp2.getString("ID","")))
@@ -286,41 +287,13 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             else if(v.getId() == postimage.getId())
             {
 
-                // BEGIN_INCLUDE (get_current_ui_flags)
-                // The UI options currently enabled are represented by a bitfield.
-                // getSystemUiVisibility() gives us that bitfield.
-                int uiOptions =((Activity) mcontext).getWindow().getDecorView().getSystemUiVisibility();
-                int newUiOptions = uiOptions;
-                // END_INCLUDE (get_current_ui_flags)
-                // BEGIN_INCLUDE (toggle_ui_flags)
-                boolean isImmersiveModeEnabled =
-                        ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
+                Intent intent = new Intent(mcontext, FullscreenActivity.class);
+                intent.putExtra("Image",posts.get(getAdapterPosition()).getImage());
+                Pair x = new Pair<View,String>(postimage,"full");
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) mcontext,x);
+                mcontext.startActivity(intent,options.toBundle());
 
 
-                // Navigation bar hiding:  Backwards compatible to ICS.
-                if (Build.VERSION.SDK_INT >= 14) {
-                    newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-                }
-
-                // Status bar hiding: Backwards compatible to Jellybean
-                if (Build.VERSION.SDK_INT >= 16) {
-                    newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
-                }
-
-                // Immersive mode: Backward compatible to KitKat.
-                // Note that this flag doesn't do anything by itself, it only augments the behavior
-                // of HIDE_NAVIGATION and FLAG_FULLSCREEN.  For the purposes of this sample
-                // all three flags are being toggled together.
-                // Note that there are two immersive mode UI flags, one of which is referred to as "sticky".
-                // Sticky immersive mode differs in that it makes the navigation and status bars
-                // semi-transparent, and the UI flag does not get cleared when the user interacts with
-                // the screen.
-                if (Build.VERSION.SDK_INT >= 18) {
-                    newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-                }
-
-                ((Activity) mcontext).getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
-                //END_INCLUDE (set_ui_flags)
             }
             ///// if clicked on name of post author go to toProfile() in viewActivity
             ///// but it doesn't work so I didn't do the same in feeds fragment

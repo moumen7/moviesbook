@@ -144,17 +144,11 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(mcontext, ViewmbActivity.class);
-            if(MoviesItems.get(getAdapterPosition()).getTitle().length() > 5) {
-                intent.putExtra("name", MoviesItems.get(getAdapterPosition()).getTitle().substring(0,4) );
-            }
-            else
-            {
+
                 intent.putExtra("name", MoviesItems.get(getAdapterPosition()).getTitle() );
-            }
+
             intent.putExtra("Choice", "Movies");
             intent.putExtra("ID",MoviesItems.get(getAdapterPosition()).getID());
-
-
             mcontext.startActivity(intent);
 
         }

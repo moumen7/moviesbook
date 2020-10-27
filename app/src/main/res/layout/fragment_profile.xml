@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:id="@+id/scroll"
+    tools:context=".fragments.Profile"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
     <androidx.constraintlayout.widget.ConstraintLayout
 
@@ -113,6 +114,7 @@
             android:layout_width="405dp"
             android:layout_height="161dp"
             android:layout_marginTop="8dp"
+            android:paddingRight="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -124,6 +126,7 @@
             android:layout_height="44dp"
             android:layout_marginStart="12dp"
             android:layout_marginBottom="8dp"
+
             android:clickable="true"
             android:fontFamily="Bold"
             android:text="Books List"
@@ -176,7 +179,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="180dp"
+            android:indeterminateTint="@color/Orange"
             android:background="@android:color/transparent"
+            android:visibility="invisible"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+
+        <TextView
+            android:id="@+id/nomore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="130dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/transparent"
+            android:indeterminateTint="@color/colorPrimary"
+            android:text="No more posts."
+            android:textSize="20dp"
+            android:textStyle="bold"
             android:visibility="invisible"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />

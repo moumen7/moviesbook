@@ -9,25 +9,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
-        android:layout_width="440dp"
-        android:layout_height="668dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.057"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="414dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="664dp"
-        android:background="#000000"
-        android:gravity="center"
-        android:text="Click here for next step"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:onClick="Next"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

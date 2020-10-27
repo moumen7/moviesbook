@@ -3,6 +3,7 @@ package com.example.moviesbook.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.graphics.Color;
+import android.icu.text.CaseMap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -41,6 +43,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -69,25 +72,33 @@ public class ViewmbActivity extends AppCompatActivity {
     DocumentSnapshot lastVisible;
     PostsAdapter postsAdapter;
     Mymoviesadapter movieAdapter;
+    FloatingActionButton button;
     private List<Movie> MoviesItems = new ArrayList<>();
     Mybooksadapter booksAdapter;
+    TextView title;
     RecyclerView recyclerViewPosts;
     TextView getName;
     ScrollView scrollView;
+    ConstraintLayout cs ;
     ArrayList <Post> posts;
     RecyclerView rv;
+    TextView posttext;
     CollapsingToolbarLayout collapsingToolbarLayout;
     int recbottom = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewmb);
+        cs = findViewById(R.id.cons);
         rv = findViewById(R.id.recommendations);
         favorites = findViewById(R.id.Favorites);
+        title = findViewById(R.id.title);
         getName = (TextView) findViewById(R.id.NameOfChoosen);
         db = FirebaseFirestore.getInstance();
         books = new ArrayList<>();
-
+        button = findViewById(R.id.Add);
+        posttext = findViewById(R.id.posttext);
+        Image = findViewById(R.id.image);
         desc = findViewById(R.id.Desc);
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         recyclerViewPosts = findViewById(R.id.myposts);
@@ -107,13 +118,20 @@ public class ViewmbActivity extends AppCompatActivity {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    toolbar.setTitle("Title");
+                    title.setVisibility(View.GONE);
+
+                    favorites.setVisibility(View.GONE);
+                    button.hide();
+                    toolbar.setTitle(getIntent().getStringExtra("name"));
                     Image.setVisibility(View.GONE);
                     isShow = true;
                     Log.w(TAG, "Collapsing toolbar shown.");
                 } else if(isShow) {
                     isShow = false;
-                    toolbar.setTitle(" ");
+                    title.setVisibility(View.VISIBLE);
+                    favorites.setVisibility(View.VISIBLE);
+                    button.show();
+                    toolbar.setTitle(getIntent().getStringExtra("name"));
                     Image.setVisibility(View.VISIBLE);
                 }
             }
@@ -143,7 +161,7 @@ public class ViewmbActivity extends AppCompatActivity {
             }
         });
         posts = new ArrayList<>();
-        Image = findViewById(R.id.image);
+
         movies = new ArrayList<>();
         scrollView = findViewById(R.id.scroll);
         recyclerViewPosts.setLayoutManager(new LinearLayoutManager(ViewmbActivity.this));
@@ -152,6 +170,46 @@ public class ViewmbActivity extends AppCompatActivity {
         booksViewModel = ViewModelProviders.of(this).get(BooksViewModel.class);
         DocumentReference docIdRef =db. collection(getIntent().getStringExtra("Choice")).document(
                 String.valueOf(getIntent().getStringExtra("ID")));
+
+        if (getIntent().getStringExtra("Choice").equals("Movies")) {
+            moviesViewModel.getMovies2(Integer.parseInt(getIntent().getStringExtra("ID")));
+            moviesViewModel.MoviesMutable2.observe(ViewmbActivity.this, new Observer<Movies2>() {
+                @Override
+                public void onChanged(Movies2 postModels) {
+                    desc.setText(postModels.getOverview());
+                    Picasso.get().load("http://image.tmdb.org/t/p/original" + postModels.getPosterPath()).into(Image);
+                    favorites.setText(String.valueOf("0 Favorites"));
+                    if(postModels.getTitle()!=null)
+                    title.setText(String.valueOf(postModels.getTitle()));
+                    if(postModels.getReleaseDate() != null)
+                    {
+                        title.setText(postModels.getTitle()
+                                + " (" +  postModels.getReleaseDate().substring(0,4) + ")");
+                    }
+                }
+            });
+        }
+        else
+        {
+            booksViewModel.getBook(getIntent().getStringExtra("ID"));
+            booksViewModel.BooksMutable.observe(ViewmbActivity.this, new Observer<BooksResult>() {
+                @Override
+                public void onChanged(BooksResult postModels) {
+                    if(postModels.getItems().get(0).getVolumeInfo().getSubtitle() != null)
+                    desc.setText(postModels.getItems().get(0).getVolumeInfo().getSubtitle());
+                    if(postModels.getItems().get(0).getVolumeInfo().getImageLinks().getThumbnail() !=null)
+                        Picasso.get().load( postModels.getItems().get(0).getVolumeInfo().getImageLinks().getThumbnail()
+                        ).into(Image);
+                    favorites.setText(String.valueOf("0 Favorites"));
+                    title.setText(postModels.getItems().get(0).getVolumeInfo().getTitle());
+                    if(postModels.getItems().get(0).getVolumeInfo().getPublishedDate() != null)
+                    {
+                        title.setText(postModels.getItems().get(0).getVolumeInfo().getTitle()
+                                + postModels.getItems().get(0).getVolumeInfo().getPublishedDate());
+                    }
+                }
+            });
+        }
         docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -160,41 +218,16 @@ public class ViewmbActivity extends AppCompatActivity {
                     if (document.exists())
                     {
                         //getName.setText((String.valueOf(document.get("Name"))));
-                        desc.setText((String.valueOf(document.get("Desc"))));
-                        Picasso.get().load(String.valueOf(document.get("Image"))).into(Image);
+
                         String add = String.valueOf(document.get("favs"));
                         if(!add.equals("null"))
                             favorites.setText(add + " Favorites");
                         else
                             favorites.setText("0" + " Favorites");
                     }
-                    else {
-                        if (getIntent().getStringExtra("Choice").equals("Movies")) {
-                            moviesViewModel.getMovies2(Integer.parseInt(getIntent().getStringExtra("ID")));
-                            moviesViewModel.MoviesMutable2.observe(ViewmbActivity.this, new Observer<Movies2>() {
-                                @Override
-                                public void onChanged(Movies2 postModels) {
-                                    desc.setText(postModels.getOverview());
-                                    Picasso.get().load("http://image.tmdb.org/t/p/original" + postModels.getPosterPath()).into(Image);
-                                    favorites.setText(String.valueOf("0 Favorites"));
-                                }
-                            });
-                        }
-                        else
-                        {
-                            booksViewModel.getBook(getIntent().getStringExtra("ID"));
-                            booksViewModel.BooksMutable.observe(ViewmbActivity.this, new Observer<BooksResult>() {
-                                @Override
-                                public void onChanged(BooksResult postModels) {
-                                    desc.setText(postModels.getItems().get(0).getVolumeInfo().getSubtitle());
-                                    if(postModels.getItems().get(0).getVolumeInfo().getImageLinks().getThumbnail() !=null)
-                                        Picasso.get().load( postModels.getItems().get(0).getVolumeInfo().getImageLinks().getThumbnail()
-                                        ).into(Image);
-                                    favorites.setText(String.valueOf("0 Favorites"));
-                                }
-                            });
-                        }
-                    }
+
+
+
                 } else {
 
                 }
@@ -266,6 +299,10 @@ public class ViewmbActivity extends AppCompatActivity {
                         if(documentSnapshots.size()!=0) {
                             lastVisible = documentSnapshots.getDocuments()
                                     .get(documentSnapshots.size() - 1);
+                        }
+                        if(posts.size() > 0)
+                        {
+                            posttext.setVisibility(View.VISIBLE);
                         }
                         postsAdapter.setList(posts);
 

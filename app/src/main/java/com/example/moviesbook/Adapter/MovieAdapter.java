@@ -255,9 +255,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
                 else if(!orig)
                 {
                     Intent intent = new Intent(mcontext, PostActivity.class);
+                    intent.putExtra("Image",String.valueOf(url + MoviesList.get(getAdapterPosition()).getPosterPath()));
                     intent.putExtra("ID",String.valueOf(MoviesList.get(getAdapterPosition()).getId()));
-                    intent.putExtra("title",MoviesList.get(getAdapterPosition()).getTitle());
-                    mcontext.startActivity(intent);
+                    intent.putExtra("title",title.getText().toString());
+                    Pair[] arr = new Pair[2];
+
+                    arr[0]= new Pair<View,String>(title,"mbnametrans");
+                    arr[1]= new Pair<View,String>(image,"mbimagetrans");
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) mcontext,arr);
+                    mcontext.startActivity(intent,options.toBundle());
                 }
             }
 

@@ -4,51 +4,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".Activity.HomeActivity">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-        <androidx.appcompat.widget.Toolbar
-            android:layout_width="match_parent"
-            android:id="@+id/toolbar"
-            android:layout_height="?android:attr/actionBarSize"
-            app:layout_scrollFlags="scroll|enterAlways"
-            />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="400dp"
-            android:layout_height="match_parent"
-            app:tabGravity="center"
-            app:tabIconTint="@color/selector_tab"
-            app:tabIndicatorColor="@android:color/transparent"
-            android:layout_gravity="bottom"
-            app:tabSelectedTextColor="#F57C00"
-            app:tabTextAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:tabTextColor="#BDBDBD"/>
-    </com.google.android.material.appbar.AppBarLayout>
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabpost"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:onClick="click"
-        android:background="#FB8C00"
-        android:backgroundTint="#FB8C00"
-        android:padding="16dp"
-        android:src="@drawable/newpost"
-        app:maxImageSize="48dp"
-        app:rippleColor="#FB8C00"
-        app:borderWidth="0dp"/>
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
+    tools:context=".Activity.HomeActivity"
+    >
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+       >
+
+    </FrameLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:colorBackground"
+        android:layout_gravity="bottom"
+        android:paddingLeft="0dp"
+        app:itemBackground="?android:colorBackground"
+        app:itemIconTint="@drawable/color"
+        app:itemTextColor="@drawable/color"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+        app:menu="@menu/bottom_navigation_menu" />
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabpost"
+        app:fabSize="mini"
+        app:layout_anchor="@id/bottom_navigation"
+        app:layout_anchorGravity="top|end"
+        android:backgroundTint="@color/Orange"
+        app:useCompatPadding="true"
+        android:layout_width="wrap_content"
+        app:rippleColor="#FB8C00"
+        android:layout_height="wrap_content"
+        android:onClick="click"
+        android:layout_gravity="top"
+        android:src="@drawable/newpost"
+   />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/bottom_navigation"
+        android:background="#000000"
+        app:layout_anchor="@+id/bottom_navigation"
+        app:layout_anchorGravity="top|center"></View>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

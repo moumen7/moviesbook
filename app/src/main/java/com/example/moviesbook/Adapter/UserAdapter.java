@@ -76,7 +76,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
         else {
             Picasso.get().load(s).into(holder.imageView);
         }
-        showLastMessage(user.getId(),holder.msg);
+
+        showLastMessage(user.getId(),holder.msg,position);
     }
 
 
@@ -106,46 +107,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder>{
         public void onClick(View view) {
             Intent intent = new Intent(context, ChatActivity.class);
             intent.putExtra("ID",ViewHolder.this.id);
+            intent.putExtra("username",mUsers.get(getAdapterPosition()).getUsername());
             context.startActivity(intent);
         }
     }
-    private void showLastMessage(final String userid, final TextView msg){
+    private void showLastMessage(final String userid, final TextView msg,int pos){
         last_msg = "Default";
         final FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("Chats").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (final QueryDocumentSnapshot document : task.getResult()) {
-                    if (document.getId().contains(fUser.getUid()) && document.getId().contains(userid)) {
-                        db.collection("Chats").document(document.getId())
-                                .collection("messages").orderBy("Date", Query.Direction.DESCENDING)
-                                .limit(1).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                            @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                DocumentSnapshot lastVisible = queryDocumentSnapshots.getDocuments()
-                                        .get(0);
-                                last_msg = lastVisible.get("message").toString();
-                                msg.setText(last_msg);
-                                Log.d(TAG,"Last message" +last_msg);
-
-                            }
-                        });
-                    }
-                }
-            }});
-
+        msg.setText(mUsers.get(pos).getLastmessage());
         Log.d(TAG,last_msg);
-                switch (last_msg){
-                    case "Default":
-                       msg.setText("No messages.");
-                       break;
-                   default:
-                        msg.setText(last_msg);
-                        break;
-                    }
-                last_msg = "Default";
 
     }
 }

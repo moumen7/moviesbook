@@ -9,6 +9,7 @@
     android:id="@+id/scroll">
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="wrap_content"
     tools:ignore="RtlHardcoded">
     <com.google.android.material.appbar.AppBarLayout
@@ -16,17 +17,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/cardInfo_collapsing_mb"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
-            app:layout_collapseMode="pin"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginStart="48dp"
             app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleTextAppearance="@style/TransparentText">
+            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleTextAppearance="@style/TransparentText"
+            app:layout_collapseMode="pin"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_mb"
                 android:layout_width="match_parent"
@@ -34,37 +37,76 @@
                 android:elevation="0dp"
                 android:minHeight="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:titleTextColor="#FB8C00"
-                >
+                app:titleTextColor="#FB8C00">
 
             </androidx.appcompat.widget.Toolbar>
+
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="217dp"
+                android:layout_gravity="start"
                 android:scaleType="fitXY"
-                app:layout_collapseMode="parallax"
-                />
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/Add"
-                android:visibility="invisible"
-                android:onClick="go"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:src="@drawable/ic_baseline_add_24"
-                android:backgroundTint="#FB8C00"
-                app:borderWidth="0dp"
-                app:fabSize="mini"
-                app:layout_anchor="@id/cardInfo_appbar_mb"
-                app:layout_anchorGravity="bottom|end"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_alignTop="@+id/fabmain2"
-                android:layout_toStartOf="@+id/fabmain2"
-                android:layout_marginEnd="20dp" />
+                app:layout_collapseMode="parallax" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                app:layout_constraintHeight_default="wrap"
+                android:layout_width="match_parent"
+                android:layout_height="270dp"
+                android:id="@+id/cons">
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="220dp"
+                    android:textColor="@color/Orange"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/Favorites"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="Number"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="#FB8C00"
+                    android:textStyle="normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/Add" />
+
+
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/Add"
+                    android:layout_width="65dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="192dp"
+                    android:layout_marginEnd="16dp"
+                    android:backgroundTint="#FB8C00"
+                    android:onClick="go"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="30dp"
+                    android:src="@drawable/ic_baseline_add_24"
+                    app:borderWidth="1dp"
+                    app:fabSize="mini"
+                    app:layout_anchorGravity="bottom|end"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
+
 
 
     <androidx.core.widget.NestedScrollView
@@ -76,7 +118,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
 
             <TextView
                 android:id="@+id/NameOfChoosen"
@@ -95,42 +136,32 @@
                 android:visibility="invisible"
 
                 />
-
-
-            <TextView
-                android:id="@+id/Favorites"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="28dp"
-                android:layout_marginEnd="8dp"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:text="Number"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="#FB8C00"
-                android:textStyle="normal" />
-
             <TextView
                 android:id="@+id/Desc"
-                android:layout_width="wrap_content"
+                app:layout_constraintHeight_default="wrap"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/NameOfChoosen"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:padding="10dp"
                 android:text="Description"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="?android:textColorSecondary" />
-
+                android:textColor="?android:textColorSecondary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.541"
+                app:layout_constraintStart_toStartOf="parent"
+                />
             <TextView
                 android:id="@+id/recommend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/Desc"
-                android:layout_marginStart="16dp"
+                android:layout_alignStart="@+id/NameOfChoosen"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="12dp"
                 android:clickable="true"
                 android:fontFamily="Bold"
@@ -157,6 +188,7 @@
                 android:clickable="true"
                 android:fontFamily="Bold"
                 android:text="Posts"
+                android:visibility="gone"
                 android:textColor="#FB8C00"
                 android:textSize="25sp"
                 android:textStyle="bold" />

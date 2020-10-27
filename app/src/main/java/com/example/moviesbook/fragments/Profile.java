@@ -4,7 +4,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.drm.DrmManagerClient;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -98,6 +100,7 @@ public class Profile extends Fragment implements View.OnClickListener {
     private FirebaseFirestore db;
     Query   q;
     private ImageView imageView;
+    private TextView nomore;
     private ListsAdapter adapter;
     private ListsAdapter adapter2;
     private PostsAdapter postsAdapter;
@@ -129,8 +132,8 @@ public class Profile extends Fragment implements View.OnClickListener {
      * @return A new instance of fragment Chats.
      */
     // TODO: Rename and change types and number of parameters
-    public static Chats newInstance(String param1, String param2) {
-        Chats fragment = new Chats();
+    public static Profile newInstance(String param1, String param2) {
+        Profile fragment = new Profile();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -145,6 +148,7 @@ public class Profile extends Fragment implements View.OnClickListener {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setRetainInstance(true);
     }
 
     @Override
@@ -158,6 +162,7 @@ public class Profile extends Fragment implements View.OnClickListener {
         scrollView = view.findViewById(R.id.scroll);
         Folder = FirebaseStorage.getInstance().getReference("Images");
         following = view.findViewById(R.id.following);
+        nomore = view.findViewById(R.id.nomore);
         imageView = view.findViewById(R.id.profiepic);
         ViewMovies = view.findViewById(R.id.Movieslist);
         progressBar = view.findViewById(R.id.progressBar);
@@ -371,7 +376,9 @@ public class Profile extends Fragment implements View.OnClickListener {
                                                                     == (scrollView.getHeight() + scrollView.getScrollY()) && posts.size()!=0)
                                                             {
                                                                 if(recbottom != scrollView.getChildAt(0).getBottom()) {
+                                                                    progressBar.setProgressTintList(ColorStateList.valueOf(Color.RED));
                                                                     showProgressView();
+
                                                                     recbottom = scrollView.getChildAt(0).getBottom();
                                                                     q = db.collection("Posts").
                                                                             whereEqualTo("userid", sp.getString("ID", "")).orderBy("Date", Query.Direction.DESCENDING)
@@ -388,6 +395,11 @@ public class Profile extends Fragment implements View.OnClickListener {
                                                                                             posts.add(ChatUser);
                                                                                         }
                                                                                         postsAdapter.setList(posts);
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        hideProgressView();
+                                                                                        nomore.setVisibility(View.VISIBLE);
                                                                                     }
 
                                                                                 }

@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -41,7 +42,7 @@ import java.util.HashMap;
 
 public class CommentActivity extends AppCompatActivity {
     RecyclerView recyclerView;
-    ImageButton imgbutton;
+    Button imgbutton;
     CommentsAdapter commentsAdapter;
     EditText et;
     int x;
@@ -57,11 +58,11 @@ public class CommentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comment);
         recyclerView = findViewById(R.id.comments);
         imgbutton = findViewById(R.id.comm);
-
         et = findViewById(R.id.commentcontent);
         sp = getSharedPreferences("user",MODE_PRIVATE);
         Query query = db.collection("Posts").whereEqualTo("Postid" ,
                 getIntent().getStringExtra("id"));
+        setTitle("Comments");
 
         commentsAdapter = new CommentsAdapter( CommentActivity.this , Commenters ,new ClickListener() {
             @Override
@@ -96,7 +97,7 @@ public class CommentActivity extends AppCompatActivity {
     public void comment(View view) {
         if(view.getId() == imgbutton.getId())
         {
-            if(et.getText().toString()!="")
+            if(!et.getText().toString().equals(""))
             {
                 executeTransaction(1);
 

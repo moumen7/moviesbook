@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ import com.example.moviesbook.fragments.Feed;
 import com.example.moviesbook.fragments.Profile;
 import com.example.moviesbook.fragments.Search;
 import com.example.moviesbook.fragments.SectionsPagerAdapter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -44,6 +46,7 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
     Toolbar toolbar;
     FloatingActionButton post;
+    BottomNavigationView bottomNavigation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -56,50 +59,39 @@ public class HomeActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         post = (FloatingActionButton)findViewById(R.id.fabpost);
-        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
+        bottomNavigation = findViewById(R.id.bottom_navigation);
+        bottomNavigation.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+        openFragment(Feed.newInstance("", ""));
 
-        tabs.addTab(tabs.newTab().setIcon(R.drawable.home));
-        tabs.addTab(tabs.newTab().setIcon(R.drawable.chats_frag));
-        tabs.addTab(tabs.newTab().setIcon(R.drawable.search_frag));
-        tabs.addTab(tabs.newTab().setIcon(R.drawable.profile));
-        // SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        //viewPager.setAdapter(sectionsPagerAdapter);
 
-        PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
-
-        adapter.addFragment(new Feed());
-        adapter.addFragment(new Chats());
-        adapter.addFragment(new Search());
-        adapter.addFragment(new Profile());
 
         getSupportActionBar().setTitle(Html.fromHtml("<font color=\"#F57C00\">" + getString(R.string.app_name) + "</font>"));
-        //Setting adapter
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
-        tabs.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
-
-        //SlidingTabStrip in TabLayout
-        ViewGroup slidingTabStrip = (ViewGroup)tabs.getChildAt(0);
-        //second tab in SlidingTabStrip
-        View tab1 = slidingTabStrip.getChildAt(1);
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) tab1.getLayoutParams();
-        layoutParams.weight = 2;
-        tab1.setLayoutParams(layoutParams);
-
-        View tab2 = slidingTabStrip.getChildAt(2);
-        layoutParams = (LinearLayout.LayoutParams) tab2.getLayoutParams();
-        layoutParams.weight = 2;
-        tab2.setLayoutParams(layoutParams);
-
-
-        ActionBar bar = getSupportActionBar();
-        bar.setElevation(0);
-
-
-        viewPager.setCurrentItem(0);
 
     }
+    BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.navigation_home:
+                            post.show();
+                            openFragment(Feed.newInstance("", ""));
+                            return true;
+                        case R.id.navigation_chats:
+                             post.hide();
+                            openFragment(Chats.newInstance("", ""));
+                            return true;
+                        case R.id.navigation_search:
+                            post.hide();
+                            openFragment(Search.newInstance("", ""));
+                            return true;
+                        case R.id.navigation_profile:
+                            post.show();
+                            openFragment(Profile.newInstance("", ""));
+                            return true;
+                    }
+                    return false;
+                }
+            };
 
 
     /// idk what the hell is this but the project crashes when i delete it
@@ -111,6 +103,12 @@ public class HomeActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 return true;
         }
         return false;
+    }
+    public void openFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -13,7 +13,6 @@
     <color name="colorGray">#747474</color>
 
 
-
     <!-- Screens background color-->
     <color name="bg_screen1">#f64c73</color>
     <color name="bg_screen2">#20d2bb</color>
@@ -45,4 +44,6 @@
         <item>@color/dot_dark_screen3</item>
         <item>@color/dot_dark_screen4</item>
     </array>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

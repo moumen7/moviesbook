@@ -14,7 +14,7 @@ public interface BooksApiInterface {
             @Query("key") String yourAPIKey
     );
 
-    @GET("ebooks")
+    @GET("books/v1/volumes/")
     Call<BooksResult> getBook(
             @Query("q") String id,
             @Query("key") String yourAPIKey

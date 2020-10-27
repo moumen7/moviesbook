@@ -103,17 +103,26 @@ public class ViewActivity extends AppCompatActivity {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    toolbar.setTitle(listName.getText());
+                    button.hide();
+                    number.setVisibility(View.GONE);
                     imageView.setVisibility(View.GONE);
+
                     isShow = true;
                 } else if(isShow) {
+                    button.show();
+                    number.setVisibility(View.VISIBLE);
                     isShow = false;
+
+                    button.show();
                     toolbar.setTitle(" ");
                     imageView.setVisibility(View.VISIBLE);
                 }
             }
         });
-
+        if(getIntent().hasExtra("hide"))
+        {
+            button.hide();
+        }
         if(!getIntent().getStringExtra("id").contains(sp.getString("ID","")))
             //button.setVisibility(View.GONE);
             //button.hide();

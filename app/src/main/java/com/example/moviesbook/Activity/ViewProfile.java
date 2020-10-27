@@ -79,6 +79,7 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
     private DocumentSnapshot lastVisible;
     private ImageView imageView;
     private ImageButton imageButton;
+    private ImageButton imageButton2;
     private ListsAdapter adapter;
     private ListsAdapter adapter2;
     private PostsAdapter postsAdapter;
@@ -207,6 +208,7 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
 
         followers = findViewById(R.id.followers);
         imageButton = findViewById(R.id.imgbutton);
+        imageButton2 = findViewById(R.id.imgbutton2);
         Folder = FirebaseStorage.getInstance().getReference("Images");
         following = findViewById(R.id.following);
         imageView = findViewById(R.id.profiepic);
@@ -369,31 +371,14 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
         if(Userdata.following.containsKey(getIntent().getStringExtra("ID")))
         {
             imageButton.setImageResource(R.drawable.ic_done_black_24dp);
+            imageButton2.setImageResource(R.drawable.ic_baseline_chat_bubble_outline_24);
 
-            db.collection("Users").document(sp.getString("ID",""))
-                    .update("Following", FieldValue.arrayRemove(getIntent().getStringExtra("ID")));
-            db.collection("Users").document(getIntent().getStringExtra("ID"))
-                    .update("Followers", FieldValue.arrayRemove(sp.getString("ID","")));
-            db.collection("Users").document(sp.getString("ID",""))
-                    .update("numoffollowing", FieldValue.increment(-1));
-            db.collection("Users").document(getIntent().getStringExtra("ID"))
-                    .update("numoffollowers", FieldValue.increment(-1));
-            Userdata.following.remove(getIntent().getStringExtra("ID"));
+
         }
         else
         {
-
+            imageButton2.setImageResource(R.drawable.send_message);
             imageButton.setImageResource(R.drawable.ic_baseline_person_add_24);
-            db.collection("Users").document(sp.getString("ID",""))
-                    .update("Following", FieldValue.arrayUnion(getIntent().getStringExtra("ID")));
-            db.collection("Users").document(getIntent().getStringExtra("ID"))
-                    .update("Followers", FieldValue.arrayUnion(sp.getString("ID","")));
-            db.collection("Users").document(sp.getString("ID",""))
-                    .update("numoffollowing", FieldValue.increment(1));
-            db.collection("Users").document(getIntent().getStringExtra("ID"))
-                    .update("numoffollowers", FieldValue.increment(1));
-
-            Userdata.following.put(getIntent().getStringExtra("ID"),true);
         }
 
         recyclerViewposts.setAdapter(postsAdapter);
@@ -464,33 +449,34 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
     }
     public void follow(View v)
     {
-        if(Userdata.following.containsKey(getIntent().getStringExtra("ID")))
-        {
-            imageButton.setImageResource(R.drawable.ic_baseline_person_add_24);
-            db.collection("Users").document(sp.getString("ID",""))
-                    .update("Following", FieldValue.arrayRemove(getIntent().getStringExtra("ID")));
-            db.collection("Users").document(getIntent().getStringExtra("ID"))
-                    .update("Followers", FieldValue.arrayRemove(sp.getString("ID","")));
-            db.collection("Users").document(sp.getString("ID",""))
-                    .update("numoffollowing", FieldValue.increment(-1));
-            db.collection("Users").document(getIntent().getStringExtra("ID"))
-                    .update("numoffollowers", FieldValue.increment(-1));
-            Userdata.following.remove(getIntent().getStringExtra("ID"));
-        }
-        else
-        {
+        if(v.getId() == R.id.imgbutton) {
+            if (Userdata.following.containsKey(getIntent().getStringExtra("ID"))) {
+                imageButton.setImageResource(R.drawable.ic_baseline_person_add_24);
+                db.collection("Users").document(sp.getString("ID", ""))
+                        .update("Following", FieldValue.arrayRemove(getIntent().getStringExtra("ID")));
+                db.collection("Users").document(getIntent().getStringExtra("ID"))
+                        .update("Followers", FieldValue.arrayRemove(sp.getString("ID", "")));
+                db.collection("Users").document(sp.getString("ID", ""))
+                        .update("numoffollowing", FieldValue.increment(-1));
+                db.collection("Users").document(getIntent().getStringExtra("ID"))
+                        .update("numoffollowers", FieldValue.increment(-1));
+                Userdata.following.remove(getIntent().getStringExtra("ID"));
+                imageButton2.setImageResource(R.drawable.send_message);
+            } else
+                {
 
-            imageButton.setImageResource(R.drawable.ic_done_black_24dp);
-            db.collection("Users").document(sp.getString("ID",""))
-                    .update("Following", FieldValue.arrayUnion(getIntent().getStringExtra("ID")));
-            db.collection("Users").document(getIntent().getStringExtra("ID"))
-                    .update("Followers", FieldValue.arrayUnion(sp.getString("ID","")));
-            db.collection("Users").document(sp.getString("ID",""))
-                    .update("numoffollowing", FieldValue.increment(1));
-            db.collection("Users").document(getIntent().getStringExtra("ID"))
-                    .update("numoffollowers", FieldValue.increment(1));
-
-            Userdata.following.put(getIntent().getStringExtra("ID"),true);
+                imageButton.setImageResource(R.drawable.ic_done_black_24dp);
+                db.collection("Users").document(sp.getString("ID", ""))
+                        .update("Following", FieldValue.arrayUnion(getIntent().getStringExtra("ID")));
+                db.collection("Users").document(getIntent().getStringExtra("ID"))
+                        .update("Followers", FieldValue.arrayUnion(sp.getString("ID", "")));
+                db.collection("Users").document(sp.getString("ID", ""))
+                        .update("numoffollowing", FieldValue.increment(1));
+                db.collection("Users").document(getIntent().getStringExtra("ID"))
+                        .update("numoffollowers", FieldValue.increment(1));
+                    imageButton2.setImageResource(R.drawable.ic_baseline_chat_bubble_outline_24);
+                Userdata.following.put(getIntent().getStringExtra("ID"), true);
+            }
         }
 
 

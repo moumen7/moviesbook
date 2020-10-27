@@ -39,12 +39,15 @@ public class Result {
     @SerializedName("title")
     @Expose
     private String title;
+
     @SerializedName("vote_average")
     @Expose
     private Double voteAverage;
+
     @SerializedName("overview")
     @Expose
     private String overview;
+
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
