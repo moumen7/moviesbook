@@ -174,22 +174,25 @@ public class ListsAdapter extends RecyclerView.Adapter<ListsAdapter.Holder> {
 
         @Override
         public boolean onLongClick(View v) {
-            if(!lists.get(getAdapterPosition()).getID().equals("add") && ! (getAdapterPosition() == 0)) {
-                ActionBottomDialogFragment addPhotoBottomDialogFragment =
-                        ActionBottomDialogFragment.newInstance();
-                Bundle bundle = new Bundle();
-                bundle.putString("ID", lists.get(getAdapterPosition()).getID());
-                if (Type.equals("Movie")) {
-                    bundle.putString("choice", "MoviesList");
-                } else {
-                    bundle.putString("choice", "BooksList");
+            if (id.equals(sp.getString("ID", ""))) {
+                if (!lists.get(getAdapterPosition()).getID().equals("add") && !(getAdapterPosition() == 0)) {
+                    ActionBottomDialogFragment addPhotoBottomDialogFragment =
+                            ActionBottomDialogFragment.newInstance();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("ID", lists.get(getAdapterPosition()).getID());
+                    if (Type.equals("Movie")) {
+                        bundle.putString("choice", "MoviesList");
+                    } else {
+                        bundle.putString("choice", "BooksList");
+                    }
+                    bundle.putString("name", lists.get(getAdapterPosition()).getName());
+                    bundle.putString("image", lists.get(getAdapterPosition()).getImage());
+                    bundle.putString("act", "edit");
+                    addPhotoBottomDialogFragment.setArguments(bundle);
+                    addPhotoBottomDialogFragment.show(((FragmentActivity) context).getSupportFragmentManager(),
+                            ActionBottomDialogFragment.TAG);
+
                 }
-                bundle.putString("name",lists.get(getAdapterPosition()).getName());
-                bundle.putString("image",lists.get(getAdapterPosition()).getImage());
-                bundle.putString("act","edit");
-                addPhotoBottomDialogFragment.setArguments(bundle);
-                addPhotoBottomDialogFragment.show(((FragmentActivity) context).getSupportFragmentManager(),
-                        ActionBottomDialogFragment.TAG);
 
             }
             return false;

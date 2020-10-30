@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.drm.DrmManagerClient;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -108,7 +109,8 @@ public class ViewActivity extends AppCompatActivity {
                     imageView.setVisibility(View.GONE);
 
                     isShow = true;
-                } else if(isShow) {
+                } else if(isShow)
+                {
                     button.show();
                     number.setVisibility(View.VISIBLE);
                     isShow = false;
@@ -116,6 +118,10 @@ public class ViewActivity extends AppCompatActivity {
                     button.show();
                     toolbar.setTitle(" ");
                     imageView.setVisibility(View.VISIBLE);
+                }
+                if(getIntent().hasExtra("hide"))
+                {
+                    button.hide();
                 }
             }
         });
@@ -152,15 +158,13 @@ public class ViewActivity extends AppCompatActivity {
         }, getIntent().getStringExtra("id"));
         usermovies = new ArrayList<>();
         userbooks = new ArrayList<>();
-        if(getIntent().getStringExtra("id").equals(sp.getString("ID",""))) {
+        if(getIntent().getStringExtra("id").equals(sp.getString("ID","")) || getIntent().getStringExtra("Image") == null) {
             imageView.setImageDrawable(getResources().getDrawable(R.drawable.fav));
         }
         else
         {
             Picasso.get().load(getIntent().getStringExtra("Image")).into(imageView);
         }
-        Toast.makeText(ViewActivity.this, getIntent().getStringExtra("id"),Toast.LENGTH_LONG).show();
-
 
 
         if(getIntent().hasExtra("MutualMovies"))
@@ -280,13 +284,15 @@ public class ViewActivity extends AppCompatActivity {
             q = fb.collection("Movies").whereArrayContains("users",getIntent().getStringExtra("id"));
 
 
-            q.get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            q
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
+                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e)
+                        {
+
                                 int x = 0;
-                                for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                    usermovies.clear();
+                                     for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
                                     Movie ChatUser = snapshot.toObject(Movie.class);
                                     usermovies.add(ChatUser);
                                     usermovies.get(x).setID(snapshot.getId());
@@ -295,7 +301,7 @@ public class ViewActivity extends AppCompatActivity {
                                 number.setText(usermovies.size() + " Movies");
                                 mymoviesadapter.setList(usermovies);
                             }
-                        }
+
                     });
 
             recyclerView.setAdapter(mymoviesadapter);

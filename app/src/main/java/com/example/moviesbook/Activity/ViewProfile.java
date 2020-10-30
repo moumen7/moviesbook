@@ -228,6 +228,7 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
         user = findViewById(R.id.username);
         sp = getSharedPreferences("user", MODE_PRIVATE);
         m = new String();
+
         q = db.collection("Users").document(getIntent().getStringExtra("ID"))
                 .collection("MoviesList");
 
@@ -481,6 +482,12 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
 
 
     }
+    public void chat(View v) {
+        Intent intent = new Intent(ViewProfile.this, ChatActivity.class);
+        intent.putExtra("ID", getIntent().getStringExtra("ID"));
+        startActivity(intent);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

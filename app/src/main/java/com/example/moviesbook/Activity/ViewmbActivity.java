@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.icu.text.CaseMap;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.example.moviesbook.Adapter.Mybooksadapter;
 import com.example.moviesbook.Adapter.Mymoviesadapter;
 import com.example.moviesbook.Adapter.PostsAdapter;
 import com.example.moviesbook.Book;
+import com.example.moviesbook.Example;
 import com.example.moviesbook.Interfaces.ClickListener;
 import com.example.moviesbook.Json_Books.BooksResult;
 import com.example.moviesbook.Json_Books.Item;
@@ -192,20 +194,20 @@ public class ViewmbActivity extends AppCompatActivity {
         else
         {
             booksViewModel.getBook(getIntent().getStringExtra("ID"));
-            booksViewModel.BooksMutable.observe(ViewmbActivity.this, new Observer<BooksResult>() {
+            booksViewModel.BooksMutable2.observe(ViewmbActivity.this, new Observer<Example>() {
                 @Override
-                public void onChanged(BooksResult postModels) {
-                    if(postModels.getItems().get(0).getVolumeInfo().getSubtitle() != null)
-                    desc.setText(postModels.getItems().get(0).getVolumeInfo().getSubtitle());
-                    if(postModels.getItems().get(0).getVolumeInfo().getImageLinks().getThumbnail() !=null)
-                        Picasso.get().load( postModels.getItems().get(0).getVolumeInfo().getImageLinks().getThumbnail()
+                public void onChanged(Example postModels) {
+                    if(postModels.getVolumeInfo().getDescription()!= null)
+                    desc.setText(postModels.getVolumeInfo().getDescription());
+                    if(postModels.getVolumeInfo().getImageLinks().getThumbnail() !=null)
+                        Picasso.get().load( postModels.getVolumeInfo().getImageLinks().getThumbnail()
                         ).into(Image);
                     favorites.setText(String.valueOf("0 Favorites"));
-                    title.setText(postModels.getItems().get(0).getVolumeInfo().getTitle());
-                    if(postModels.getItems().get(0).getVolumeInfo().getPublishedDate() != null)
+                    title.setText(postModels.getVolumeInfo().getTitle());
+                    if(postModels.getVolumeInfo().getPublishedDate() != null)
                     {
-                        title.setText(postModels.getItems().get(0).getVolumeInfo().getTitle()
-                                + postModels.getItems().get(0).getVolumeInfo().getPublishedDate());
+                        title.setText(postModels.getVolumeInfo().getTitle()
+                                + " (" +  postModels.getVolumeInfo().getPublishedDate().substring(0,4) + ")");
                     }
                 }
             });
@@ -358,6 +360,12 @@ public class ViewmbActivity extends AppCompatActivity {
 
     /// this one here needs to have a body...
     public void go(View view) {
-
+        if(view.getId() == R.id.Add)
+        {
+            Intent intent = new Intent(ViewmbActivity.this,ListActivity.class);
+            intent.putExtra("choice", getIntent().getStringExtra("Choice"));
+            intent.putExtra("id",getIntent().getStringExtra("ID"));
+            startActivity(intent);
+        }
     }
 }

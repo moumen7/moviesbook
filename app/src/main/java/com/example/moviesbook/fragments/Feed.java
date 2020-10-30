@@ -3,20 +3,27 @@ package com.example.moviesbook.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moviesbook.Activity.MoviesorBooks;
@@ -63,13 +70,17 @@ public class Feed extends Fragment implements View.OnClickListener{
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    Task [] tasks;
+    ArrayList<Task>tasks;
+    private int recbottom = 0;
+    private NestedScrollView scrollView;
     Boolean end;
+    ProgressBar progressBar ;
+    TextView nomore;
     int sum = 0;
     int last = 0;
     private RecyclerView feedrecyclerview;
     private FirebaseFirestore db;
-    private DocumentSnapshot[] lastVisible;
+    private ArrayList<Pair<DocumentSnapshot,String>> lastVisible;
     private List<Post> posts;
     private SharedPreferences sp;
     private boolean[] enough;
@@ -144,11 +155,14 @@ public class Feed extends Fragment implements View.OnClickListener{
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
-
+        progressBar = view.findViewById(R.id.progressBar);
+        nomore =  view.findViewById(R.id.nomore);
         recyclerViewposts = view.findViewById(R.id.posts);
         recyclerViewposts.setLayoutManager(new LinearLayoutManager(getContext()));
         db = FirebaseFirestore.getInstance();
         end = false;
+        scrollView = view.findViewById(R.id.scroll);
+        progressBar = view.findViewById(R.id.progressBar);
         sp = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         posts = new ArrayList<Post>();
         postsAdapter = new PostsAdapter(getContext(), new ClickListener() {
@@ -162,6 +176,7 @@ public class Feed extends Fragment implements View.OnClickListener{
 
             }
         });
+
         q = db.collection("Users").whereArrayContains("Followers",sp.getString("ID",""));
 
         q.get()
@@ -174,42 +189,48 @@ public class Feed extends Fragment implements View.OnClickListener{
                             for (DocumentSnapshot snapshot : task.getResult()) {
                                 Friend ChatUser = snapshot.toObject(Friend.class);
                                 Userdata.following2.add(snapshot.getId());
+                                Userdata.following.put(snapshot.getId(),true);
                                 x++;
                             }
 
                         }
                         //Toast.makeText(getActivity(),String.valueOf(Userdata.following2.size()),Toast.LENGTH_LONG).show();
-                        tasks = new Task[Userdata.following2.size()];
-                        enough = new boolean[Userdata.following2.size()];
-                        lastVisible = new DocumentSnapshot[Userdata.following2.size()];
+                        tasks = new ArrayList<>();
+                        lastVisible = new ArrayList<>();
                         recyclerViewposts.setAdapter(postsAdapter);
                         int i=0;
                         for(String x:Userdata.following2)
                         {
-                            tasks[i] = db.collection("Posts").whereEqualTo("userid",x).orderBy("Date")
+                            tasks.add(db.collection("Posts").whereEqualTo("userid",x).orderBy("Date")
                                     .limit(2)
-                                    .get();
+                                    .get());
                             i++;
 
                         }
-                        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(tasks);
+                        tasks.add(db.collection("Posts").whereEqualTo("userid",sp.getString("ID","")).orderBy("Date", Query.Direction.DESCENDING)
+                                .limit(2)
+                                .get());
+
+                        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(tasks.toArray(new Task[tasks.size()]));
                         allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
                             @Override
                             public void onSuccess(List<QuerySnapshot> querySnapshots) {
                                 String data = "";
                                 int i=0;
                                 for (QuerySnapshot queryDocumentSnapshots : querySnapshots) {
+                                    String last = "";
 
                                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                                         Post ChatUser = documentSnapshot.toObject(Post.class);
                                         posts.add(ChatUser);
+                                        last = ChatUser.userid;
                                     }
-                                    if(queryDocumentSnapshots.size() > 0) {
-                                        lastVisible[i] = queryDocumentSnapshots.getDocuments()
-                                                .get(queryDocumentSnapshots.size() - 1);
+                                    if(queryDocumentSnapshots.size() > 0)
+                                    {
+                                        lastVisible.add(Pair.create(queryDocumentSnapshots.getDocuments()
+                                                .get(queryDocumentSnapshots.size() - 1),last));
                                     }
-
-
+                                    i++;
                                 }
                                 postsAdapter.setList(posts);
 
@@ -219,77 +240,68 @@ public class Feed extends Fragment implements View.OnClickListener{
                 });
 
         recyclerViewposts.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewposts.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        scrollView.getViewTreeObserver()
+                .addOnScrollChangedListener(new
+                                                    ViewTreeObserver.OnScrollChangedListener() {
+                                                        @Override
+                                                        public void onScrollChanged() {
 
-                    LinearLayoutManager layoutManager = LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
-                    int totalItemCount = layoutManager.getItemCount();
-                    int LastVisible = layoutManager.findLastVisibleItemPosition();
-                    boolean endHasBeenReached = !recyclerView.canScrollVertically(1);
-                    if (totalItemCount > 0 && endHasBeenReached)
-                    {
-                        tasks = new Task[Userdata.following2.size()];
-                        int i=0;
-                        for(String x:Userdata.following2)
-                        {
-                            if(lastVisible[i]!=null) {
-                                tasks[i] = db.collection("Posts").whereEqualTo("userid", x).orderBy("Date")
-                                        .startAfter(lastVisible[i]).limit(2)
-                                        .get();
-                            }
-                            else
-                            {
-                                tasks = removeTheElement(tasks, i);
-                                i--;
-                            }
-                            if(tasks[i] == null)
-                            {
-                                tasks = removeTheElement(tasks, i);
-                                i--;
-                            }
-                            i++;
-                        }
-                        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(tasks);
-                        allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
-                            @Override
-                            public void onSuccess(List<QuerySnapshot> querySnapshots) {
-                                int k =0;
-                                for (QuerySnapshot queryDocumentSnapshots : querySnapshots) {
-                                    if(queryDocumentSnapshots.size() >0) {
-                                        lastVisible[k] = queryDocumentSnapshots.getDocuments()
-                                                .get(queryDocumentSnapshots.size() - 1);
-                                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                                            if (scrollView.getChildAt(0).getBottom()
+                                                                    == (scrollView.getHeight() + scrollView.getScrollY()) && posts.size() != 0) {
+                                                                if (recbottom != scrollView.getChildAt(0).getBottom()) {
+                                                                    progressBar.setProgressTintList(ColorStateList.valueOf(Color.RED));
+                                                                    recbottom = scrollView.getChildAt(0).getBottom();
+                                                                    showProgressView();
 
-                                            Post ChatUser = documentSnapshot.toObject(Post.class);
-                                            posts.add(ChatUser);
-                                        }
+                                                                    tasks = new ArrayList<>();
+                                                                    int i = 0;
+                                                                    for (Pair<DocumentSnapshot, String> last : lastVisible) {
 
-                                    }
+                                                                        tasks.add(db.collection("Posts").whereEqualTo("userid", last.second).orderBy("Date", Query.Direction.DESCENDING)
+                                                                                .limit(2).startAfter(last.first)
+                                                                                .get());
+                                                                        i++;
+                                                                    }
 
-
-
-
-                                    k++;
-                                }
-                                postsAdapter.setList(posts);
+                                                                    Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(tasks.toArray(new Task[tasks.size()]));
+                                                                    allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
+                                                                        @Override
+                                                                        public void onSuccess(List<QuerySnapshot> querySnapshots) {
+                                                                            int k = 0;
+                                                                            String store = "";
+                                                                            lastVisible.clear();
+                                                                            Boolean happened = false;
+                                                                            for (QuerySnapshot queryDocumentSnapshots : querySnapshots) {
+                                                                                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                                                                    Post ChatUser = documentSnapshot.toObject(Post.class);
+                                                                                    posts.add(ChatUser);
+                                                                                    store = ChatUser.userid;
+                                                                                }
+                                                                                if (queryDocumentSnapshots.size() > 0) {
+                                                                                    lastVisible.add(Pair.create(queryDocumentSnapshots.getDocuments()
+                                                                                            .get(queryDocumentSnapshots.size() - 1), store));
+                                                                                    happened = true;
+                                                                                }
+                                                                                k++;
+                                                                            }
+                                                                            if (!happened) {
+                                                                                hideProgressView();
+                                                                                nomore.setVisibility(View.VISIBLE);
+                                                                            }
+                                                                            postsAdapter.setList(posts);
+                                                                            k++;
 
 
-                            }
-                        });
-                        }
+                                                                        }
+                                                                    });
+                                                                }
 
-                    }
+                                                            }
+                                                        }
 
 
         });
-        Collections.sort(posts ,new Comparator<Post>(){
 
-            public int compare(Post o1, Post o2)
-            {
-                return o1.getDate().compareTo(o2.getDate());
-            }
-        });
 
         return view;
 
@@ -310,6 +322,12 @@ public class Feed extends Fragment implements View.OnClickListener{
             getFragmentManager().beginTransaction().detach(this).attach(this).commit();
         }
     }
+    void showProgressView() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
 
+    void hideProgressView() {
+        progressBar.setVisibility(View.INVISIBLE);
+    }
 }
 

@@ -86,8 +86,11 @@ public class ChatActivity extends Activity {
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(context, HomeActivity.class);
-                startActivity(i);
+                if (getFragmentManager().getBackStackEntryCount() == 0) {
+                    finish();
+                } else {
+                   onBackPressed(); //replaced
+                }
 
             }
         });

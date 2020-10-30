@@ -9,13 +9,19 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/comments"
-        android:layout_width="397dp"
-        android:layout_height="590dp"
+        android:layout_width="410dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
+        android:paddingBottom="70dp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:colorBackground"
@@ -25,34 +31,31 @@
         <EditText
 
             android:id="@+id/commentcontent"
-            android:paddingLeft="5dp"
             android:layout_width="310dp"
             android:layout_height="52dp"
-            android:layout_marginEnd="84dp"
+            android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/edittext_button_style_rounded"
-            android:ems="10"
             android:hint="Write Comment"
             android:inputType="textPersonName"
+            android:paddingLeft="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/comm"
             android:layout_width="63dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-
             android:layout_marginEnd="8dp"
             android:background="@drawable/edittext_button_style_rounded"
             android:onClick="comment"
             android:text="Add"
             app:layout_constraintBottom_toBottomOf="@+id/commentcontent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.724"
+
             app:layout_constraintStart_toEndOf="@+id/commentcontent"
-            app:layout_constraintTop_toTopOf="@+id/commentcontent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toTopOf="@+id/commentcontent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

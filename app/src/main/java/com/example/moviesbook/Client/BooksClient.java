@@ -1,5 +1,6 @@
 package com.example.moviesbook.Client;
 
+import com.example.moviesbook.Example;
 import com.example.moviesbook.Json_Books.BooksResult;
 import com.example.moviesbook.Interfaces.BooksApiInterface;
 
@@ -33,7 +34,7 @@ public class BooksClient {
         return booksApiInterface.getBooks(SEARCH,"AIzaSyDI6VSEg1BL0nYHhJyZEBu5RzopgV8AeP4");
 
     }
-    public Call<BooksResult> getBook(String SEARCH)
+    public Call<Example> getBook(String SEARCH)
     {
 
         return booksApiInterface.getBook(SEARCH,"AIzaSyDI6VSEg1BL0nYHhJyZEBu5RzopgV8AeP4");

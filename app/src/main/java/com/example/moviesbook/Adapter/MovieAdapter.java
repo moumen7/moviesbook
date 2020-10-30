@@ -248,6 +248,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
                 {
                     Intent intent = new Intent(mcontext, ViewmbActivity.class);
                     intent.putExtra("Choice", "Movies");
+                    intent.putExtra("name",title.getText().toString());
                     intent.putExtra("ID", MoviesList.get(getAdapterPosition()).getId().toString());
 
                     mcontext.startActivity(intent);

@@ -3,6 +3,7 @@ package com.example.moviesbook.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.StrictMode;
 
 import com.example.moviesbook.Activity.ViewmbActivity;
@@ -12,6 +13,8 @@ import com.example.moviesbook.Json_Books.ImageLinks;
 import com.example.moviesbook.Json_Books.Item;
 import com.example.moviesbook.Json_Books.VolumeInfo;
 import com.example.moviesbook.Userdata;
+import com.example.moviesbook.fragments.ActionBottomDialogFragment;
+import com.example.moviesbook.fragments.ActionBottomDialogPostListDialogFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -36,6 +39,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -145,13 +149,10 @@ public class Mybooksadapter extends RecyclerView.Adapter<Mybooksadapter.PostView
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(mcontext, ViewmbActivity.class);
-            if(BooksItems.get(getAdapterPosition()).getTitle().length() > 5) {
-                intent.putExtra("name", BooksItems.get(getAdapterPosition()).getTitle().substring(0,4) );
-            }
-            else
-            {
+
+
                 intent.putExtra("name", BooksItems.get(getAdapterPosition()).getTitle() );
-            }
+
             intent.putExtra("Choice", "Books");
             intent.putExtra("ID",BooksItems.get(getAdapterPosition()).getID());
 
@@ -161,8 +162,22 @@ public class Mybooksadapter extends RecyclerView.Adapter<Mybooksadapter.PostView
 
         @Override
         public boolean onLongClick(View v) {
-            Toast.makeText(mcontext,"heree2",Toast.LENGTH_LONG).show();
-            return false;
+
+                if (id.contains(sp2.getString("ID", "")))
+                {
+                    ActionBottomDialogPostListDialogFragment addPhotoBottomDialogFragment =
+                            ActionBottomDialogPostListDialogFragment.newInstance();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("ID", BooksItems.get(getAdapterPosition()).getID());
+                    bundle.putString("choice", "true");
+                    bundle.putString("ID2", id);
+                    bundle.putString("MB","Books");
+                    addPhotoBottomDialogFragment.setArguments(bundle);
+                    addPhotoBottomDialogFragment.show(((FragmentActivity) mcontext).getSupportFragmentManager(),
+                            ActionBottomDialogFragment.TAG);
+                }
+                return false;
+
         }
     }
 }

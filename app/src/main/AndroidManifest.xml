@@ -15,15 +15,17 @@
         android:theme="@style/DarkMood"
         android:usesCleartextTraffic="true"
         android:windowSoftInputMode="adjustNothing">
-        <activity android:name=".Activity.SplashActivity"
-            android:theme="@style/splashScreenTheme"
+        <activity android:name=".Activity.ListActivity"></activity>
+        <activity
+            android:name=".Activity.SplashActivity"
+            android:exported="true"
             android:noHistory="true"
-            android:exported="true">
+            android:theme="@style/splashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".Activity.FullscreenActivity"
@@ -55,7 +57,7 @@
         <activity android:name=".Activity.MainActivity" />
         <activity android:name=".Activity.RegisterActivity" />
         <activity android:name=".Activity.LoginActivity" />
-        <activity android:name=".Activity.SliderActivity"/>
+        <activity android:name=".Activity.SliderActivity" />
     </application>
 
 </manifest>

@@ -54,14 +54,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="270dp"
                 android:id="@+id/cons">
+
                 <TextView
                     android:id="@+id/title"
-                    android:layout_width="wrap_content"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="220dp"
                     android:textColor="@color/Orange"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -98,6 +99,7 @@
                     android:src="@drawable/ic_baseline_add_24"
                     app:borderWidth="1dp"
                     app:fabSize="mini"
+
                     app:layout_anchorGravity="bottom|end"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

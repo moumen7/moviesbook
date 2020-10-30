@@ -1,5 +1,6 @@
 package com.example.moviesbook.Interfaces;
 
+import com.example.moviesbook.Example;
 import com.example.moviesbook.Json_Books.BooksResult;
 
 import retrofit2.Call;
@@ -14,9 +15,9 @@ public interface BooksApiInterface {
             @Query("key") String yourAPIKey
     );
 
-    @GET("books/v1/volumes/")
-    Call<BooksResult> getBook(
-            @Query("q") String id,
+    @GET("books/v1/volumes/{volumeId}")
+    Call<Example> getBook(
+            @Path("volumeId") String id,
             @Query("key") String yourAPIKey
     );
 }

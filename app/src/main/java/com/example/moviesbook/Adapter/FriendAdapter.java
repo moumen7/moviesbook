@@ -185,7 +185,6 @@ public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHol
                                         .update("numoffollowing", FieldValue.increment(1));
                                 db.collection("Users").document(CurrentUsersFilter.get(getAdapterPosition()).getId())
                                         .update("numoffollowers", FieldValue.increment(1));
-
                                 Userdata.following.put(CurrentUsersFilter.get(getAdapterPosition()).getId(),true);
                             }
              }

@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.graphics.fonts.Font;
 import android.icu.text.Transliterator;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.StrictMode;
 
 import com.example.moviesbook.Activity.CommentActivity;
@@ -23,6 +24,8 @@ import com.example.moviesbook.Activity.ViewmbActivity;
 import com.example.moviesbook.Interfaces.ClickListener;
 import com.example.moviesbook.Prefmanager;
 import com.example.moviesbook.Userdata;
+import com.example.moviesbook.fragments.ActionBottomDialogFragment;
+import com.example.moviesbook.fragments.ActionBottomDialogPostListDialogFragment;
 import com.example.moviesbook.fragments.Post;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -61,6 +64,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moviesbook.R;
@@ -87,6 +91,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     private final ClickListener listener;
     private List<Post> posts = new ArrayList<>();
 
+
     SharedPreferences sp2 ;
     private Context mcontext;
     public PostsAdapter(Context context,ClickListener listener)
@@ -105,7 +110,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     @Override
     public void onBindViewHolder(@NonNull final PostViewHolder holder, final int position) {
 
-        Toast.makeText(mcontext,String.valueOf(android.os.Build.VERSION.SDK_INT),Toast.LENGTH_LONG);
+
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy =
                     new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -196,7 +201,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         {
             holder.like.setChecked(false);
         }
-        Toast.makeText(mcontext, posts.get(position).getPostid(),Toast.LENGTH_LONG).show();
+
 
         holder.button.setVisibility(View.GONE);
     }
@@ -212,7 +217,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
     }
 
 
-    public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener{
         private WeakReference<ClickListener> listenerRef;
         TextView date, desc,username,movieorbook,numberoflikes,numberofcomments;
         ImageView userimage,postimage,comment;
@@ -234,7 +239,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             like.setOnClickListener(this);
             comment.setOnClickListener(this);
             button.setOnClickListener(this);
+            userimage.setOnClickListener(this);
             postimage.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
 
         }
 
@@ -281,7 +288,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                         .setNegativeButton(android.R.string.no, null)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
-                Toast.makeText(mcontext,posts.get(getAdapterPosition()).getPostid(),Toast.LENGTH_LONG).show();
 
             }
             else if(v.getId() == postimage.getId())
@@ -299,6 +305,13 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             ///// but it doesn't work so I didn't do the same in feeds fragment
             else if(v.getId() == username.getId()){
                 viewActivity.ToProfile(posts.get(getAdapterPosition()).getUserid());
+            }
+            else if(v.getId() == userimage.getId())
+            {
+                Intent intent = new Intent(mcontext, ViewProfile.class);
+                intent.putExtra("ID",posts.get(getAdapterPosition()).getUserid());
+
+                mcontext.startActivity(intent);
             }
             listenerRef.get().onPositionClicked(getAdapterPosition());
         }
@@ -332,12 +345,12 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             }).addOnSuccessListener(new OnSuccessListener<Long>() {
                 @Override
                 public void onSuccess(Long result) {
-                    Toast.makeText(mcontext, "New Priority: " + result, Toast.LENGTH_SHORT).show();
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(mcontext,  e.getMessage(), Toast.LENGTH_SHORT).show();
+
                 }
             });
             listenerRef.get().onPositionClicked(getAdapterPosition());
@@ -345,7 +358,21 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         }
 
 
-
+        @Override
+        public boolean onLongClick(View v) {
+            if (posts.get(getAdapterPosition()).getUserid().equals(sp2.getString("ID", "")))
+            {
+                ActionBottomDialogPostListDialogFragment addPhotoBottomDialogFragment =
+                        ActionBottomDialogPostListDialogFragment.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putString("ID", posts.get(getAdapterPosition()).getPostid());
+                bundle.putString("choice","false" );
+                addPhotoBottomDialogFragment.setArguments(bundle);
+                addPhotoBottomDialogFragment.show(((FragmentActivity) mcontext).getSupportFragmentManager(),
+                        ActionBottomDialogFragment.TAG);
+            }
+            return false;
+        }
     }
 
 }

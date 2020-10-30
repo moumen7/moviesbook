@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:fillViewport="false">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -59,7 +59,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginTop="280dp"
                     android:layout_marginEnd="204dp"
-                    android:onClick="follow"
+                    android:onClick="chat"
                     android:src="@drawable/send_message"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -204,12 +204,13 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/profile_favsmovies"
-            android:layout_width="371dp"
-            android:layout_height="181dp"
+            android:layout_width="405dp"
+            android:layout_height="161dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:paddingRight="20dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/Movieslist">
 
@@ -219,7 +220,7 @@
             android:id="@+id/Movieslist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="336dp"
             android:clickable="true"
             android:fontFamily="Bold"
@@ -232,13 +233,14 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/profile_favsbooks"
-            android:layout_width="371dp"
-            android:layout_height="175dp"
+            android:layout_width="403dp"
+            android:layout_height="161dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-
+            android:paddingRight="20dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/Bookslist" />
 
@@ -246,7 +248,7 @@
             android:id="@+id/Bookslist"
             android:layout_width="152dp"
             android:layout_height="44dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="12dp"
             android:layout_marginBottom="8dp"
             android:clickable="true"
             android:fontFamily="Bold"

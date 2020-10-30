@@ -5,6 +5,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.StrictMode;
 
 import com.example.moviesbook.Activity.ViewmbActivity;
@@ -16,6 +17,8 @@ import com.example.moviesbook.Json_Books.Item;
 import com.example.moviesbook.Json_Books.VolumeInfo;
 import com.example.moviesbook.Movie;
 import com.example.moviesbook.Userdata;
+import com.example.moviesbook.fragments.ActionBottomDialogFragment;
+import com.example.moviesbook.fragments.ActionBottomDialogPostListDialogFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -41,6 +44,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moviesbook.R;
@@ -127,7 +131,7 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
     }
 
 
-    public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener{
         private WeakReference<ClickListener> listenerRef;
         TextView author, date, desc, content, title, link;
         Button add;
@@ -138,6 +142,7 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
             listenerRef = new WeakReference<>(listener);
             image = itemView.findViewById(R.id.movieimg);
             image.setOnClickListener(this);
+            image.setOnLongClickListener(this);
 
         }
 
@@ -145,8 +150,7 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
         public void onClick(View v) {
             Intent intent = new Intent(mcontext, ViewmbActivity.class);
 
-                intent.putExtra("name", MoviesItems.get(getAdapterPosition()).getTitle() );
-
+          intent.putExtra("name", MoviesItems.get(getAdapterPosition()).getTitle() );
             intent.putExtra("Choice", "Movies");
             intent.putExtra("ID",MoviesItems.get(getAdapterPosition()).getID());
             mcontext.startActivity(intent);
@@ -154,6 +158,22 @@ public class Mymoviesadapter extends RecyclerView.Adapter<Mymoviesadapter.PostVi
         }
 
 
-
+        @Override
+        public boolean onLongClick(View v) {
+            if (id.contains(sp2.getString("ID", "")))
+            {
+                ActionBottomDialogPostListDialogFragment addPhotoBottomDialogFragment =
+                        ActionBottomDialogPostListDialogFragment.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putString("ID", MoviesItems.get(getAdapterPosition()).getID());
+                bundle.putString("choice", "true");
+                bundle.putString("ID2", id);
+                bundle.putString("MB","Movies");
+                addPhotoBottomDialogFragment.setArguments(bundle);
+                addPhotoBottomDialogFragment.show(((FragmentActivity) mcontext).getSupportFragmentManager(),
+                        ActionBottomDialogFragment.TAG);
+            }
+            return false;
+        }
     }
 }

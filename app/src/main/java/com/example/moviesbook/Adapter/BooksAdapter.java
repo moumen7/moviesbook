@@ -218,10 +218,17 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
             } else {
                 if(orig==null)
                 {
+
                     Intent intent = new Intent(mcontext, ViewmbActivity.class);
+
+
+                    intent.putExtra("name", BooksItems.get(getAdapterPosition()).getVolumeInfo().getTitle() );
+
                     intent.putExtra("Choice", "Books");
                     intent.putExtra("ID",BooksItems.get(getAdapterPosition()).getId());
+
                     mcontext.startActivity(intent);
+                    listenerRef.get().onPositionClicked(getAdapterPosition());
                 }
                 else if (!orig) {
                     Intent intent = new Intent(mcontext, PostActivity.class);
@@ -244,6 +251,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
         @Override
         public boolean onLongClick(View v) {
             Toast.makeText(mcontext, "heree2", Toast.LENGTH_LONG).show();
+
             return false;
         }
     }
