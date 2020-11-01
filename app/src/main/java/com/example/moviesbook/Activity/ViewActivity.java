@@ -119,13 +119,13 @@ public class ViewActivity extends AppCompatActivity {
                     toolbar.setTitle(" ");
                     imageView.setVisibility(View.VISIBLE);
                 }
-                if(getIntent().hasExtra("hide"))
+                if(getIntent().hasExtra("hide")|| getIntent().hasExtra("MutualMovies") || getIntent().hasExtra("MutualBooks"))
                 {
                     button.hide();
                 }
             }
         });
-        if(getIntent().hasExtra("hide"))
+        if(getIntent().hasExtra("hide") || getIntent().hasExtra("MutualMovies") || getIntent().hasExtra("MutualBooks"))
         {
             button.hide();
         }
@@ -171,10 +171,10 @@ public class ViewActivity extends AppCompatActivity {
         {
             String id = getIntent().getStringExtra("id");
             String id2 = getIntent().getStringExtra("id2");
-            // button.hide();
+
+            button.hide();
             //hideFloatingActionButton(button);
             //setTitle(getIntent().getStringExtra("Name"));
-            button.clearAnimation();
             listName.setText(getIntent().getStringExtra("Name"));
             //MUTUAL MOVIES
             final ArrayList<Movie> movies = new ArrayList<>();
@@ -222,6 +222,7 @@ public class ViewActivity extends AppCompatActivity {
         }
         if(getIntent().hasExtra("MutualBooks"))
         {
+            button.hide();
             String id = getIntent().getStringExtra("id");
             String id2 = getIntent().getStringExtra("id2");
 

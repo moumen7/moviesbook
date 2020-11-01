@@ -136,13 +136,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
         else {
             if ((Userdata.Usermovies.containsKey(String.valueOf(MoviesList.get(position).getId())))) {
                 holder.add.setBackgroundDrawable
-                        (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-                holder.add.setText("added");
+                        (mcontext.getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
+
             } else {
                 holder.add.setBackgroundDrawable
-                        (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
-
-                holder.add.setText("add");
+                        (mcontext.getResources().getDrawable(R.drawable.ic_add_circle_black_24dp));
             }
         }
 
@@ -184,8 +182,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
                 if(!Userdata.Usermovies.containsKey(String.valueOf(MoviesList.get(getAdapterPosition()).getId())))
                 {
                     add.setBackgroundDrawable
-                            (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-                    add.setText("added");
+                            (mcontext.getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
+
                     Map<String,Object> write = new HashMap<>();
                     Userdata.Usermovies.put(String.valueOf(MoviesList.get(getAdapterPosition()).getId()),true);
                     write.put("Title", String.valueOf
@@ -222,10 +220,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
                 else
                 {
                     add.setBackgroundDrawable
-                            (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
+                            (mcontext.getResources().getDrawable(R.drawable.ic_add_circle_black_24dp));
                     Userdata.Usermovies.remove(String.valueOf(MoviesList.get(getAdapterPosition()).getId()));
-                    add.setText("add");
-                    db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
+                   db.collection("Movies").document(MoviesList.get(getAdapterPosition()).getId().toString())
                             .update("users", FieldValue.arrayRemove(id));
                     int one = id.length();
                     String put = id.substring(sp2.getString("ID","").length() , one);

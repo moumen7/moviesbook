@@ -10,10 +10,11 @@
          TextureView, etc. -->
     <ImageView
         android:id="@+id/Imagefull"
+        android:adjustViewBounds="true"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:scaleType="centerInside"
+        android:scaleType="fitCenter"
         android:layout_gravity="center"
         android:transitionName="full" />
 

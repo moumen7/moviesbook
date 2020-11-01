@@ -119,13 +119,13 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
         else if (orig) {
             if ((userdata.Userbooks.containsKey(String.valueOf(BooksItems.get(position).getId())))) {
                 holder.add.setBackgroundDrawable
-                        (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-                holder.add.setText("added");
+                        (mcontext.getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
+
             } else {
                 holder.add.setBackgroundDrawable
-                        (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
+                        (mcontext.getResources().getDrawable(R.drawable.ic_add_circle_black_24dp));
 
-                holder.add.setText("add");
+
             }
         } else {
             holder.add.setVisibility(View.GONE);
@@ -168,8 +168,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
                 if (!Userdata.Userbooks.containsKey(String.valueOf(BooksItems.get(getAdapterPosition()).getId()))) {
 
                     add.setBackgroundDrawable
-                            (mcontext.getResources().getDrawable(R.drawable.rounder_corners2));
-                    add.setText("added to favorites");
+                            (mcontext.getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
                     Map<String, Object> write = new HashMap<>();
                     userdata.Userbooks.put(String.valueOf(BooksItems.get(getAdapterPosition()).getId()), true);
                     write.put("Title", String.valueOf
@@ -196,9 +195,8 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
                             .update("number", FieldValue.increment(1));
                 } else {
                     add.setBackgroundDrawable
-                            (mcontext.getResources().getDrawable(R.drawable.rounder_corners));
+                            (mcontext.getResources().getDrawable(R.drawable.ic_add_circle_black_24dp));
                     userdata.Userbooks.remove(String.valueOf(BooksItems.get(getAdapterPosition()).getId()));
-                    add.setText("add to favoritess");
                     db.collection("Books").document(BooksItems.get(getAdapterPosition()).getId().toString())
                             .update("users", FieldValue.arrayRemove(id));
                     int one = id.length();
@@ -223,7 +221,6 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
 
 
                     intent.putExtra("name", BooksItems.get(getAdapterPosition()).getVolumeInfo().getTitle() );
-
                     intent.putExtra("Choice", "Books");
                     intent.putExtra("ID",BooksItems.get(getAdapterPosition()).getId());
 

@@ -201,7 +201,7 @@ public class Feed extends Fragment implements View.OnClickListener{
                         int i=0;
                         for(String x:Userdata.following2)
                         {
-                            tasks.add(db.collection("Posts").whereEqualTo("userid",x).orderBy("Date")
+                            tasks.add(db.collection("Posts").whereEqualTo("userid",x).orderBy("Date",Query.Direction.DESCENDING)
                                     .limit(2)
                                     .get());
                             i++;
@@ -214,7 +214,8 @@ public class Feed extends Fragment implements View.OnClickListener{
                         Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(tasks.toArray(new Task[tasks.size()]));
                         allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
                             @Override
-                            public void onSuccess(List<QuerySnapshot> querySnapshots) {
+                            public void onSuccess(List<QuerySnapshot> querySnapshots)
+                            {
                                 String data = "";
                                 int i=0;
                                 for (QuerySnapshot queryDocumentSnapshots : querySnapshots) {

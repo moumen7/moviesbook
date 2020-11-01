@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/whitecolor"/>
+    <item android:drawable="@color/Orange"/>
     <item android:gravity="center">
         <bitmap
             android:gravity="center"
             android:antialias="true"
-            android:src="@drawable/attachment_87153704"
+            android:src="@drawable/attachment_trans"
             />
     </item>
 </layer-list>

@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
+
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
             app:expandedTitleTextAppearance="@style/TransparentText"
@@ -34,6 +34,7 @@
                 android:id="@+id/toolbar_mb"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+
                 android:elevation="0dp"
                 android:minHeight="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
@@ -197,7 +198,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/myposts"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/posttext" />
 

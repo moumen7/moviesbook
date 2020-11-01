@@ -10,6 +10,8 @@
     <EditText
         android:id="@+id/search_edit_text"
         android:layout_width="match_parent"
+        android:theme="@style/MyEditTextTheme"
+
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginTop="59dp"
@@ -25,25 +27,30 @@
         android:layout_marginTop="-6dp" />
 
     <com.google.android.material.appbar.AppBarLayout
+
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
+            android:background="?android:colorBackground"
             android:id="@+id/toolbar"
+
             android:layout_width="match_parent"
             android:layout_height="5dp"
            />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tablay"
+
+            android:background="?android:colorBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabIndicatorColor="@color/colorGray"
+            app:tabSelectedTextColor="@color/Orange"
+            app:tabIndicatorColor="@color/Orange"
            />
     </com.google.android.material.appbar.AppBarLayout>
 

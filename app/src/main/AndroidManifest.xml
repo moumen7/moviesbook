@@ -5,7 +5,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
+    <supports-screens android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"
+        android:anyDensity="true" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,6 +19,7 @@
         android:theme="@style/DarkMood"
         android:usesCleartextTraffic="true"
         android:windowSoftInputMode="adjustNothing">
+
         <activity android:name=".Activity.ListActivity"></activity>
         <activity
             android:name=".Activity.SplashActivity"
@@ -51,7 +56,7 @@
         <activity android:name=".Activity.BooksActivity" />
         <activity
             android:name=".Activity.HomeActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
         <activity android:name=".Activity.AddPicActivity" />
         <activity android:name=".Activity.UserActivity" />
         <activity android:name=".Activity.MainActivity" />

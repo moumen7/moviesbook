@@ -184,6 +184,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         });
         if(posts.get(position).getPostdesc() == null || posts.get(position).getPostdesc().equals("") )
             holder.desc.setVisibility(View.GONE);
+        else {
+            holder.desc.setVisibility(View.VISIBLE);
+        }
 
         if(posts.get(position).getImage() == null)
             holder.postimage.setVisibility(View.GONE);

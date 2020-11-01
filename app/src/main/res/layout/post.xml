@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
-    android:layout_marginTop="5dp">
+    app:cardBackgroundColor="?android:colorBackground"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="4dp">
+        android:paddingRight="4dp"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:background="?android:colorBackground">
 
         <ImageButton
             android:id="@+id/delete"
@@ -37,17 +40,20 @@
 
         <TextView
             android:id="@+id/username"
-            android:layout_width="328dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="4dp"
             android:paddingRight="10dp"
             android:text="Title"
             android:textColor="?android:textColorPrimary"
             android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/userimage"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -60,48 +66,67 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="44dp"
             android:ellipsize="none"
+
             android:maxLines="100"
             android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/userimage"
             app:layout_constraintTop_toBottomOf="@+id/username" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="2dp"
+            android:background="@android:color/darker_gray"
+            android:paddingTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/desc"
-            android:layout_width="370dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="false"
             android:layout_marginTop="6dp"
             android:ellipsize="none"
             android:maxLines="100"
-            android:paddingLeft="15dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+
             android:textColor="?android:textColorPrimary"
             android:textSize="17dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/date" />
 
-            <ImageButton
+        <ImageButton
             android:id="@+id/postimage"
-            android:layout_width="393dp"
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
             android:layout_height="387dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="false"
             android:layout_marginTop="8dp"
-            android:paddingLeft="15dp"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
+            android:paddingRight="5dp"
             android:transitionName="full"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/desc" />
 
 
         <ImageView
             android:id="@+id/comment"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="false"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
             android:adjustViewBounds="true"
             android:foregroundTint="#A9FFFFFF"
             android:paddingLeft="0dp"
@@ -112,11 +137,13 @@
 
         <CheckBox
             android:id="@+id/like"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="false"
             android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
             android:background="@drawable/like_icon"
             android:button="@null"
             android:checked="false"
@@ -151,4 +178,4 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

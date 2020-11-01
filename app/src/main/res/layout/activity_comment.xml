@@ -36,7 +36,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/edittext_button_style_rounded"
-            android:hint="Write Comment"
+            android:hint=" Write Comment"
             android:inputType="textPersonName"
             android:paddingLeft="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -46,16 +46,19 @@
             android:id="@+id/comm"
             android:layout_width="63dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/edittext_button_style_rounded"
+            android:backgroundTint="@color/cardview_dark_background"
             android:onClick="comment"
             android:text="Add"
+            android:textColor="?android:textColorPrimary"
             app:layout_constraintBottom_toBottomOf="@+id/commentcontent"
             app:layout_constraintEnd_toEndOf="parent"
-
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/commentcontent"
-            app:layout_constraintTop_toTopOf="@+id/commentcontent" />
+            app:layout_constraintTop_toTopOf="@+id/commentcontent"
+            app:layout_constraintVertical_bias="1.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
