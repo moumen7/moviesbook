@@ -56,10 +56,11 @@
         android:layout_height="31dp"
         android:layout_marginTop="44dp"
         android:layout_marginEnd="4dp"
-        android:background="@drawable/ic_add_circle_black_24dp"
+        android:background="@drawable/addlist"
         android:clickable="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:focusable="true" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

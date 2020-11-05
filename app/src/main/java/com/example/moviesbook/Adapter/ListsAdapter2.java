@@ -5,6 +5,8 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -21,6 +23,9 @@ import com.example.moviesbook.Activity.ViewActivity;
 import com.example.moviesbook.List;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.widget.ImageViewCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -63,6 +68,8 @@ public class ListsAdapter2 extends RecyclerView.Adapter<ListsAdapter2.Holder> {
     private final ClickListener listener;
     private FirebaseUser user;
     private String Type;
+    Drawable add;
+    Drawable added;
     public  ListsAdapter2(Context context , ClickListener listener,String Type,String id)
     {
         this.Type = Type;
@@ -89,6 +96,8 @@ public class ListsAdapter2 extends RecyclerView.Adapter<ListsAdapter2.Holder> {
 
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
+        add = ResourcesCompat.getDrawable(context.getResources(), R.drawable.addlist,null);
+        added = ResourcesCompat.getDrawable(context.getResources(), R.drawable.fav,null);
         String s = lists.get(position).getImage();
         holder.button.setVisibility(View.GONE);
         if(s != null)
@@ -97,14 +106,13 @@ public class ListsAdapter2 extends RecyclerView.Adapter<ListsAdapter2.Holder> {
         }
         else
         {
-            holder.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.fav));
+            holder.imageView.setImageDrawable(added);
         }
 
         holder.textViewName.setText(lists.get(position).getName());
         if(lists.get(position).getID().equals("add"))
         {
-
-            holder.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.addlist));
+            holder.imageView.setImageDrawable(add);
         }
     }
 

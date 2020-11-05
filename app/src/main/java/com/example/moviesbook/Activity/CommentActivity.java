@@ -97,17 +97,17 @@ public class CommentActivity extends AppCompatActivity {
     public void comment(View view) {
         if(view.getId() == imgbutton.getId())
         {
-            if(!et.getText().toString().equals(""))
+            if(et.getText().toString().trim().length() > 0)
             {
                 executeTransaction(1);
-
 
             }
             else
             {
-                Toast.makeText(CommentActivity.this,"can`t make an empty commemt",Toast.LENGTH_LONG)
+                Toast.makeText(CommentActivity.this,"can't make an empty commemt",Toast.LENGTH_LONG)
                         .show();
             }
+            et.setText("");
         }
     }
 
