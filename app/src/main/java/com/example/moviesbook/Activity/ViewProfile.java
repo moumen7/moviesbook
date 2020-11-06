@@ -3,16 +3,20 @@ package com.example.moviesbook.Activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -78,8 +82,8 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
     Query q;
     private DocumentSnapshot lastVisible;
     private ImageView imageView;
-    private ImageButton imageButton;
-    private ImageButton imageButton2;
+    private Button imageButton;
+    private Button imageButton2;
     private ListsAdapter adapter;
     private ListsAdapter adapter2;
     private PostsAdapter postsAdapter;
@@ -89,9 +93,25 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
     private StorageReference Folder;
     private ArrayList<Book> userbooks;
     private ArrayList<Movie> usermovies;
+    Drawable add_black;
+            //getResources().getDrawable(R.drawable.ic_baseline_person_add_24);
+    Drawable added ;
+                    //getResources().getDrawable(R.drawable.ic_done_black_24dp);
+    Drawable message ;
+                            //getResources().getDrawable(R.drawable.send_message);
+    Drawable message_black;
+                                    //getResources().getDrawable(R.drawable.ic_baseline_chat_bubble_outline_24);
     String m;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        add_black = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_person_add_24,null);
+        add_black.setBounds(8,8,8,8);
+        added = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_done_black_24dp,null);
+        added.setBounds(8,8,8,8);
+        message = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_chat_bubble_outline_24,null);
+        message.setBounds(8,8,8,8);
+        message_black = ResourcesCompat.getDrawable(getResources(), R.drawable.send_message,null);
+        message_black.setBounds(8,8,8,8);
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_view_profile);
@@ -371,15 +391,20 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
         });
         if(Userdata.following.containsKey(getIntent().getStringExtra("ID")))
         {
-            imageButton.setImageResource(R.drawable.ic_done_black_24dp);
-            imageButton2.setImageResource(R.drawable.ic_baseline_chat_bubble_outline_24);
+            imageButton.setCompoundDrawablesWithIntrinsicBounds(null,added,null,null);
+            imageButton.setTextColor(getResources().getColor(R.color.Orange));
+            imageButton2.setCompoundDrawablesWithIntrinsicBounds(null,message,null,null);
+            imageButton2.setTextColor(getResources().getColor(R.color.Orange));
+
 
 
         }
         else
         {
-            imageButton2.setImageResource(R.drawable.send_message);
-            imageButton.setImageResource(R.drawable.ic_baseline_person_add_24);
+            imageButton2.setCompoundDrawablesWithIntrinsicBounds(null,message_black,null,null);
+            imageButton2.setTextColor(getResources().getColor(R.color.colorGray));
+            imageButton.setTextColor(getResources().getColor(R.color.colorGray));
+            imageButton.setCompoundDrawablesWithIntrinsicBounds(null,add_black,null,null);
         }
 
         recyclerViewposts.setAdapter(postsAdapter);
@@ -452,7 +477,9 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
     {
         if(v.getId() == R.id.imgbutton) {
             if (Userdata.following.containsKey(getIntent().getStringExtra("ID"))) {
-                imageButton.setImageResource(R.drawable.ic_baseline_person_add_24);
+                imageButton.setCompoundDrawablesWithIntrinsicBounds(null,add_black,null,null);
+                imageButton.setText("Follow");
+                imageButton.setTextColor(getResources().getColor(R.color.colorGray));
                 db.collection("Users").document(sp.getString("ID", ""))
                         .update("Following", FieldValue.arrayRemove(getIntent().getStringExtra("ID")));
                 db.collection("Users").document(getIntent().getStringExtra("ID"))
@@ -462,11 +489,15 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
                 db.collection("Users").document(getIntent().getStringExtra("ID"))
                         .update("numoffollowers", FieldValue.increment(-1));
                 Userdata.following.remove(getIntent().getStringExtra("ID"));
-                imageButton2.setImageResource(R.drawable.send_message);
+                imageButton2.setCompoundDrawablesWithIntrinsicBounds(null,message_black,null,null);
+                imageButton2.setTextColor(getResources().getColor(R.color.colorGray));
+
             } else
                 {
 
-                imageButton.setImageResource(R.drawable.ic_done_black_24dp);
+                imageButton.setCompoundDrawablesWithIntrinsicBounds(null,added,null,null);
+                imageButton.setText("Following");
+                imageButton.setTextColor(getResources().getColor(R.color.Orange));
                 db.collection("Users").document(sp.getString("ID", ""))
                         .update("Following", FieldValue.arrayUnion(getIntent().getStringExtra("ID")));
                 db.collection("Users").document(getIntent().getStringExtra("ID"))
@@ -475,7 +506,8 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
                         .update("numoffollowing", FieldValue.increment(1));
                 db.collection("Users").document(getIntent().getStringExtra("ID"))
                         .update("numoffollowers", FieldValue.increment(1));
-                    imageButton2.setImageResource(R.drawable.ic_baseline_chat_bubble_outline_24);
+                    imageButton2.setCompoundDrawablesWithIntrinsicBounds(null,message,null,null);
+                    imageButton2.setTextColor(getResources().getColor(R.color.Orange));
                 Userdata.following.put(getIntent().getStringExtra("ID"), true);
             }
         }

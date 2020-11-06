@@ -149,7 +149,7 @@ public class ChatActivity extends Activity {
             @Override
             public void onClick(View view) {
                 String msg = editText.getText().toString();
-                if (!msg.equals("")) {
+                if (msg.trim().length() > 0) {
                     sendMessage(fUser.getUid(), id, msg);
                 } else {
                     Toast.makeText(context, "Type something!", Toast.LENGTH_SHORT).show();

@@ -24,23 +24,24 @@
 
     <TextView
         android:id="@+id/date"
-        android:layout_width="254dp"
-        android:layout_height="24dp"
-        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="80dp"
-        android:textSize="10sp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="8dp"
+        android:textSize="12sp"
+        android:text="date"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/commenttext"
-        app:layout_constraintTop_toBottomOf="@id/commenttext" />
+        app:layout_constraintStart_toEndOf="@+id/name"/>
 
     <TextView
 
         android:id="@+id/name"
         android:textColor="?android:textColorPrimary"
-        android:layout_width="267dp"
+        android:layout_width="wrap_content"
         android:layout_height="24dp"
         android:layout_above="@+id/commenttext"
         android:layout_marginStart="8dp"

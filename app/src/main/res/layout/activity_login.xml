@@ -60,7 +60,8 @@
         android:layout_width="280dp"
         android:layout_height="45dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/joinbtn"
+        android:background="@drawable/btn"
+        android:backgroundTint="#424242"
         android:clickable="true"
         android:elevation="0dp"
         android:onClick="Login"
@@ -69,7 +70,7 @@
         android:textColor="@color/whitecolor"
         android:layout_below="@+id/loginpass"
         android:layout_centerInParent="true"
-        />
+        android:focusable="true" />
 
     <TextView
         android:id="@+id/textView2"
