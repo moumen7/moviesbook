@@ -110,7 +110,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="false"
             android:layout_marginTop="8dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             android:paddingRight="5dp"
             android:transitionName="full"
             app:layout_constraintEnd_toEndOf="parent"

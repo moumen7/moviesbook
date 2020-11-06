@@ -141,9 +141,7 @@ public class Chats extends Fragment {
                                 // ends at the index of fUser id in the room id
                                 if (index != 0) {
                                     Log.d(TAG, "other user id: " + document.getId().substring(0, index));
-
                                     usersList_fb.put(document.getId().substring(0, index),Pair.create(user.getDate(),user.getLastmessage()) );
-
                                 }
                                 /// if room id starts with the fUser id, make a substring starting at the index thats
                                 /// equal to length of (fUser id)-1 to the end of the string

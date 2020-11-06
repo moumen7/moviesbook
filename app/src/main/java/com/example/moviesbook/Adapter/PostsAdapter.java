@@ -251,7 +251,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         @Override
         public void onClick(View v) {
 
-            if (like.getId() == v.getId()) {
+            if (like.getId() == v.getId())
+            {
 
                 if(posts.get(getAdapterPosition()).getLikers().containsKey(sp2.getString("ID","")))
                 {
@@ -318,7 +319,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
             }
             listenerRef.get().onPositionClicked(getAdapterPosition());
         }
-        private void executeTransaction(final int change, final int state) {
+        private void executeTransaction(final int change, final int state)
+        {
             final int use = getAdapterPosition();
             final Map <String,Boolean> map;
             map = (Map <String,Boolean>) posts.get(getAdapterPosition()).getLikers();
