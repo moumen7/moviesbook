@@ -108,7 +108,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final PostViewHolder holder, final int position) {
-        Toast.makeText(mcontext,String.valueOf(android.os.Build.VERSION.SDK_INT),Toast.LENGTH_LONG);
+
         if (android.os.Build.VERSION.SDK_INT > 9)
         {
             StrictMode.ThreadPolicy policy =
@@ -176,7 +176,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(mcontext,"heree",Toast.LENGTH_LONG).show();
+
             if (v.getId() == add.getId())
             {
                 if(!Userdata.Usermovies.containsKey(String.valueOf(MoviesList.get(getAdapterPosition()).getId())))

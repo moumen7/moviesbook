@@ -1,5 +1,7 @@
 package com.example.moviesbook;
 
+import com.google.firebase.Timestamp;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +11,11 @@ public class User implements Serializable {
     String id;
     String Username;
 
-    public String getDate() {
+    public Timestamp getDate() {
         return Date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Timestamp date) {
         Date = date;
     }
 
@@ -25,7 +27,7 @@ public class User implements Serializable {
         this.lastmessage = last;
     }
 
-    String Date;
+    Timestamp Date;
     String lastmessage;
 
     public String getImage() {

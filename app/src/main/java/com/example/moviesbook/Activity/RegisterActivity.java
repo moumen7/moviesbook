@@ -142,10 +142,10 @@ public class RegisterActivity extends AppCompatActivity {
                                                                                                  editor.commit();
                                                                                                  // Toast.makeText(SIGN_UP.this, "Save", Toast.LENGTH_SHORT).show();
                                                                                                  progressDialog.dismiss();
-                                                                                                 Intent intent = new Intent(RegisterActivity.this, AddActivity.class);
-                                                                                                 intent.putExtra("addpic", true);
+                                                                                                 Intent intent = new Intent(RegisterActivity.this,HomeActivity.class);
                                                                                                  startActivity(intent);
                                                                                                  finish();
+
                                                                                              }
                                                                                          }).addOnFailureListener(new OnFailureListener() {
 

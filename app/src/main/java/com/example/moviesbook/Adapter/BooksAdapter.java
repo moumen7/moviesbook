@@ -163,7 +163,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(mcontext, "heree", Toast.LENGTH_LONG).show();
+
             if (v.getId() == add.getId()) {
                 if (!Userdata.Userbooks.containsKey(String.valueOf(BooksItems.get(getAdapterPosition()).getId()))) {
 
@@ -247,7 +247,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.PostViewHold
 
         @Override
         public boolean onLongClick(View v) {
-            Toast.makeText(mcontext, "heree2", Toast.LENGTH_LONG).show();
+
 
             return false;
         }

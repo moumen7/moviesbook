@@ -104,8 +104,7 @@ public class CommentActivity extends AppCompatActivity {
             }
             else
             {
-                Toast.makeText(CommentActivity.this,"can't make an empty commemt",Toast.LENGTH_LONG)
-                        .show();
+
             }
             et.setText("");
         }

@@ -40,6 +40,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,12 +54,12 @@ interface MyCallback {
 public class ChatActivity extends Activity {
 
     private static final String TAG = "1";
-    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     Date date = new Date();
     String path;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("Chats");
+
     FirebaseUser fUser;
     Intent intent;
     TextView username;
@@ -123,7 +124,6 @@ public class ChatActivity extends Activity {
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e)
                     {
                         mChats.clear();
-                        Toast.makeText(ChatActivity.this, String.valueOf(path) , Toast.LENGTH_LONG).show();
                                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
 
                                         Log.d(TAG, "Now iterating over messages...");
@@ -140,9 +140,6 @@ public class ChatActivity extends Activity {
                         Log.w(TAG, "Adapter attached");
                                 }
                             });
-
-
-
         editText = (EditText) findViewById(R.id.edit_text_message);
         send = (ImageButton) findViewById(R.id.text_message_send);
         send.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +149,7 @@ public class ChatActivity extends Activity {
                 if (msg.trim().length() > 0) {
                     sendMessage(fUser.getUid(), id, msg);
                 } else {
-                    Toast.makeText(context, "Type something!", Toast.LENGTH_SHORT).show();
+
                 }
                 editText.setText("");
             }
@@ -166,13 +163,13 @@ public class ChatActivity extends Activity {
                         hashMap.put("user1",sender);
                         hashMap.put("user2",receiver);
                         hashMap.put("lastmessage",msg);
-                        hashMap.put("Date",formatter.format(date));
+                        hashMap.put("Date",getDateFromString(formatter.format(date)));
                         db.collection("Chats").document(path+"i").set(hashMap);
                         hashMap.clear();
                         hashMap.put("sender", sender);
                         hashMap.put("receiver", receiver);
                         hashMap.put("message", msg);
-                        hashMap.put("Date", formatter.format(date));
+                        hashMap.put("Date", getDateFromString(formatter.format(date)));
                         db.collection("Chats").document(path + "i")
                                 .collection("messages").document().set(hashMap)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -216,9 +213,17 @@ public class ChatActivity extends Activity {
 
 
 
-    private void readMessage(final String myId, final String userId) {
+
+    static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    public Date getDateFromString(String datetoSaved){
+
+        try {
+            Date date = format.parse(datetoSaved);
+            return date ;
+        } catch (ParseException e){
+            return null ;
+        }
 
     }
-
 
 }

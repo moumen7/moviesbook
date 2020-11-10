@@ -65,7 +65,7 @@ public class ActionBottomDialogPostListDialogFragment extends BottomSheetDialogF
             case R.id.textView:
                 if(!getArguments().getString("choice").equals("true"))
                 {
-                    Toast.makeText(getContext(), getArguments().getString("choice"), Toast.LENGTH_LONG).show();
+
                     new AlertDialog.Builder(getContext())
                             .setTitle("Delete List")
                             .setMessage("Are you sure you want to delete this Post?")

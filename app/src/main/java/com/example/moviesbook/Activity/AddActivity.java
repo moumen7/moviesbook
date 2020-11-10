@@ -135,7 +135,7 @@ public class AddActivity extends AppCompatActivity implements SearchView.OnQuery
             }
 
             @Override public void onLongClicked(int position) {
-                Toast.makeText(AddActivity.this,"heree4",Toast.LENGTH_LONG).show();
+
             }
         },orig,getIntent().getStringExtra("id"));
 

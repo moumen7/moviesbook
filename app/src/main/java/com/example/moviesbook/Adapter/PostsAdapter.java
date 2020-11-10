@@ -126,7 +126,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                 Intent intent = new Intent(mcontext, ViewmbActivity.class);
 
                     intent.putExtra("name",posts.get(position).getUsedtitle() );
-
                 if (String.valueOf(posts.get(position).getUsedid()).matches("[0-9]+")) {
                     intent.putExtra("Choice", "Movies");
                     intent.putExtra("ID", posts.get(position).getUsedid());
@@ -157,7 +156,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
         holder.date.setText(posts.get(position).getDate());
         holder.username.setMovementMethod(LinkMovementMethod.getInstance());
         holder.desc.setText(posts.get(position).getPostdesc());
-        holder.numberoflikes.setText(String.valueOf(posts.get(position).getLikes()));
+        holder.numberoflikes.setText(String.valueOf(posts.get(position).getLikers().size()));
         holder.numberofcomments.setText(String.valueOf(posts.get(position).getComments()));
         db.collection("Users").document(posts.get(position).getUserid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -190,7 +189,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
         if(posts.get(position).getImage() == null)
             holder.postimage.setVisibility(View.GONE);
-        else {
+        else
+        {
             Picasso.get().load(posts.get(position).getImage()).into(holder.postimage);
             holder.postimage.setVisibility(View.VISIBLE);
         }
@@ -253,19 +253,18 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
 
             if (like.getId() == v.getId())
             {
-
                 if(posts.get(getAdapterPosition()).getLikers().containsKey(sp2.getString("ID","")))
                 {
+                    long s =posts.get(getAdapterPosition()).getLikers().size() - 1;
                     executeTransaction(-1,0);
-                    numberoflikes.setText(String.valueOf(posts.get(getAdapterPosition()).getLikes() - 1));
-                    posts.get(getAdapterPosition()).setLikes(posts.get(getAdapterPosition()).getLikes() - 1);
+                    numberoflikes.setText(String.valueOf(s));
+
                 }
                 else
                 {
-
+                    long s =posts.get(getAdapterPosition()).getLikers().size() + 1;
                     executeTransaction(1,1);
-                    numberoflikes.setText(String.valueOf(posts.get(getAdapterPosition()).getLikes() + 1));
-                    posts.get(getAdapterPosition()).setLikes(posts.get(getAdapterPosition()).getLikes() + 1);
+                    numberoflikes.setText(String.valueOf(s));
                 }
 
             }
@@ -342,8 +341,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.PostViewHold
                         map.put(sp2.getString("ID",""),true);
                         transaction.update(exampleNoteRef,"Likers",map);
                     }
-
-                    transaction.update(exampleNoteRef, "likes", newPriority);
 
                     return newPriority;
                 }

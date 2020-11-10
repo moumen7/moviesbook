@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -62,7 +63,7 @@ public class Chats extends Fragment {
     private List<User> mUsers_toBe_AddedTo;
     User user =  new User();
 
-    private Map<String, Pair<String,String>> usersList_fb;
+    private Map<String, Pair<Timestamp,String>> usersList_fb;
 
     FirebaseUser fUser;
     FirebaseFirestore db= FirebaseFirestore.getInstance();

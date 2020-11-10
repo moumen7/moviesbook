@@ -314,8 +314,7 @@ public class ViewProfile extends AppCompatActivity implements View.OnClickListen
         mutuals.getMutualbooks();
         int mutualmovies = mutuals.getNumberofmutualmovies();
         int mutualbooks = mutuals.getNumberofmutualbooks();
-        Toast.makeText(ViewProfile.this,"onCreate: mutual movies____________ :" + String
-                .valueOf(mutualmovies),Toast.LENGTH_LONG).show();
+
         recyclerViewbooks.setAdapter(adapter2);
         recyclerViewbooks.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
         db.collection("Users").document(getIntent().getStringExtra("ID"))

@@ -39,7 +39,6 @@ public class SliderActivity extends AppCompatActivity {
 
         // Checking for first time launch - before calling setContentView()
         prefManager = new Prefmanager(this);
-        getSupportActionBar().hide();
         if (!prefManager.isFirstTimeLaunch()) {
             launchHomeScreen();
             finish();

@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                                                                if((User)documentSnapshot.toObject(User.class)!=null)
                                                                {
 
-                                                                   Toast.makeText(LoginActivity.this, "Here", Toast.LENGTH_LONG).show();
+
                                                                    currentuser = (User)documentSnapshot.toObject(User.class);
                                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
                                                                    editor.putString("username" ,currentuser.getUsername());
@@ -107,7 +107,6 @@ public class LoginActivity extends AppCompatActivity {
                                                                    editor.commit();
                                                                    progressDialog.dismiss();
                                                                    Intent intent = new Intent(LoginActivity.this,HomeActivity.class);
-                                                                   intent.putExtra("addpic",true);
                                                                    startActivity(intent);
                                                                    finish();
 
@@ -115,7 +114,6 @@ public class LoginActivity extends AppCompatActivity {
                                                                }
                                                                else
                                                                {
-                                                                   Toast.makeText(LoginActivity.this, "Here2", Toast.LENGTH_LONG).show();
                                                                }
 
                                                            }

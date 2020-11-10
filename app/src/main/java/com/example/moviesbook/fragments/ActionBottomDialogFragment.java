@@ -52,7 +52,7 @@ public class ActionBottomDialogFragment extends BottomSheetDialogFragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.textView:
-                Toast.makeText(getContext(),getArguments().getString("choice"),Toast.LENGTH_LONG).show();
+
                 new AlertDialog.Builder(getContext())
                         .setTitle("Delete List")
                         .setMessage("Are you sure you want to delete this List?")
