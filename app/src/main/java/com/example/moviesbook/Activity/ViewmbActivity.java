@@ -163,7 +163,6 @@ public class ViewmbActivity extends AppCompatActivity {
             }
         });
         posts = new ArrayList<>();
-
         movies = new ArrayList<>();
         scrollView = findViewById(R.id.scroll);
         recyclerViewPosts.setLayoutManager(new LinearLayoutManager(ViewmbActivity.this));

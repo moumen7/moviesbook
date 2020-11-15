@@ -149,8 +149,8 @@ public class FriendAdapter  extends RecyclerView.Adapter<FriendAdapter.FriendHol
                 public void onClick(View view) {
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra("ID", CurrentUsersFilter.get(getAdapterPosition()).getId());
+                intent.putExtra("username",CurrentUsersFilter.get(getAdapterPosition()).getUsername());
                 context.startActivity(intent);
-                Toast.makeText(context,"Chatting",Toast.LENGTH_SHORT);
                 }
             });
         }

@@ -101,8 +101,7 @@ public class mutuals
             }
 
         });
-        Toast.makeText(context,"onCreate: mutual movies____________ :" + String
-                .valueOf(movies.size()),Toast.LENGTH_LONG).show();
+
         return movies;
     }
     public ArrayList<Book> getBooks(final String id, final String id2)
