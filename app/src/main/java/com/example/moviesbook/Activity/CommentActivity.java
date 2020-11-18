@@ -1,21 +1,19 @@
 package com.example.moviesbook.Activity;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
 import com.example.moviesbook.Adapter.CommentsAdapter;
 import com.example.moviesbook.Friend;
 import com.example.moviesbook.Interfaces.ClickListener;
@@ -32,15 +30,13 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 import com.squareup.picasso.Picasso;
-
 import org.w3c.dom.Comment;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-
 public class CommentActivity extends AppCompatActivity {
+    private static final String TAG ="Comment" ;
     RecyclerView recyclerView;
     Button imgbutton;
     CommentsAdapter commentsAdapter;
@@ -63,78 +59,76 @@ public class CommentActivity extends AppCompatActivity {
         Query query = db.collection("Posts").whereEqualTo("Postid" ,
                 getIntent().getStringExtra("id"));
         setTitle("Comments");
-
         commentsAdapter = new CommentsAdapter( CommentActivity.this , Commenters ,new ClickListener() {
             @Override
             public void onPositionClicked(int position) {
-
             }
-
             @Override
             public void onLongClicked(int position) {
-
             }
         });
-
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-
                 int x = 0;
                 for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
                     Post ChatUser = snapshot.toObject(Post.class);
-                        if (ChatUser.getPostid().equals( getIntent().getStringExtra("id"))) {
-                            Commenters = ChatUser.getCommenters();
-                        }
+                    if (ChatUser.getPostid().equals( getIntent().getStringExtra("id"))) {
+                        Commenters = ChatUser.getCommenters();
                     }
-                commentsAdapter.setList(Commenters);
                 }
-            });
+                commentsAdapter.setList(Commenters);
+            }
+        });
         recyclerView.setAdapter(commentsAdapter);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL));
     }
-
     public void comment(View view) {
         if(view.getId() == imgbutton.getId())
         {
-            if(et.getText().toString().trim().length() > 0)
-            {
-                executeTransaction(1);
+            if(!et.getText().toString().equals(""))
+                if(et.getText().toString().trim().length() > 0)
+                {
+                    Log.d(TAG, "if comment isn't empty");
+                    Log.d(TAG, et.getText().toString());
+                    executeTransaction(1,et.getText().toString());
 
-            }
-            else
-            {
 
-            }
+                }
+                else
+                {
+                    Toast.makeText(CommentActivity.this,"can't make an empty commemt",Toast.LENGTH_LONG)
+                            .show();
+                }
             et.setText("");
         }
     }
 
-    private void executeTransaction(final int change) {
-          x = 0;
-         newPriority = 0;
+    private void executeTransaction(final int change, final String s) {
+        x = 0;
+        newPriority = 0;
+        Log.d(TAG,"executing..");
+        Log.d(TAG, "edit text: " +et.getText().toString() );
+        Log.d(TAG, "string is: "+s);
         db.runTransaction(new Transaction.Function<Long>() {
             @Override
             public Long apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
-
-
-
-                    DocumentReference exampleNoteRef = db.collection("Posts").document(getIntent().
-                            getStringExtra("id"));
-                    DocumentSnapshot exampleNoteSnapshot = transaction.get(exampleNoteRef);
-                     newPriority = exampleNoteSnapshot.getLong("comments") + change;
-                    HashMap<String, String> comment = new HashMap<>();
-                    comment.put("username", sp.getString("username", ""));
-                    comment.put("id", sp.getString("ID", ""));
-                    comment.put("content", et.getText().toString());
-                    comment.put("date", formatter.format(date));
-                    Commenters.add(comment);
-                    transaction.update(exampleNoteRef, "Commenters", Commenters);
-                    transaction.update(exampleNoteRef, "comments", newPriority);
-                    x++;
-
-                    return newPriority;
-
+                DocumentReference exampleNoteRef = db.collection("Posts").document(getIntent().
+                        getStringExtra("id"));
+                DocumentSnapshot exampleNoteSnapshot = transaction.get(exampleNoteRef);
+                newPriority = exampleNoteSnapshot.getLong("comments") + change;
+                HashMap<String, String> comment = new HashMap<>();
+                comment.put("username", sp.getString("username", ""));
+                comment.put("id", sp.getString("ID", ""));
+                //comment.put("content", et.getText().toString());
+                comment.put("content", s);
+                comment.put("date", formatter.format(date));
+                Commenters.add(comment);
+                transaction.update(exampleNoteRef, "Commenters", Commenters);
+                transaction.update(exampleNoteRef, "comments", newPriority);
+                x++;
+                Log.d(TAG, et.getText().toString());
+                return newPriority;
             }
         }).addOnSuccessListener(new OnSuccessListener<Long>() {
             @Override

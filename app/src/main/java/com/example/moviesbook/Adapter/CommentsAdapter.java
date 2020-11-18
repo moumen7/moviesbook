@@ -81,6 +81,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.Frien
     public void onBindViewHolder(@NonNull final FriendHolder friendholder, final int position) {
         friendholder.textViewName.setText(CurrentUsersFilter.get(position).get("username"));
         friendholder.content.setText(CurrentUsersFilter.get(position).get("content"));
+        friendholder.content.setTextColor(context.getResources().getColor(R.color.whitecolor));
         friendholder.date.setText(CurrentUsersFilter.get(position).get("date"));
          db.collection("Users").document(CurrentUsersFilter.get(position).get("id")).addSnapshotListener(new EventListener<DocumentSnapshot>() {
              @Override
@@ -129,6 +130,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.Frien
             textViewName = itemView.findViewById(R.id.name);
             imageView = itemView.findViewById(R.id.PP);
             content = itemView.findViewById(R.id.commenttext);
+            content.setTextColor(context.getResources().getColor(R.color.whitecolor));
             date = itemView.findViewById(R.id.date);
             itemView.setClickable(true);
             itemView.setOnClickListener(this);

@@ -36,6 +36,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -162,7 +163,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.PostViewHold
     public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private WeakReference<ClickListener> listenerRef;
         TextView author, date, content,title,link;
-        Button add;
+        ImageButton add;
+        //Button add;
         ImageView image;
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);

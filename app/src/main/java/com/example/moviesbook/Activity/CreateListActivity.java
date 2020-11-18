@@ -126,11 +126,11 @@ public class CreateListActivity extends AppCompatActivity {
 
             if (editText.getText().toString().equals(""))
             {
-                Toast.makeText(CreateListActivity.this,"List name can`t be empty",Toast.LENGTH_LONG).show();
+                Toast.makeText(CreateListActivity.this,"List name can't be empty",Toast.LENGTH_LONG).show();
             }
             else if (editText.getText().toString().length() > 17)
             {
-                Toast.makeText(CreateListActivity.this,"List name can`t be more than 18 characters"
+                Toast.makeText(CreateListActivity.this,"List name can't be more than 18 characters"
                         ,Toast.LENGTH_LONG).show();
             }
             else

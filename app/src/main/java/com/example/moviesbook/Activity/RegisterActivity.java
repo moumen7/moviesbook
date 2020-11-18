@@ -165,6 +165,10 @@ public class RegisterActivity extends AppCompatActivity {
                                                                  }
                                                              });
                                                          } else {
+
+                                                             Email.setText("");
+                                                             Password.setText("");
+                                                             Name.setText("");
                                                              Toast.makeText(RegisterActivity.this, "Username exists", Toast.LENGTH_SHORT).show();
                                                              progressDialog.hide();
                                                          }

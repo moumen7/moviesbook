@@ -63,10 +63,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:textColor="?android:textColorPrimary"
-        android:layout_marginStart="8dp"
         android:textSize="16sp"
+        android:textColor="@color/Orange"
+        android:text="comment content"
+        android:layout_marginStart="8dp"
         android:paddingBottom="6dp"
         app:layout_constraintStart_toEndOf="@+id/PP"
         app:layout_constraintTop_toBottomOf="@+id/name" />
