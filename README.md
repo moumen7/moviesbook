@@ -2,7 +2,7 @@
 
 ![Logo](https://user-images.githubusercontent.com/57041674/100159423-6fd3a900-2eb6-11eb-8227-46440ed58821.jpg)
 
-> This is a ReadMe template to help save you time and effort.
+> This is a ReadMe for MoviesBook project.
 
 ---
 
@@ -19,7 +19,11 @@ You're sections headers will be used to reference location of destination.
 
 ## Description
 
-Creating ReadMe's for your Github repository can be tedious.  I hope this template can save you time and effort as well as provide you with some consistency across your projects.
+A Fully functional social media application made for movies and books lovers to share their Interests.
+- Create Lists of Books and Movies, choose from a vast majority of Books and movies using google books api and The movie database.
+(https://user-images.githubusercontent.com/57041674/100160208-cab9d000-2eb7-11eb-8271-6039514aa6ce.jpeg)
+(https://user-images.githubusercontent.com/57041674/100160213-cd1c2a00-2eb7-11eb-88df-5550457eb8f8.jpeg)
+
 
 #### Technologies
 
