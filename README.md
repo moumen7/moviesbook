@@ -25,6 +25,23 @@ A Fully functional social media application made for movies and books lovers to 
 ![Lists of Movies and books](https://user-images.githubusercontent.com/57041674/100160208-cab9d000-2eb7-11eb-8271-6039514aa6ce.jpeg)
 ![Inside the List](https://user-images.githubusercontent.com/57041674/100160213-cd1c2a00-2eb7-11eb-88df-5550457eb8f8.jpeg)
 
+- View the profiles of movies and books, see posts related to them and recommendations.
+
+![Search](https://user-images.githubusercontent.com/57041674/100161331-e4f4ad80-2eb9-11eb-84c1-6c0acccaf2c4.jpeg)
+![Inside Profile](https://user-images.githubusercontent.com/57041674/100161394-06ee3000-2eba-11eb-9cc8-db2135ffd260.jpeg)
+![Inside Profile](https://user-images.githubusercontent.com/57041674/100161397-081f5d00-2eba-11eb-9e3e-f7a67703c46b.jpeg)
+
+- Interact with other users by following, chatting and seeing their posts and Lists, View mutual Movies and books.
+
+![Search People]((https://user-images.githubusercontent.com/57041674/100161474-2be2a300-2eba-11eb-8b8c-fce3c67b2ac7.jpeg)
+![View profile](https://user-images.githubusercontent.com/57041674/100161573-63e9e600-2eba-11eb-9c6c-64eae9d86b83.jpeg)
+![Mutual Movies](https://user-images.githubusercontent.com/57041674/100161670-8e3ba380-2eba-11eb-9da0-3fc1954f00df.jpeg)
+![Chat](https://user-images.githubusercontent.com/57041674/100161711-a1e70a00-2eba-11eb-87f2-d7bcd8179a07.jpeg)
+
+- Post about a Movie or a Book, Interact with other posts by Liking and commenting.
+
+![Posts Feed](https://user-images.githubusercontent.com/57041674/100161759-c0e59c00-2eba-11eb-8eb4-297b76cd5851.jpeg)
+
 
 #### Technologies
 
