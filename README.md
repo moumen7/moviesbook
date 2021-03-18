@@ -47,8 +47,6 @@ A Fully functional social media application made for movies and books lovers to 
 - Firebase Firestore
 - Material Design
 
-[Back To The Top](#read-me-template)
-[Back To The Top](#read-me-template)
 
 ---
 [Back To The Top](#read-me-template)
