@@ -15,11 +15,10 @@ You're sections headers will be used to reference location of destination.
 
 ## Description
 
-### A Fully functional social media application made for movies and books lovers to share their Interests.
-- Create Lists of Books and Movies, choose from a vast majority of Books and movies using google books api and The movie database.
+Moviesbook is the right place for movies and books lovers.
 
-![Lists of Movies and books](https://user-images.githubusercontent.com/57041674/100160208-cab9d000-2eb7-11eb-8271-6039514aa6ce.jpeg)
-![Inside the List](https://user-images.githubusercontent.com/57041674/100160213-cd1c2a00-2eb7-11eb-88df-5550457eb8f8.jpeg)
+- Create Lists of Books and Movies, choose from a vast majority of Books and movies using google books api and The movie database.
+<img src="https://user-images.githubusercontent.com/57041674/116827803-4b81a400-ab9b-11eb-9a61-ac5539a4a2a9.png)" width="300" height="300">
 
 - View the profiles of movies and books, see posts related to them and recommendations.
 
