@@ -25,11 +25,8 @@ Moviesbook is the right place for movies and books lovers.
 <img src="https://user-images.githubusercontent.com/57041674/116828148-31e15c00-ab9d-11eb-8a58-a77095174335.png" width="460" height="500">
 
 - Interact with other users by following, chatting and seeing their posts and Lists, View mutual Movies and books.
+<img src="hhttps://user-images.githubusercontent.com/57041674/116828225-a6b49600-ab9d-11eb-98c7-1f94c9b96cfd.png" width="460" height="500">
 
-![Search People](https://user-images.githubusercontent.com/57041674/100161474-2be2a300-2eba-11eb-8b8c-fce3c67b2ac7.jpeg)
-![View profile](https://user-images.githubusercontent.com/57041674/100161573-63e9e600-2eba-11eb-9c6c-64eae9d86b83.jpeg)
-![Mutual Movies](https://user-images.githubusercontent.com/57041674/100161670-8e3ba380-2eba-11eb-9da0-3fc1954f00df.jpeg)
-![Chat](https://user-images.githubusercontent.com/57041674/100161711-a1e70a00-2eba-11eb-87f2-d7bcd8179a07.jpeg)
 
 - Post about a Movie or a Book, Interact with other posts by Liking and commenting.
 
