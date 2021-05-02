@@ -15,7 +15,7 @@ You're sections headers will be used to reference location of destination.
 
 ## Description
 
--- A Fully functional social media application made for movies and books lovers to share their Interests.
+ -- A Fully functional social media application made for movies and books lovers to share their Interests.
 - Create Lists of Books and Movies, choose from a vast majority of Books and movies using google books api and The movie database.
 
 ![Lists of Movies and books](https://user-images.githubusercontent.com/57041674/100160208-cab9d000-2eb7-11eb-8271-6039514aa6ce.jpeg)
