@@ -18,7 +18,7 @@ You're sections headers will be used to reference location of destination.
 Moviesbook is the right place for movies and books lovers.
 
 - Create Lists of Books and Movies, choose from a vast majority of Books and movies using google books api and The movie database.
-<img src="https://user-images.githubusercontent.com/57041674/116828083-c9927a80-ab9c-11eb-95f5-87be2dbad489.png" width="500" height="500">
+<img src="https://user-images.githubusercontent.com/57041674/116828083-c9927a80-ab9c-11eb-95f5-87be2dbad489.png" width="460" height="500">
 
 - View the profiles of movies and books, see posts related to them and recommendations.
 
