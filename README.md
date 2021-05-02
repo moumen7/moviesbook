@@ -25,12 +25,13 @@ Moviesbook is the right place for movies and books lovers.
 <img src="https://user-images.githubusercontent.com/57041674/116828148-31e15c00-ab9d-11eb-8a58-a77095174335.png" width="460" height="500">
 
 - Interact with other users by following, chatting and seeing their posts and Lists, View mutual Movies and books.
-<img src="hhttps://user-images.githubusercontent.com/57041674/116828225-a6b49600-ab9d-11eb-98c7-1f94c9b96cfd.png" width="460" height="500">
+<img src="https://user-images.githubusercontent.com/57041674/116828225-a6b49600-ab9d-11eb-98c7-1f94c9b96cfd.png" width="460" height="500">
 
 
 - Post about a Movie or a Book, Interact with other posts by Liking and commenting.
 
-![Posts Feed](https://user-images.githubusercontent.com/57041674/100161759-c0e59c00-2eba-11eb-8eb4-297b76cd5851.jpeg)
+<img src="https://user-images.githubusercontent.com/57041674/116828316-34908100-ab9e-11eb-884a-dbc0fadc8de0.png" width="460" height="500">
+
 
 
 #### Topics used for implementation
