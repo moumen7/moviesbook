@@ -22,9 +22,7 @@ Moviesbook is the right place for movies and books lovers.
 
 - View the profiles of movies and books, see posts related to them and recommendations.
 
-![Search](https://user-images.githubusercontent.com/57041674/100161331-e4f4ad80-2eb9-11eb-84c1-6c0acccaf2c4.jpeg)
-![Inside Profile](https://user-images.githubusercontent.com/57041674/100161394-06ee3000-2eba-11eb-9cc8-db2135ffd260.jpeg)
-![Inside Profile](https://user-images.githubusercontent.com/57041674/100161397-081f5d00-2eba-11eb-9e3e-f7a67703c46b.jpeg)
+<img src="https://user-images.githubusercontent.com/57041674/116828148-31e15c00-ab9d-11eb-8a58-a77095174335.png" width="460" height="500">
 
 - Interact with other users by following, chatting and seeing their posts and Lists, View mutual Movies and books.
 
