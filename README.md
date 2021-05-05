@@ -3,7 +3,6 @@
 <img src="https://user-images.githubusercontent.com/57041674/100159423-6fd3a900-2eb6-11eb-8227-46440ed58821.jpg" width="250" height="250">
 
 
-> This is a ReadMe for MoviesBook project.
 
 ---
 
