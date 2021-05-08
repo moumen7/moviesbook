@@ -39,5 +39,8 @@ Moviesbook is the right place for movies and books lovers.
 - MVVM
 - Retrofit
 - Firebase Firestore
+- Firebase Auth
 - Material Design
+- pagination
+- navigation component
 
