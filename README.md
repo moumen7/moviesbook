@@ -17,7 +17,7 @@
 Moviesbook is the right place for movies and books lovers.
 
 - Create Lists of Books and Movies, choose from a vast majority of Books and movies using google books api and The movie database.
-<img src="https://user-images.githubusercontent.com/57041674/119542787-36f68d00-bd90-11eb-898a-707de0d883b4.jpg" width="300" height="500">
+<img src="https://user-images.githubusercontent.com/57041674/119543171-a9676d00-bd90-11eb-8b8b-5188e84064aa.png" width="300" height="500">
 
 - View the profiles of movies and books, see posts related to them and recommendations.
 
