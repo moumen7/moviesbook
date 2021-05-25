@@ -25,7 +25,7 @@ Moviesbook is the right place for movies and books lovers.
 
 <p float="center">
  <img src="https://user-images.githubusercontent.com/57041674/119544526-14fe0a00-bd92-11eb-8ce0-6efb341c3310.png" width="300" height="500">
- <img src="https://user-images.githubusercontent.com/57041674/119544637-2fd07e80-bd92-11eb-883f-9590703679be.png" width="300" height="500">
+ <img src="https://user-images.githubusercontent.com/57041674/119544711-44147b80-bd92-11eb-8164-a25141f3c56c.png" width="300" height="500">
 </p>
 
 - Interact with other users by following, chatting and seeing their posts and Lists, View mutual Movies and books.
