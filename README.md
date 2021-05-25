@@ -30,8 +30,10 @@ Moviesbook is the right place for movies and books lovers.
 </p>
 
 - Interact with other users by following, chatting and seeing their posts and Lists, View mutual Movies and books.
-<img src="https://user-images.githubusercontent.com/57041674/116828225-a6b49600-ab9d-11eb-98c7-1f94c9b96cfd.png" width="460" height="500">
-
+<p float="center">
+ <img src="https://user-images.githubusercontent.com/57041674/119545223-dddc2880-bd92-11eb-9529-c10e9988614b.png" width="300" height="500">
+ <img src="https://user-images.githubusercontent.com/57041674/119545283-efbdcb80-bd92-11eb-98ca-a84aa9f40258.png" width="300" height="500">
+</p>
 
 - Post about a Movie or a Book, Interact with other posts by Liking and commenting.
 
