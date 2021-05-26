@@ -1,7 +1,7 @@
 # MoviesBook Repo
 
 <p align="middle">
- <img src="https://user-images.githubusercontent.com/57041674/100159423-6fd3a900-2eb6-11eb-8227-46440ed58821.jpg" width="350" height="350">
+ <img src="https://user-images.githubusercontent.com/57041674/100159423-6fd3a900-2eb6-11eb-8227-46440ed58821.jpg" width="250" height="350">
 </p>
 
 ---
